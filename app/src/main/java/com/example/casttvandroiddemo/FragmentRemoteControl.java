@@ -2,6 +2,7 @@ package com.example.casttvandroiddemo;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -10,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,12 +35,13 @@ import okhttp3.Response;
 public class FragmentRemoteControl extends Fragment implements View.OnClickListener{
     private static final String TAG = "FragmentRemoteControl";
     private View view;
-    private Button btn_up, btn_down, btn_left, btn_right, btn_enter;
-    private Button btn_setting, btn_vip, btn_powerOff, btn_connect, btn_cast;
-    private Button btn_keyboard, btn_channel, btn_back, btn_home;
-    private Button btn_rewind, btn_pause, btn_forward, btn_refresh;
-    private Button btn_detail, btn_volumeDown, btn_volumeUp, btn_volumeMute;
-
+    private ImageView iv_up, iv_down, iv_left, iv_right, iv_enter;
+    private ImageView iv_setting, iv_disconnect, iv_selectDevice, iv_cast;
+    private ImageView iv_back, iv_home;
+    private LinearLayout ll_keyboard, ll_channel;
+    private ImageView iv_rewind, iv_pause, iv_forward, iv_refresh;
+    private ImageView iv_menu, iv_volumeDown, iv_volumeUp, iv_volumeMute;
+    private TextView tv_selectDevice;
     private String RokuLocation;
     private static final String SSDP_MSEARCH = "M-SEARCH * HTTP/1.1\r\n" +
             "Host: 239.255.255.250:1900\r\n" +
@@ -56,106 +61,106 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
         return view = inflater.inflate(R.layout.fragment_remote_control_tab, container, false);
     }
     private void initView() {
-        btn_powerOff = (Button) view.findViewById(R.id.btn_keyToPowerOff);
-        btn_connect = (Button) view.findViewById(R.id.btn_requestConnection);
-        btn_keyboard = (Button) view.findViewById(R.id.btn_keyboard);
-        btn_channel = (Button) view.findViewById(R.id.btn_channel);
-        btn_up = (Button) view.findViewById(R.id.btn_keyToUp);
-        btn_down = (Button) view.findViewById(R.id.btn_keyToDown);
-        btn_left = (Button) view.findViewById(R.id.btn_keyToLeft);
-        btn_right = (Button) view.findViewById(R.id.btn_keyToRight);
-        btn_enter = (Button) view.findViewById(R.id.btn_keyToSelect);
-        btn_back = (Button) view.findViewById(R.id.btn_keyToBack);
-        btn_home = (Button) view.findViewById(R.id.btn_keyToHome);
-        btn_rewind = (Button) view.findViewById(R.id.btn_keyToRewind);
-        btn_pause = (Button) view.findViewById(R.id.btn_keyToPause);
-        btn_forward = (Button) view.findViewById(R.id.btn_keyToForward);
-        btn_refresh = (Button) view.findViewById(R.id.btn_keyToRefresh);
-        btn_detail = (Button) view.findViewById(R.id.btn_keyToDetail);
-        btn_volumeDown = (Button) view.findViewById(R.id.btn_keyToVolumeDown);
-        btn_volumeMute = (Button) view.findViewById(R.id.btn_keyToMute);
-        btn_volumeUp = (Button) view.findViewById(R.id.btn_keyToVolumeUp);
+        iv_disconnect =  view.findViewById(R.id.iv_disconnect_homepage);
+        tv_selectDevice =  view.findViewById(R.id.tv_select_device_homepage);
+        ll_keyboard =  view.findViewById(R.id.ll_keyboard_homepage);
+        ll_channel =  view.findViewById(R.id.ll_channel_homepage);
+        iv_up =  view.findViewById(R.id.iv_up_homepage);
+        iv_down =  view.findViewById(R.id.iv_down_homepage);
+        iv_left =  view.findViewById(R.id.iv_left_homepage);
+        iv_right =  view.findViewById(R.id.iv_right_homepage);
+        iv_enter =  view.findViewById(R.id.iv_ok_homepage);
+        iv_back =  view.findViewById(R.id.iv_back_homepage);
+        iv_home =  view.findViewById(R.id.iv_home_homepage);
+        iv_rewind =  view.findViewById(R.id.iv_rewind_homepage);
+        iv_pause =  view.findViewById(R.id.iv_play_pause_homepage);
+        iv_forward =  view.findViewById(R.id.iv_forward_homepage);
+        iv_refresh =  view.findViewById(R.id.iv_refresh_homepage);
+        iv_menu =  view.findViewById(R.id.iv_menu_homepage);
+        iv_volumeDown =  view.findViewById(R.id.iv_volume_down_homepage);
+        iv_volumeMute =  view.findViewById(R.id.iv_volume_mute_homepage);
+        iv_volumeUp =  view.findViewById(R.id.iv_volume_up_homepage);
 
 
-        btn_powerOff.setOnClickListener(this);
-        btn_connect.setOnClickListener(this);
-        btn_keyboard.setOnClickListener(this);
-        btn_channel.setOnClickListener(this);
-        btn_up.setOnClickListener(this);
-        btn_down.setOnClickListener(this);
-        btn_left.setOnClickListener(this);
-        btn_right.setOnClickListener(this);
-        btn_enter.setOnClickListener(this);
-        btn_back.setOnClickListener(this);
-        btn_home.setOnClickListener(this);
-        btn_rewind.setOnClickListener(this);
-        btn_pause.setOnClickListener(this);
-        btn_forward.setOnClickListener(this);
-        btn_refresh.setOnClickListener(this);
-        btn_detail.setOnClickListener(this);
-        btn_volumeDown.setOnClickListener(this);
-        btn_volumeMute.setOnClickListener(this);
-        btn_volumeUp.setOnClickListener(this);
+        iv_disconnect.setOnClickListener(this);
+        tv_selectDevice.setOnClickListener(this);
+        ll_keyboard.setOnClickListener(this);
+        ll_channel.setOnClickListener(this);
+        iv_up.setOnClickListener(this);
+        iv_down.setOnClickListener(this);
+        iv_left.setOnClickListener(this);
+        iv_right.setOnClickListener(this);
+        iv_enter.setOnClickListener(this);
+        iv_back.setOnClickListener(this);
+        iv_home.setOnClickListener(this);
+        iv_rewind.setOnClickListener(this);
+        iv_pause.setOnClickListener(this);
+        iv_forward.setOnClickListener(this);
+        iv_refresh.setOnClickListener(this);
+        iv_menu.setOnClickListener(this);
+        iv_volumeDown.setOnClickListener(this);
+        iv_volumeMute.setOnClickListener(this);
+        iv_volumeUp.setOnClickListener(this);
     }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_keyToPowerOff:
+            case R.id.iv_disconnect_homepage:
                 httpPost("keypress/PowerOff");
                 break;
-            case R.id.btn_requestConnection:
+            case R.id.tv_select_device_homepage:
                 findDevice();
                 break;
-            case R.id.btn_keyboard:
+            case R.id.ll_keyboard_homepage:
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                 break;
-            case R.id.btn_channel:
+            case R.id.ll_channel_homepage:
                 launchChannel();
                 break;
-            case R.id.btn_keyToUp:
+            case R.id.iv_up_homepage:
                 httpPost("keypress/Up");
                 break;
-            case R.id.btn_keyToDown:
+            case R.id.iv_down_homepage:
                 httpPost("keypress/Down");
                 break;
-            case R.id.btn_keyToLeft:
+            case R.id.iv_left_homepage:
                 httpPost("keypress/Left");
                 break;
-            case R.id.btn_keyToRight:
+            case R.id.iv_right_homepage:
                 httpPost("keypress/Right");
                 break;
-            case R.id.btn_keyToSelect:
+            case R.id.iv_ok_homepage:
                 httpPost("keypress/Select");
                 break;
-            case R.id.btn_keyToBack:
+            case R.id.iv_back_homepage:
                 httpPost("keypress/Back");
                 break;
-            case R.id.btn_keyToHome:
+            case R.id.iv_home_homepage:
                 httpPost("keypress/Home");
                 break;
-            case R.id.btn_keyToRewind:
+            case R.id.iv_rewind_homepage:
                 httpPost("keypress/Rev");
                 break;
-            case R.id.btn_keyToPause:
+            case R.id.iv_play_pause_homepage:
                 httpPost("keypress/Play");
                 break;
-            case R.id.btn_keyToForward:
+            case R.id.iv_forward_homepage:
                 httpPost("keypress/Fwd");
                 break;
-            case R.id.btn_keyToRefresh:
+            case R.id.iv_refresh_homepage:
                 httpPost("keypress/InstantReplay");
                 break;
-            case R.id.btn_keyToDetail:
+            case R.id.iv_menu_homepage:
                 httpPost("keypress/Info");
                 break;
-            case R.id.btn_keyToVolumeDown:
+            case R.id.iv_volume_down_homepage:
                 httpPost("keypress/VolumeDown");
                 break;
-            case R.id.btn_keyToMute:
+            case R.id.iv_volume_mute_homepage:
                 httpPost("keypress/VolumeMute");
                 break;
-            case R.id.btn_keyToVolumeUp:
+            case R.id.iv_volume_up_homepage:
                 httpPost("keypress/VolumeUp");
                 break;
         }
