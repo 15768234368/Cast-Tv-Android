@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -41,27 +42,38 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
 
     private FragmentRemoteControl fragmentRemoteControl;
     private FragmentInternet fragmentInternet;
+    private ImageView iv_remoteControl, iv_browserView;
+    private TextView tv_remoteControl, tv_browserView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initView();
+        selectTab(0);
+//        initView();
+    }
 
-        findViewById(R.id.btn_showRemoteControl).setOnClickListener(new View.OnClickListener() {
+    private void initView() {
+        iv_remoteControl = findViewById(R.id.iv_remote_homepage);
+        iv_remoteControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 selectTab(0);
             }
         });
 
-        findViewById(R.id.btn_showInternet).setOnClickListener(new View.OnClickListener() {
+        iv_browserView = findViewById(R.id.iv_browser_homepage);
+        iv_browserView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 selectTab(1);
             }
         });
-        selectTab(0);
-//        initView();
+
+        tv_remoteControl = findViewById(R.id.tv_remote_homepage);
+        tv_browserView = findViewById(R.id.tv_browser_homepage);
     }
+
     private void selectTab(int containerNum){
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
@@ -74,7 +86,11 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
                 }else{
                     transaction.show(fragmentRemoteControl);
                 }
+                iv_remoteControl.setImageResource(R.mipmap.remote_homepage_selected);
+                tv_remoteControl.setTextColor(0xFF0BBD6A);
                 break;
+
+
             case 1:
                 if(fragmentInternet == null) {
                     fragmentInternet = new FragmentInternet();
@@ -82,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
                 }else{
                     transaction.show(fragmentInternet);
                 }
+                iv_browserView.setImageResource(R.mipmap.browser_homepage_selected);
+                tv_browserView.setTextColor(0xFF0BBD6A);
                 break;
         }
         transaction.commit();
@@ -92,6 +110,10 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
             transaction.hide(fragmentRemoteControl);
         if(fragmentInternet != null)
             transaction.hide(fragmentInternet);
+        iv_remoteControl.setImageResource(R.mipmap.remote_homepage_unselected);
+        iv_browserView.setImageResource(R.mipmap.browser_homepage_unselected);
+        tv_remoteControl.setTextColor(0XFF666666);
+        tv_browserView.setTextColor(0XFF666666);
     }
 
 

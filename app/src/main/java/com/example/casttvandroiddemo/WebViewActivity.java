@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,7 +18,10 @@ import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
 import android.widget.SearchView;
+
+import com.example.casttvandroiddemo.utils.IntentUtils;
 
 import org.json.JSONObject;
 
@@ -28,12 +32,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class WebViewActivity extends AppCompatActivity {
+public class WebViewActivity extends AppCompatActivity implements View.OnClickListener{
     private static final String TAG = "WebViewActivity";
     private String loadingUrl;
     private WebView webView;
     private SearchView searchView;
-
+    private ImageView iv_back, iv_forward, iv_cast, iv_history, iv_remote;
+    private String realVideoUrl = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,20 +46,52 @@ public class WebViewActivity extends AppCompatActivity {
         Intent intent = getIntent();
         loadingUrl = intent.getStringExtra("url");
         initView();
+        setEvent();
     }
+
+    private void setEvent() {
+        iv_cast.setEnabled(false);
+    }
+
     Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message message) {
-            if(message.obj != null)
-                updateSearchViewUrl((String) message.obj);
+            if(message.obj != null){
+                realVideoUrl = (String) message.obj;
+                Handler delayPost = new Handler();
+                delayPost.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        iv_cast.setImageResource(R.mipmap.cast_lighted_browser_cast);
+                        iv_cast.setEnabled(true);
+                    }
+                }, 2000);
+            }
             return true;
         }
     });
-    @SuppressLint("SetJavaScriptEnabled")
     private void initView() {
         webView = (WebView) findViewById(R.id.webView);
+        setWebViewSetting();
         searchView = (SearchView) findViewById(R.id.searchView);
+        setSearchViewSetting();
+        iv_back = (ImageView) findViewById(R.id.iv_back_browserCast);
+        iv_forward = (ImageView) findViewById(R.id.iv_forward_browserCast);
+        iv_cast = (ImageView) findViewById(R.id.iv_cast_browserCast);
+        iv_history = (ImageView) findViewById(R.id.iv_history_browserCast);
+        iv_remote = (ImageView) findViewById(R.id.iv_remote_browserCast);
 
+        iv_back.setOnClickListener(this);
+        iv_forward.setOnClickListener(this);
+        iv_cast.setOnClickListener(this);
+        iv_history.setOnClickListener(this);
+        iv_remote.setOnClickListener(this);
+    }
+    /**
+     * 对私有变量webView进行初始化设置
+     */
+    @SuppressLint("SetJavaScriptEnabled")
+    public void setWebViewSetting(){
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setBuiltInZoomControls(true);
 
@@ -94,9 +131,15 @@ public class WebViewActivity extends AppCompatActivity {
                 loadingUrl = view.getUrl();
                 updateSearchViewUrl(loadingUrl);
                 Log.d(TAG, "onReceivedTitle: " + loadingUrl);
+                updateIsForwardStatus(webView.canGoForward());
+                if(loadingUrl.startsWith("https://m.bilibili.com/video")){
+                    getRealVideoUrl();
+                }
             }
         });
         webView.loadUrl(loadingUrl);
+    }
+    public void setSearchViewSetting(){
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -110,7 +153,15 @@ public class WebViewActivity extends AppCompatActivity {
             }
         });
     }
-
+    public void updateIsForwardStatus(boolean flag){
+        if(flag){
+            iv_forward.setImageResource(R.mipmap.forward_lighted_browser_cast);
+            iv_forward.setEnabled(true);
+        }else{
+            iv_forward.setImageResource(R.mipmap.forward_unlighted_browser_cast);
+            iv_forward.setEnabled(false);
+        }
+    }
     public void updateSearchViewUrl(String loadingUrl) {
         searchView.setQuery(loadingUrl, false);
     }
@@ -127,9 +178,8 @@ public class WebViewActivity extends AppCompatActivity {
     /**
      * 通过获得网页播放网址去获取视频资源的真正url
      *
-     * @param view
      */
-    public void castUrlToTv(View view) {
+    public void getRealVideoUrl() {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -166,5 +216,32 @@ public class WebViewActivity extends AppCompatActivity {
             }
         });
         thread.start();
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.iv_back_browserCast:
+                if(webView.canGoBack())
+                    webView.goBack();
+                else
+                    finish();
+                break;
+            case R.id.iv_forward_browserCast:
+                webView.goForward();
+                break;
+            case R.id.iv_cast_browserCast:
+                castToTv();
+                break;
+            case R.id.iv_history_browserCast:
+                break;
+            case R.id.iv_remote_browserCast:
+                IntentUtils.goToActivity(this, MainActivity.class);
+                finish();
+                break;
+        }
+    }
+
+    private void castToTv() {
     }
 }

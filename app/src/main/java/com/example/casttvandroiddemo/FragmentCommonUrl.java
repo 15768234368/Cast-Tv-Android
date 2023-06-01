@@ -5,14 +5,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 public class FragmentCommonUrl extends Fragment {
     private View view;
@@ -25,7 +21,7 @@ public class FragmentCommonUrl extends Fragment {
     }
 
     private void initView() {
-        view.findViewById(R.id.btn_keyToYoutube).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.ll_keyTo_youtube).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String url = "https://www.youtube.com/";
@@ -35,7 +31,7 @@ public class FragmentCommonUrl extends Fragment {
             }
         });
 
-        view.findViewById(R.id.btn_keyToBiliBili).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.ll_keyTo_BiliBili).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String url = "https://bilibili.com/";

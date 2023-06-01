@@ -14,19 +14,49 @@
     <LinearLayout
         android:id="@+id/ll_bottom"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:layout_alignParentBottom="true">
-        <Button
-            android:id="@+id/btn_showRemoteControl"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="遥控器"/>
-        <Button
-            android:id="@+id/btn_showInternet"
+            android:orientation="vertical"
+            android:gravity="center">
+            <ImageView
+                android:id="@+id/iv_remote_homepage"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@mipmap/remote_homepage_selected"
+                />
+            <TextView
+                android:id="@+id/tv_remote_homepage"
+                android:layout_width="30dp"
+                android:layout_height="14dp"
+                android:text="遥控器"
+                android:textColor="#FF0BBD6A"
+                android:textSize="10sp"
+                />
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="浏览器"/>
+            android:orientation="vertical"
+            android:gravity="center">
+            <ImageView
+                android:id="@+id/iv_browser_homepage"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@mipmap/browser_homepage_unselected"
+                />
+            <TextView
+                android:id="@+id/tv_browser_homepage"
+                android:layout_width="30dp"
+                android:layout_height="14dp"
+                android:text="浏览器"
+                android:textColor="#FF666666"
+                android:textSize="10sp"
+                />
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

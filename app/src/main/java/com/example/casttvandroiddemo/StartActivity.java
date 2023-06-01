@@ -82,4 +82,10 @@ public class StartActivity extends AppCompatActivity {
         String flag = sp.getString(key, "");
         return !flag.equals("");
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+    }
 }

@@ -3,22 +3,52 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
-
-    <SearchView
-        android:id="@+id/searchView"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:background="@drawable/search_shape"
-        android:iconifiedByDefault="false"
-        android:queryHint="搜索或输入网址"/>
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/ll_settingTop"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="20dp">
+
+            <ImageView
+                android:id="@+id/iv_setting_homepage"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="16dp"
+                android:src="@mipmap/setting_homepage" />
+
+            <TextView
+                android:layout_width="54dp"
+                android:layout_height="26dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="105dp"
+                android:text="浏览器"
+                android:textColor="#FF202020"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <SearchView
+            android:id="@+id/searchView"
+            style="@style/CustomSearchViewStyle"
+            android:layout_width="320dp"
+            android:layout_height="56dp"
+            android:layout_below="@id/ll_settingTop"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/search_shape"
+            android:iconifiedByDefault="false"
+            android:queryHint="搜索或输入网址" />
+    </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/containerInternet"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:layout_marginTop="10dp"/>
 
 </LinearLayout>

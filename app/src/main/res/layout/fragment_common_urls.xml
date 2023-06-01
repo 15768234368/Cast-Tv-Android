@@ -2,26 +2,92 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <TextView
         android:id="@+id/tv_commonUrls"
+        android:layout_width="64dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:text="常用网址"
+        android:textColor="#FF202020"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:id="@+id/ll_keyTo_youtube"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Commom URLs"
-        android:textSize="20sp"
-        android:textAllCaps="false"/>
-    <Button
         android:layout_below="@id/tv_commonUrls"
-        android:id="@+id/btn_keyToYoutube"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:text="Youtube"
-        android:textAllCaps="false"/>
-    <Button
-        android:layout_below="@id/tv_commonUrls"
-        android:id="@+id/btn_keyToBiliBili"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:text="BiliBili"
-        android:textAllCaps="false"
-        android:layout_toRightOf="@id/btn_keyToYoutube"/>
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_keyTo_youtube"
+            android:layout_width="68dp"
+            android:layout_height="68dp"
+            android:src="@mipmap/youtube_icon" />
+
+        <TextView
+            android:id="@+id/tv_keyTo_youtube"
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:layout_marginTop="6dp"
+            android:text="Youtube"
+            android:textColor="#FF202020"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_keyTo_BiliBili"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/ll_keyTo_youtube"
+        android:layout_marginStart="20dp"
+        android:layout_toRightOf="@id/ll_keyTo_youtube"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_keyTo_bilibili"
+            android:layout_width="68dp"
+            android:layout_height="68dp"
+            android:src="@mipmap/bilibili_icon" />
+
+        <TextView
+            android:id="@+id/tv_keyTo_bilibili"
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:layout_marginTop="6dp"
+            android:text="BiliBili"
+            android:textColor="#FF202020"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_keyTo_ESPN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/ll_keyTo_youtube"
+        android:layout_marginStart="20dp"
+        android:layout_toRightOf="@id/ll_keyTo_BiliBili"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_keyTo_ESPN"
+            android:layout_width="68dp"
+            android:layout_height="68dp"
+            android:src="@mipmap/espn_icon" />
+
+        <TextView
+            android:id="@+id/tv_keyTo_ESPN"
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:layout_marginTop="6dp"
+            android:text="ESPN"
+            android:textColor="#FF202020"
+            android:textSize="14sp" />
+    </LinearLayout>
 </RelativeLayout>

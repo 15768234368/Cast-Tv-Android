@@ -15,20 +15,23 @@
         android:layout_marginStart="24dp"
         />
 
-    <ImageView
+    <ScrollView
         android:id="@+id/iv_content"
         android:layout_below="@id/tv_title"
         android:layout_alignLeft="@id/tv_title"
         android:layout_width="232dp"
         android:layout_height="225dp"
-        android:layout_marginTop="4dp"
-        android:scaleType="matrix"
-        android:src="@drawable/privacy_agreement_bg" />
+        android:layout_marginTop="4dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/agreement_content"/>
+    </ScrollView>
     <View
         android:layout_width="280dp"
         android:layout_height="49dp"
         android:background="@drawable/overlay"
-        android:layout_marginTop="211dp"
+        android:layout_marginTop="225dp"
         />
     <TextView
         android:id="@+id/tv_bottom1"

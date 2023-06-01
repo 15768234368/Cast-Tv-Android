@@ -2,6 +2,7 @@ package com.example.casttvandroiddemo;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,23 +33,24 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class FragmentRemoteControl extends Fragment implements View.OnClickListener{
+public class FragmentRemoteControl extends Fragment implements View.OnClickListener {
     private static final String TAG = "FragmentRemoteControl";
     private View view;
     private ImageView iv_up, iv_down, iv_left, iv_right, iv_enter;
-    private ImageView iv_setting, iv_disconnect, iv_selectDevice, iv_cast;
+    private ImageView iv_setting, iv_disconnect, iv_selectDevice, iv_cast, iv_isConnect;
     private ImageView iv_back, iv_home;
     private LinearLayout ll_keyboard, ll_channel;
     private ImageView iv_rewind, iv_pause, iv_forward, iv_refresh;
     private ImageView iv_menu, iv_volumeDown, iv_volumeUp, iv_volumeMute;
     private TextView tv_selectDevice;
-    private String RokuLocation;
+    private String RokuLocation = null;
     private static final String SSDP_MSEARCH = "M-SEARCH * HTTP/1.1\r\n" +
             "Host: 239.255.255.250:1900\r\n" +
             "Man: \"ssdp:discover\"\r\n" +
             "ST: roku:ecp\r\n\r\n";
     private static final int BUFFER_SIZE = 4096;
     private ProgressDialog progressDialog;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -60,26 +62,29 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return view = inflater.inflate(R.layout.fragment_remote_control_tab, container, false);
     }
+
     private void initView() {
-        iv_disconnect =  view.findViewById(R.id.iv_disconnect_homepage);
-        tv_selectDevice =  view.findViewById(R.id.tv_select_device_homepage);
-        ll_keyboard =  view.findViewById(R.id.ll_keyboard_homepage);
-        ll_channel =  view.findViewById(R.id.ll_channel_homepage);
-        iv_up =  view.findViewById(R.id.iv_up_homepage);
-        iv_down =  view.findViewById(R.id.iv_down_homepage);
-        iv_left =  view.findViewById(R.id.iv_left_homepage);
-        iv_right =  view.findViewById(R.id.iv_right_homepage);
-        iv_enter =  view.findViewById(R.id.iv_ok_homepage);
-        iv_back =  view.findViewById(R.id.iv_back_homepage);
-        iv_home =  view.findViewById(R.id.iv_home_homepage);
-        iv_rewind =  view.findViewById(R.id.iv_rewind_homepage);
-        iv_pause =  view.findViewById(R.id.iv_play_pause_homepage);
-        iv_forward =  view.findViewById(R.id.iv_forward_homepage);
-        iv_refresh =  view.findViewById(R.id.iv_refresh_homepage);
-        iv_menu =  view.findViewById(R.id.iv_menu_homepage);
-        iv_volumeDown =  view.findViewById(R.id.iv_volume_down_homepage);
-        iv_volumeMute =  view.findViewById(R.id.iv_volume_mute_homepage);
-        iv_volumeUp =  view.findViewById(R.id.iv_volume_up_homepage);
+        iv_isConnect = view.findViewById(R.id.iv_isConnected);
+        iv_disconnect = view.findViewById(R.id.iv_disconnect_homepage);
+        tv_selectDevice = view.findViewById(R.id.tv_select_device_homepage);
+        iv_cast = view.findViewById(R.id.iv_cast_homepage);
+        ll_keyboard = view.findViewById(R.id.ll_keyboard_homepage);
+        ll_channel = view.findViewById(R.id.ll_channel_homepage);
+        iv_up = view.findViewById(R.id.iv_up_homepage);
+        iv_down = view.findViewById(R.id.iv_down_homepage);
+        iv_left = view.findViewById(R.id.iv_left_homepage);
+        iv_right = view.findViewById(R.id.iv_right_homepage);
+        iv_enter = view.findViewById(R.id.iv_ok_homepage);
+        iv_back = view.findViewById(R.id.iv_back_homepage);
+        iv_home = view.findViewById(R.id.iv_home_homepage);
+        iv_rewind = view.findViewById(R.id.iv_rewind_homepage);
+        iv_pause = view.findViewById(R.id.iv_play_pause_homepage);
+        iv_forward = view.findViewById(R.id.iv_forward_homepage);
+        iv_refresh = view.findViewById(R.id.iv_refresh_homepage);
+        iv_menu = view.findViewById(R.id.iv_menu_homepage);
+        iv_volumeDown = view.findViewById(R.id.iv_volume_down_homepage);
+        iv_volumeMute = view.findViewById(R.id.iv_volume_mute_homepage);
+        iv_volumeUp = view.findViewById(R.id.iv_volume_up_homepage);
 
 
         iv_disconnect.setOnClickListener(this);
@@ -102,6 +107,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
         iv_volumeMute.setOnClickListener(this);
         iv_volumeUp.setOnClickListener(this);
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -109,7 +115,9 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
                 httpPost("keypress/PowerOff");
                 break;
             case R.id.tv_select_device_homepage:
-                findDevice();
+//                findDevice();
+                Intent intent = new Intent(getContext(), DeviceManage.class);
+                startActivity(intent);
                 break;
             case R.id.ll_keyboard_homepage:
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -165,6 +173,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
                 break;
         }
     }
+
     private void launchChannel() {
         OkHttpClient client = new OkHttpClient();
         String url = RokuLocation + "query/apps";
@@ -217,6 +226,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
             }
         });
     }
+
     private void findDevice() {
         final String[] response = {null};
         progressDialog = new ProgressDialog(getContext());
@@ -260,6 +270,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
                         @Override
                         public void run() {
                             progressDialog.dismiss();
+                            setConnectionStatus(RokuLocation != null);
                         }
                     });
                 } catch (IOException e) {
@@ -268,6 +279,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
                         @Override
                         public void run() {
                             progressDialog.dismiss();
+                            setConnectionStatus(RokuLocation != null);
                         }
                     });
                 }
@@ -275,5 +287,47 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
         }).start();
 
 
+    }
+
+    @Override
+    public void onResume() {
+        setConnectionStatus(RokuLocation != null);
+        super.onResume();
+    }
+
+    private void setControlEnabled(View view, boolean enabled) {
+        view.setEnabled(enabled);
+    }
+
+    private void setControlsClickable(boolean clickable) {
+        setControlEnabled(iv_disconnect, clickable);
+        setControlEnabled(iv_cast, clickable);
+        setControlEnabled(ll_channel, clickable);
+        setControlEnabled(iv_up, clickable);
+        setControlEnabled(iv_down, clickable);
+        setControlEnabled(iv_left, clickable);
+        setControlEnabled(iv_right, clickable);
+        setControlEnabled(iv_enter, clickable);
+        setControlEnabled(iv_back, clickable);
+        setControlEnabled(iv_home, clickable);
+        setControlEnabled(iv_rewind, clickable);
+        setControlEnabled(iv_pause, clickable);
+        setControlEnabled(iv_forward, clickable);
+        setControlEnabled(iv_refresh, clickable);
+        setControlEnabled(iv_menu, clickable);
+        setControlEnabled(iv_volumeDown, clickable);
+        setControlEnabled(iv_volumeMute, clickable);
+        setControlEnabled(iv_volumeUp, clickable);
+    }
+    private void setConnectionStatus(boolean flag){
+        if(flag){
+            iv_isConnect.setImageResource(R.mipmap.connected_homepage);
+            tv_selectDevice.setText("Streaming");
+            setControlsClickable(true);
+        }else{
+            iv_isConnect.setImageResource(R.mipmap.no_connected);
+            tv_selectDevice.setText("选择连接设备");
+            setControlsClickable(false);
+        }
     }
 }

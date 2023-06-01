@@ -12,5 +12,9 @@
         <item name="colorPrimaryDark">@color/colorWhite</item>
         <item name="colorAccent">@color/colorBlack</item>
     </style>
+    <style name="CustomSearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="android:textSize">14sp</item>  <!-- 设置字体大小为 16sp -->
+        <item name="android:textColor">#999999</item>
+    </style>
 
 </resources>

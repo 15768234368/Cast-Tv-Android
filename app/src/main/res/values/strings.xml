@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Cast TV Android Demo</string>
+    <string name="agreement_content">Cast TV Android Demo 是提供遥控、投屏功能的应用。为提供上述功能，本应用需联网，开启/关闭WLAN,开启/关闭本地网络权限，读取多媒体库文件（本地视频、本地图片、本地音乐文件）并获取以下权限:\n\n必需权限:\n存储\n用于访问数据并进行投屏操作。\n\n友盟SDK\n用于采集设备Mac地址、唯一设备识别码（IMEI/Android ID/OPENUDID/GUID）、安卓广告标识符、SIM卡 IMSI信息\n\nAdMob SDK\n用于获取唯一标识符、设备类型和设置、操作系统、移动网络信息（包括运营商名称和电话号码）以及应用版本号、IP地址、崩溃报告\n\n</string>
 </resources>
