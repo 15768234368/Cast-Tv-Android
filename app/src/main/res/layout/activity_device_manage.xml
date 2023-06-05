@@ -20,7 +20,7 @@
             android:src="@mipmap/back_device_management" />
 
         <TextView
-            android:layout_width="72dp"
+            android:layout_width="wrap_content"
             android:layout_height="26dp"
             android:layout_centerInParent="true"
             android:text="设备管理"
@@ -29,6 +29,7 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/tv_update_commonDevice"
             android:layout_width="30dp"
             android:layout_height="21dp"
             android:layout_alignParentEnd="true"
@@ -40,7 +41,7 @@
     </RelativeLayout>
     <TextView
         android:id="@+id/tv_common_device_title"
-        android:layout_width="80dp"
+        android:layout_width="wrap_content"
         android:layout_height="29dp"
         android:layout_below="@id/rl_top_tab_device_management"
         android:layout_alignParentStart="true"
@@ -67,7 +68,16 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="12dp"
+        android:visibility="invisible"/>
+    <ImageView
+        android:id="@+id/iv_commonDevice_image"
+        android:layout_width="307dp"
+        android:layout_height="164dp"
+        android:src="@mipmap/no_device_detected"
+        android:layout_below="@id/tv_common_device_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="45dp"/>
     <ImageView
         android:id="@+id/iv_addDevice_device_manage"
         android:layout_width="108dp"
@@ -76,6 +86,28 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="72dp"
+        android:visibility="invisible"
         />
-
+    <TextView
+        android:id="@+id/tv_common_device_title2"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:text="无设备，请添加设备"
+        android:textColor="#FF202020"
+        android:textSize="16sp"
+        android:layout_below="@+id/iv_commonDevice_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        />
+    <Button
+        android:id="@+id/btn_goToAdd_device_manage"
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:background="@drawable/shape_btn_research"
+        android:text="去设置"
+        android:textColor="#FFFFFFFF"
+        android:textSize="14sp"
+        android:layout_below="@id/tv_common_device_title2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
 </RelativeLayout>

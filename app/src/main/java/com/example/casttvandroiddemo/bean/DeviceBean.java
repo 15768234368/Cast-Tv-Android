@@ -19,6 +19,9 @@ public class DeviceBean {
         this.isOnline = isOnline;
     }
 
+    public DeviceBean() {
+    }
+
     public int getIsOnline() {
         return isOnline;
     }
