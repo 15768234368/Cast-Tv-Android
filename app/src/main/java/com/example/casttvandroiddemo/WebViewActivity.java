@@ -58,6 +58,7 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         public boolean handleMessage(@NonNull Message message) {
             if(message.obj != null){
                 realVideoUrl = (String) message.obj;
+                Log.d(TAG, "handleMessage: " + realVideoUrl);
                 Handler delayPost = new Handler();
                 delayPost.postDelayed(new Runnable() {
                     @Override
@@ -195,7 +196,6 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                 try {
                     Response response = client.newCall(request).execute();
                     String responseBody = response.body().string();
-                    Log.d(TAG, "run: " + responseBody);
                     Pattern pattern = Pattern.compile("options = (\\{.*\\})");
                     Matcher matcher = pattern.matcher(responseBody);
                     if (matcher.find()) {

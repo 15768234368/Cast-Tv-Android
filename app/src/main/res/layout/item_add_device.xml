@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="328dp"
+    android:layout_height="72dp"
+    android:layout_gravity="center"
+    android:background="@drawable/shape_common_device_unselected"
+    android:layout_marginTop="12dp"
+    >
+
+    <ImageView
+        android:id="@+id/iv_item_deviceIcon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="30dp"
+        android:src="@mipmap/device_icon" />
+
+    <TextView
+        android:id="@+id/tv_item_user_deviceName"
+        android:layout_width="wrap_content"
+        android:layout_height="16dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@id/iv_item_deviceIcon"
+        android:text="Streaming Stick 4K"
+        android:textColor="#FF202020"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tv_item_user_deviceLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="13dp"
+        android:text="living room"
+        android:textColor="#FF999999"
+        android:textSize="11sp"
+        android:layout_below="@id/tv_item_user_deviceName"
+        android:layout_alignStart="@id/tv_item_user_deviceName"
+        android:layout_marginTop="4dp"/>
+    <TextView
+        android:id="@+id/tv_item_user_deviceIpAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="17dp"
+        android:text="ip地址:192.168.1.1"
+        android:textColor="#FF999999"
+        android:textSize="12sp"
+        android:layout_below="@id/tv_item_user_deviceLocation"
+        android:layout_alignStart="@id/tv_item_user_deviceLocation"
+        android:layout_marginTop="2dp"
+        />
+    <ImageView
+        android:id="@+id/iv_next_addDevice"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@mipmap/next_device_manage"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="24dp"
+        />
+</RelativeLayout>

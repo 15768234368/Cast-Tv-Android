@@ -43,13 +43,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
     private ImageView iv_rewind, iv_pause, iv_forward, iv_refresh;
     private ImageView iv_menu, iv_volumeDown, iv_volumeUp, iv_volumeMute;
     private TextView tv_selectDevice;
-    private String RokuLocation = null;
-    private static final String SSDP_MSEARCH = "M-SEARCH * HTTP/1.1\r\n" +
-            "Host: 239.255.255.250:1900\r\n" +
-            "Man: \"ssdp:discover\"\r\n" +
-            "ST: roku:ecp\r\n\r\n";
-    private static final int BUFFER_SIZE = 4096;
-    private ProgressDialog progressDialog;
+    public static String RokuLocation = null;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -227,67 +221,6 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
         });
     }
 
-    private void findDevice() {
-        final String[] response = {null};
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("正在加载，请稍后...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-        final Handler handler = new Handler();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-
-                    DatagramSocket socket = new DatagramSocket();
-                    socket.setSoTimeout(2000);
-
-                    byte[] requestData = SSDP_MSEARCH.getBytes();
-                    InetAddress address = InetAddress.getByName("239.255.255.250");
-                    DatagramPacket requestPacket = new DatagramPacket(requestData, requestData.length, address, 1900);
-
-                    socket.send(requestPacket);
-
-                    byte[] buffer = new byte[BUFFER_SIZE];
-                    DatagramPacket responsePacket = new DatagramPacket(buffer, buffer.length);
-                    socket.receive(responsePacket);
-
-                    response[0] = new String(responsePacket.getData(), 0, responsePacket.getLength());
-                    //获取Roku的ip地址
-                    String[] lines = response[0].split("\n");
-                    for (String line : lines) {
-                        if (line.startsWith("LOCATION:")) {
-                            //提取location字段的值
-                            RokuLocation = line.substring(line.indexOf(":") + 1).trim();
-                            Log.d(TAG, "findDevice: " + RokuLocation);
-                            break;
-                        }
-                    }
-                    socket.close();
-
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            progressDialog.dismiss();
-                            setConnectionStatus(RokuLocation != null);
-                        }
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            progressDialog.dismiss();
-                            setConnectionStatus(RokuLocation != null);
-                        }
-                    });
-                }
-            }
-        }).start();
-
-
-    }
 
     @Override
     public void onResume() {

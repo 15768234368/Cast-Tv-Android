@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_item_common_device_bg"
+    android:layout_width="158dp"
+    android:layout_height="107dp"
+    android:layout_gravity="center"
+    android:background="@drawable/shape_common_device_unselected"
+    android:layout_marginBottom="12dp">
+
+    <TextView
+        android:id="@+id/tv_user_device_name"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="18dp"
+        android:text="Streaming Stick 4K"
+        android:textColor="#4D202020"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tv_user_device_location"
+        android:layout_width="wrap_content"
+        android:layout_height="13dp"
+        android:layout_below="@id/tv_user_device_name"
+        android:layout_alignStart="@id/tv_user_device_name"
+        android:layout_marginTop="6dp"
+        android:text="Office"
+        android:textColor="#4D999999"
+        android:textSize="11sp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_below="@id/tv_user_device_location"
+        android:layout_marginTop="10dp">
+
+        <ImageView
+            android:id="@+id/iv_deviceIcon_deviceManage"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="14dp"
+            android:src="@mipmap/device_icon_not_online_device_manage"
+            android:layout_centerVertical="true"/>
+
+        <ImageView
+            android:id="@+id/iv_deviceConnected_deviceManage"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@mipmap/connected_device_manage"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:layout_centerVertical="true"
+            android:visibility="invisible"/>
+    </RelativeLayout>
+</RelativeLayout>

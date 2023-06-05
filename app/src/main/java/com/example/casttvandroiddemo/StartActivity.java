@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.casttvandroiddemo.utils.IntentUtils;
+import com.example.casttvandroiddemo.utils.OnlineDeviceUtils;
 
 public class StartActivity extends AppCompatActivity {
     Handler handler = new Handler();
@@ -39,6 +40,11 @@ public class StartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_start);
         initView();
         handler.postDelayed(runnable, 1000);
+        setBackEvent();
+    }
+
+    private void setBackEvent() {
+        OnlineDeviceUtils.findDevice();
     }
 
     private void initView() {
