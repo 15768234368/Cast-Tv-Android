@@ -1,17 +1,13 @@
 package com.example.casttvandroiddemo;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,9 +17,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -58,6 +51,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
     }
 
     private void initView() {
+        iv_setting = view.findViewById(R.id.iv_setting_homepage);
         iv_isConnect = view.findViewById(R.id.iv_isConnected);
         iv_disconnect = view.findViewById(R.id.iv_disconnect_homepage);
         tv_selectDevice = view.findViewById(R.id.tv_select_device_homepage);
@@ -80,7 +74,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
         iv_volumeMute = view.findViewById(R.id.iv_volume_mute_homepage);
         iv_volumeUp = view.findViewById(R.id.iv_volume_up_homepage);
 
-
+        iv_setting.setOnClickListener(this);
         iv_disconnect.setOnClickListener(this);
         tv_selectDevice.setOnClickListener(this);
         ll_keyboard.setOnClickListener(this);
@@ -107,6 +101,10 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.iv_setting_homepage:
+                Intent intent_setting = new Intent(getContext(), SettingActivity.class);
+                startActivity(intent_setting);
+                break;
             case R.id.iv_disconnect_homepage:
                 httpPost("keypress/PowerOff");
                 break;

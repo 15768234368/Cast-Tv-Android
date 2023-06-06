@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EnableClosedCaptioningActivity">
+
+    <RelativeLayout
+        android:id="@+id/rl_topTitle"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+
+        <ImageView
+            android:id="@+id/iv_back_setting"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:src="@mipmap/back_device_management" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="26dp"
+            android:layout_centerInParent="true"
+            android:text="开启隐藏字幕"
+            android:textColor="#FF202020"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_video_closed_captioning_setting"
+        android:layout_width="328dp"
+        android:layout_height="176dp"
+        android:layout_below="@id/rl_topTitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:src="@mipmap/video_closed_captioning" />
+
+    <TextView
+        android:id="@+id/tv_title1"
+        android:layout_width="207dp"
+        android:layout_height="20dp"
+        android:layout_below="@id/iv_video_closed_captioning_setting"
+        android:layout_alignStart="@id/iv_video_closed_captioning_setting"
+        android:layout_marginTop="32dp"
+        android:text="1.  打开您的Roku设备进入设置；"
+        android:textColor="#FF202020"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tv_title2"
+        android:layout_width="169dp"
+        android:layout_height="20dp"
+        android:layout_below="@id/tv_title1"
+        android:layout_alignStart="@id/tv_title1"
+        android:layout_marginTop="8dp"
+        android:text="2. 找到“Accessibility”；"
+        android:textColor="#FF202020"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tv_title3"
+        android:layout_width="328dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/tv_title2"
+        android:layout_alignStart="@id/tv_title2"
+        android:layout_marginTop="8dp"
+        android:text="3. 选择“Captions mode”后并勾选“On always”开启设备隐藏字幕"
+        android:textColor="#FF202020"
+        android:textSize="14sp" />
+</RelativeLayout>

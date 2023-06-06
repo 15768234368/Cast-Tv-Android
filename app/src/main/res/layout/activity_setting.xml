@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingActivity">
+
+    <RelativeLayout
+        android:id="@+id/rl_topTitle"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+
+        <ImageView
+            android:id="@+id/iv_back_setting"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:src="@mipmap/back_device_management" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="26dp"
+            android:layout_centerInParent="true"
+            android:text="设置页"
+            android:textColor="#FF202020"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_auxiliaryFunction_title_setting"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_below="@id/rl_topTitle"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="24dp"
+        android:text="辅助功能"
+        android:textColor="#FF999999"
+        android:textSize="14sp" />
+
+    <RelativeLayout
+        android:id="@+id/rl_buttonVibration_setting"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_below="@id/tv_auxiliaryFunction_title_setting"
+        android:layout_marginTop="4dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:text="按钮震动"
+            android:textColor="#FF202020"
+            android:textSize="14sp" />
+
+        <Switch
+            android:id="@+id/sw_buttonVibration_setting"
+            android:layout_width="42dp"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="20dp"
+            android:track="@drawable/switch_track_color"
+            android:thumb="@drawable/switch_thumb_color"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_enableClosedCaptioning_setting"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_below="@id/rl_buttonVibration_setting">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:text="开启隐藏字幕"
+            android:textColor="#FF202020"
+            android:textSize="14sp" />
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@mipmap/next_setting"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            />
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/tv_aboutUs_setting"
+        android:layout_width="56dp"
+        android:layout_height="20dp"
+        android:text="关于我们"
+        android:textColor="#FF999999"
+        android:textSize="14sp"
+        android:layout_below="@id/rl_enableClosedCaptioning_setting"
+        android:layout_alignStart="@id/tv_auxiliaryFunction_title_setting"
+        android:layout_marginTop="24dp"
+        />
+    <RelativeLayout
+        android:id="@+id/rl_feedback_setting"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_below="@id/tv_aboutUs_setting">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:text="意见反馈"
+            android:textColor="#FF202020"
+            android:textSize="14sp" />
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@mipmap/next_setting"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rl_sharing_setting"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_below="@id/rl_feedback_setting">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:text="分享给好友"
+            android:textColor="#FF202020"
+            android:textSize="14sp" />
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@mipmap/next_setting"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rl_userComment_setting"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_below="@id/rl_sharing_setting">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:text="给个评价"
+            android:textColor="#FF202020"
+            android:textSize="14sp" />
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@mipmap/next_setting"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rl_privacyPolicy_setting"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_below="@id/rl_userComment_setting">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:text="隐私政策"
+            android:textColor="#FF202020"
+            android:textSize="14sp" />
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@mipmap/next_setting"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rl_userPolicy_setting"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_below="@id/rl_privacyPolicy_setting">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:text="用户协议"
+            android:textColor="#FF202020"
+            android:textSize="14sp" />
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@mipmap/next_setting"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            />
+    </RelativeLayout>
+</RelativeLayout>

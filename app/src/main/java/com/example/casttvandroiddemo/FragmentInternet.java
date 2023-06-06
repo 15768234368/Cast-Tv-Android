@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
@@ -21,7 +22,7 @@ public class FragmentInternet extends Fragment {
     private SearchView searchView;
     private FragmentCommonUrl fragmentCommonUrl;
     private FragmentManager manager;
-
+    private ImageView iv_setting;
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -53,6 +54,14 @@ public class FragmentInternet extends Fragment {
     }
 
     private void initView() {
+        iv_setting = (ImageView) view.findViewById(R.id.iv_setting_homepage);
+        iv_setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), SettingActivity.class);
+                startActivity(intent);
+            }
+        });
         manager = getFragmentManager();
         searchView = view.findViewById(R.id.searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
