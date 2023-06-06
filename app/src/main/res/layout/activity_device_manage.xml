@@ -12,14 +12,28 @@
         android:layout_height="56dp">
 
         <ImageView
+            android:id="@+id/iv_back_deviceManage"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:src="@mipmap/back_device_management" />
+        <TextView
+            android:id="@+id/tv_allSelect_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="21dp"
+            android:text="全选"
+            android:textColor="#FF202020"
+            android:textSize="15sp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:visibility="invisible"
+            />
 
         <TextView
+            android:id="@+id/tv_topTitle"
             android:layout_width="wrap_content"
             android:layout_height="26dp"
             android:layout_centerInParent="true"
@@ -52,14 +66,14 @@
         android:textSize="20sp" />
 
     <ImageView
+        android:id="@+id/iv_refresh_deviceManage"
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:src="@mipmap/refresh_device_manage"
         android:layout_alignParentEnd="true"
         android:layout_below="@id/rl_top_tab_device_management"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:onClick="refresh"/>
+        android:layout_marginEnd="16dp" />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_historyConnectedDevice"
         android:layout_width="match_parent"
@@ -110,4 +124,17 @@
         android:layout_below="@id/tv_common_device_title2"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp" />
+    <Button
+        android:id="@+id/btn_deleteDevice"
+        android:layout_width="252dp"
+        android:layout_height="54dp"
+        android:background="@drawable/shape_device_delete_50alpha"
+        android:text="删除"
+        android:textColor="#FFFFFFFF"
+        android:textSize="14sp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp"
+        android:visibility="invisible"
+        />
 </RelativeLayout>

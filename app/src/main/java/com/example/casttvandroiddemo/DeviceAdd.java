@@ -243,7 +243,8 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
                 //选中某个设备，并存入历史连接数据库
                 showConnectDialog();
 
-                FragmentRemoteControl.RokuLocation = mRokuLocation.get(position);
+                FragmentRemoteControl.RokuLocation = mDeviceData.get(position).getUserDeviceIpAddress();
+                Log.d(TAG, "OnItemClick: " + mDeviceData.get(position).getUserDeviceIpAddress());
                 Log.d(TAG, "OnItemClick: " + mRokuLocation.get(position));
                 DeviceManageHelper helper = new DeviceManageHelper(getApplicationContext());
                 SQLiteDatabase db = helper.getWritableDatabase();
@@ -362,15 +363,15 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
             // 解析响应报文，提取设备信息
             String rokuLocation = extractRokuLocation(response);
             // 处理设备信息，可以将其显示在界面上或进行其他操作
-//            mRokuLocation.add(rokuLocation);
+            mRokuLocation.add(rokuLocation);
         }
-//        getDeviceInfo(mRokuLocation);
+        getDeviceInfo(mRokuLocation);
         //测试检测到多个项目
-        for (int i = 0; i < 5; ++i) {
-            String id = "192.168.121.00" + String.valueOf(i);
-            mDeviceData.add(new DeviceBean(id, id, id));
-            mRokuLocation.add(id);
-        }
+//        for (int i = 0; i < 5; ++i) {
+//            String id = "192.168.121.00" + String.valueOf(i);
+//            mDeviceData.add(new DeviceBean(id, id, id));
+//            mRokuLocation.add(id);
+//        }
         Message message = new Message();
         message.what = 1;
         handler.sendMessageDelayed(message, 3000);

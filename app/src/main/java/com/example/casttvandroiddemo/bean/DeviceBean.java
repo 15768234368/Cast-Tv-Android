@@ -6,6 +6,7 @@ public class DeviceBean {
     private String userDeviceIpAddress;
     //isOnline: 1-在线且已连接；2-在线；0-不在线
     private int isOnline;
+    private int isDelete;
     public DeviceBean(String userDeviceName, String userDeviceLocation, String userDeviceIpAddress) {
         this.userDeviceName = userDeviceName;
         this.userDeviceLocation = userDeviceLocation;
@@ -20,6 +21,14 @@ public class DeviceBean {
     }
 
     public DeviceBean() {
+    }
+
+    public int getIsDelete() {
+        return isDelete;
+    }
+
+    public void setIsDelete(int isDelete) {
+        this.isDelete = isDelete;
     }
 
     public int getIsOnline() {

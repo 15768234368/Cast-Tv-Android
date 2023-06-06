@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_item_common_device_bg"
     android:layout_width="158dp"
-    android:layout_height="107dp"
+    android:layout_height="117dp"
     android:layout_gravity="center"
     android:background="@drawable/shape_common_device_unselected"
     android:layout_marginBottom="12dp">

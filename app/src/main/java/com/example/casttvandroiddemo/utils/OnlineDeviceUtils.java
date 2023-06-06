@@ -92,14 +92,14 @@ public class OnlineDeviceUtils {
             // 处理设备信息，可以将其显示在界面上或进行其他操作
             mRokuLocation_onLine.add(rokuLocation);
         }
-//        getDeviceInfo(mRokuLocation_onLine);
+        getDeviceInfo(mRokuLocation_onLine);
 
         //测试检测到多个项目
-        for (int i = 0; i < 5; ++i) {
-            String id = "192.168.121.00" + String.valueOf(i);
-            mDeviceData_onLine.add(new DeviceBean(id, id, id));
-            mRokuLocation_onLine.add(id);
-        }
+//        for (int i = 0; i < 5; ++i) {
+//            String id = "192.168.121.00" + String.valueOf(i);
+//            mDeviceData_onLine.add(new DeviceBean(id, id, id));
+//            mRokuLocation_onLine.add(id);
+//        }
     }
 
     private static String extractRokuLocation(String response) {

@@ -44,7 +44,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
     private ImageView iv_menu, iv_volumeDown, iv_volumeUp, iv_volumeMute;
     private TextView tv_selectDevice;
     public static String RokuLocation = null;
-
+    public String RokuLocationUrl = getRokuLocationUrl(RokuLocation);
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -101,7 +101,9 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
         iv_volumeMute.setOnClickListener(this);
         iv_volumeUp.setOnClickListener(this);
     }
-
+    public String getRokuLocationUrl(String ipAddress){
+        return "http://" + ipAddress + ":8060/";
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -170,7 +172,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
 
     private void launchChannel() {
         OkHttpClient client = new OkHttpClient();
-        String url = RokuLocation + "query/apps";
+        String url = RokuLocationUrl + "query/apps";
         Request request = new Request.Builder()
                 .url(url)
                 .get()
@@ -202,7 +204,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
 
     private void httpPost(String method) {
         OkHttpClient client = new OkHttpClient();
-        String url = RokuLocation + method;
+        String url = RokuLocationUrl + method;
         RequestBody requestBody = RequestBody.create(MediaType.get("text/plain"), "");
         Request request = new Request.Builder()
                 .url(url)
@@ -225,6 +227,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
     @Override
     public void onResume() {
         setConnectionStatus(RokuLocation != null);
+        RokuLocationUrl = getRokuLocationUrl(RokuLocation);
         super.onResume();
     }
 
