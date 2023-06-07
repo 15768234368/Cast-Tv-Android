@@ -1,12 +1,11 @@
 package com.example.casttvandroiddemo;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -21,10 +20,22 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.SearchView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.casttvandroiddemo.bean.CastVideoBean;
+import com.example.casttvandroiddemo.helper.InternetHistoryHelper;
 import com.example.casttvandroiddemo.utils.IntentUtils;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,13 +43,14 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class WebViewActivity extends AppCompatActivity implements View.OnClickListener{
+public class WebViewActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "WebViewActivity";
     private String loadingUrl;
     private WebView webView;
     private SearchView searchView;
     private ImageView iv_back, iv_forward, iv_cast, iv_history, iv_remote;
-    private String realVideoUrl = null;
+    public static List<CastVideoBean> mVideoBean = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,9 +68,15 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
     Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message message) {
-            if(message.obj != null){
-                realVideoUrl = (String) message.obj;
-                Log.d(TAG, "handleMessage: " + realVideoUrl);
+            CastVideoBean bean = (CastVideoBean) message.obj;
+            if (message.obj != null) {
+                int i;
+                for (i = 0; i < mVideoBean.size(); ++i) {
+                    if (mVideoBean.get(i).getVideoFirstUrl().equals(bean.getVideoFirstUrl()))
+                        break;
+                }
+                if (i >= mVideoBean.size())
+                    mVideoBean.add(bean);
                 Handler delayPost = new Handler();
                 delayPost.postDelayed(new Runnable() {
                     @Override
@@ -71,7 +89,9 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
             return true;
         }
     });
+
     private void initView() {
+
         webView = (WebView) findViewById(R.id.webView);
         setWebViewSetting();
         searchView = (SearchView) findViewById(R.id.searchView);
@@ -88,11 +108,12 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         iv_history.setOnClickListener(this);
         iv_remote.setOnClickListener(this);
     }
+
     /**
      * 对私有变量webView进行初始化设置
      */
     @SuppressLint("SetJavaScriptEnabled")
-    public void setWebViewSetting(){
+    public void setWebViewSetting() {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setBuiltInZoomControls(true);
 
@@ -121,6 +142,13 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                     view.loadUrl(newUrl);
                     return false;
                 }
+                if (newUrl.equals("chrome://history")) {
+                    // 加载Google Chrome的历史记录页
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(newUrl));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    return true;
+                }
                 return true;
             }
 
@@ -133,14 +161,26 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                 updateSearchViewUrl(loadingUrl);
                 Log.d(TAG, "onReceivedTitle: " + loadingUrl);
                 updateIsForwardStatus(webView.canGoForward());
-                if(loadingUrl.startsWith("https://m.bilibili.com/video")){
+                if (loadingUrl.startsWith("https://m.bilibili.com/video")) {
                     getRealVideoUrl();
                 }
+                SaveHistoryToDB(loadingUrl, title);
             }
         });
         webView.loadUrl(loadingUrl);
     }
-    public void setSearchViewSetting(){
+
+    private void SaveHistoryToDB(String loadingUrl, String title) {
+        InternetHistoryHelper helper = new InternetHistoryHelper(this);
+        SQLiteDatabase db = helper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(InternetHistoryHelper.URL, loadingUrl);
+        values.put(InternetHistoryHelper.TITLE, title);
+        db.insert(InternetHistoryHelper.TABLE_HISTORY, null, values);
+        db.close();
+    }
+
+    public void setSearchViewSetting() {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -154,15 +194,17 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
     }
-    public void updateIsForwardStatus(boolean flag){
-        if(flag){
+
+    public void updateIsForwardStatus(boolean flag) {
+        if (flag) {
             iv_forward.setImageResource(R.mipmap.forward_lighted_browser_cast);
             iv_forward.setEnabled(true);
-        }else{
+        } else {
             iv_forward.setImageResource(R.mipmap.forward_unlighted_browser_cast);
             iv_forward.setEnabled(false);
         }
     }
+
     public void updateSearchViewUrl(String loadingUrl) {
         searchView.setQuery(loadingUrl, false);
     }
@@ -178,41 +220,59 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
 
     /**
      * 通过获得网页播放网址去获取视频资源的真正url
-     *
      */
     public void getRealVideoUrl() {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 OkHttpClient client = new OkHttpClient();
-
+                String responseBody = null;
+                String readyVideoUrl = null;
                 String url = loadingUrl;
                 Request request = new Request.Builder()
                         .url(url)
                         .addHeader("User-Agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Mobile Safari/537.36")
                         .build();
 
-                //发送HTTP请求并获取响应
+                //发送HTTP请求并获取响应,获得返回的网页数据
                 try {
                     Response response = client.newCall(request).execute();
-                    String responseBody = response.body().string();
-                    Pattern pattern = Pattern.compile("options = (\\{.*\\})");
-                    Matcher matcher = pattern.matcher(responseBody);
-                    if (matcher.find()) {
-                        String jsonOptions = matcher.group(1);
-
-                        //解析JSON数据
-                        JSONObject jsonObject = new JSONObject(jsonOptions);
-                        final String readyVideoUrl = jsonObject.optString("readyVideoUrl");
-                        Message message = new Message();
-                        message.obj = readyVideoUrl;
-                        handler.sendMessage(message);
-                        //打印解析结果
-
-                    }
-                }catch (Exception e){
+                    responseBody = response.body().string();
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
+                //获得视频的url
+                Pattern pattern_videoUrl = Pattern.compile("options = (\\{.*\\})");
+                Matcher matcher = pattern_videoUrl.matcher(responseBody);
+                if (matcher.find()) {
+                    String jsonOptions = matcher.group(1);
+                    //解析JSON数据
+                    JSONObject jsonObject = null;
+                    try {
+                        jsonObject = new JSONObject(jsonOptions);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    readyVideoUrl = jsonObject.optString("readyVideoUrl");
+                }
+
+                //获得视频的标题
+                Document doc = Jsoup.parse(responseBody);
+                Elements elements = doc.select("[itemprop=name]");
+                Element element = elements.first();
+                String videoTitle = element.attr("content");
+
+                //获取视频的图片Url
+                elements = doc.select("[itemprop=image]");
+                element = elements.first();
+                String videoImageUrl = element.attr("content");
+                Log.d(TAG, "run: " + videoTitle);
+                Log.d(TAG, "run: " + videoImageUrl);
+
+                //将视频的url，图片url，标题发送
+                Message message = new Message();
+                message.obj = new CastVideoBean(videoImageUrl, videoTitle, readyVideoUrl, url);
+                handler.sendMessage(message);
             }
         });
         thread.start();
@@ -220,9 +280,9 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.iv_back_browserCast:
-                if(webView.canGoBack())
+                if (webView.canGoBack())
                     webView.goBack();
                 else
                     finish();
@@ -231,9 +291,12 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                 webView.goForward();
                 break;
             case R.id.iv_cast_browserCast:
-                castToTv();
+                Intent intent_cast = new Intent(this, CastVideoListActivity.class);
+                startActivity(intent_cast);
                 break;
             case R.id.iv_history_browserCast:
+                Intent intent_history = new Intent(this, InternetHistoryList.class);
+                startActivity(intent_history);
                 break;
             case R.id.iv_remote_browserCast:
                 IntentUtils.goToActivity(this, MainActivity.class);
@@ -242,6 +305,10 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    private void castToTv() {
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mVideoBean.clear();
     }
 }

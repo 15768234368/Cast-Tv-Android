@@ -30,7 +30,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
     private static final String TAG = "FragmentRemoteControl";
     private View view;
     private ImageView iv_up, iv_down, iv_left, iv_right, iv_enter;
-    private ImageView iv_setting, iv_disconnect, iv_selectDevice, iv_cast, iv_isConnect;
+    private ImageView iv_setting, iv_disconnect, iv_cast, iv_isConnect;
     private ImageView iv_back, iv_home;
     private LinearLayout ll_keyboard, ll_channel;
     private ImageView iv_rewind, iv_pause, iv_forward, iv_refresh;
@@ -38,6 +38,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
     private TextView tv_selectDevice;
     public static String RokuLocation = null;
     public String RokuLocationUrl = getRokuLocationUrl(RokuLocation);
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -95,9 +96,11 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
         iv_volumeMute.setOnClickListener(this);
         iv_volumeUp.setOnClickListener(this);
     }
-    public String getRokuLocationUrl(String ipAddress){
+
+    public String getRokuLocationUrl(String ipAddress) {
         return "http://" + ipAddress + ":8060/";
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -178,7 +181,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.d(TAG, "onFailure: query:" + e.toString());
+                Log.d(TAG, "onFailure: query:" + e);
             }
 
             @Override
@@ -253,12 +256,13 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
         setControlEnabled(iv_volumeMute, clickable);
         setControlEnabled(iv_volumeUp, clickable);
     }
-    private void setConnectionStatus(boolean flag){
-        if(flag){
+
+    private void setConnectionStatus(boolean flag) {
+        if (flag) {
             iv_isConnect.setImageResource(R.mipmap.connected_homepage);
             tv_selectDevice.setText("Streaming");
             setControlsClickable(true);
-        }else{
+        } else {
             iv_isConnect.setImageResource(R.mipmap.no_connected);
             tv_selectDevice.setText("选择连接设备");
             setControlsClickable(false);

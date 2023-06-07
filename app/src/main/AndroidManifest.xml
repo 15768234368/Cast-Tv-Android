@@ -15,6 +15,12 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".InternetHistoryList"
+            android:exported="false" />
+        <activity
+            android:name=".CastVideoListActivity"
+            android:exported="false" />
+        <activity
             android:name=".EnableClosedCaptioningActivity"
             android:exported="false" />
         <activity

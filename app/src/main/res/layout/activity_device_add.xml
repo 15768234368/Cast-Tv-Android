@@ -8,7 +8,7 @@
     android:gravity="center_horizontal">
 
     <RelativeLayout
-        android:id="@+id/rv_topTab"
+        android:id="@+id/rl_topTab"
         android:layout_width="match_parent"
         android:layout_height="56dp">
 
@@ -43,7 +43,7 @@
         android:id="@+id/iv_searchImage"
         android:layout_width="307dp"
         android:layout_height="164dp"
-        android:layout_below="@id/rv_topTab"
+        android:layout_below="@id/rl_topTab"
         android:layout_marginTop="103dp"
         android:layout_centerHorizontal="true"
         android:src="@mipmap/search1"/>
@@ -97,7 +97,7 @@
         android:id="@+id/rv_addItemList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/rv_topTab"
+        android:layout_below="@id/rl_topTab"
         android:layout_marginTop="36dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
