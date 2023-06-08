@@ -4,13 +4,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.casttvandroiddemo.adapter.CastVideoListAdapter;
+import com.example.casttvandroiddemo.utils.RemoteUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -53,42 +60,71 @@ public class CastVideoListActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new CastVideoListAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(View view, int position) {
-                try {
-                    castToTv(WebViewActivity.mVideoBean.get(position).getVideoRealUrl());
-                } catch (UnsupportedEncodingException e) {
-                    throw new RuntimeException(e);
-                }
+                RemoteUtils.isExistsChannelToCast(FragmentRemoteControl.RokuLocationUrl, new RemoteUtils.ChannelLaunchCallback() {
+                    @Override
+                    public void onChannelLaunchResult(boolean isInstall) {
+                        if (isInstall) {
+                            try {
+                                showDialogCastSuccess();
+                                RemoteUtils.castToTv(FragmentRemoteControl.RokuLocationUrl, WebViewActivity.mVideoBean.get(position).getVideoRealUrl());
+                            } catch (UnsupportedEncodingException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            showDialogChannelInstall();
+                        }
+                    }
+                });
             }
         });
         rv_castVideoList.setLayoutManager(new LinearLayoutManager(this));
         rv_castVideoList.setAdapter(adapter);
     }
 
+    private void showDialogCastSuccess() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Handler handler = new Handler();
+                Dialog dialog = new Dialog(CastVideoListActivity.this);
+                dialog.setContentView(R.layout.dialog_cast_success);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+                dialog.show();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.cancel();
+                    }
+                },1000);
+            }
+        });
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         int cnt = 0;
-        if(WebViewActivity.mVideoBean != null)
+        if (WebViewActivity.mVideoBean != null)
             cnt = WebViewActivity.mVideoBean.size();
         tv_castVideoCnt.setText("共" + cnt + "个视频");
     }
 
-    public void castToTv(String realVideoUrl) throws UnsupportedEncodingException {
-        String getUrl = "http://192.168.50.228:8060/input/698776?url=" + URLEncoder.encode(realVideoUrl, "UTF-8") + "&t=v&name=video&format=Default";
-        Request request = new Request.Builder()
-                .url(getUrl)
-                .post(RequestBody.create(MediaType.parse("application/json"), ""))
-                .build();
-        OkHttpClient client = new OkHttpClient();
-        client.newCall(request).enqueue(new Callback() {
+    public void showDialogChannelInstall() {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_channel_tip);
+        dialog.show();
+        dialog.findViewById(R.id.tv_cancelInstall_channelDialog).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
+            public void onClick(View view) {
+                dialog.cancel();
             }
-
+        });
+        dialog.findViewById(R.id.tv_determineInstall_channelDialog).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                Log.d(TAG, "onResponse: " + "success");
+            public void onClick(View view) {
+                RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "install/698776");//未存在该频道，需要安装
+                dialog.cancel();
             }
         });
     }

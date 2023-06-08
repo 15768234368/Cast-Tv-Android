@@ -23,12 +23,14 @@ import com.example.casttvandroiddemo.helper.InternetHistoryHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class InternetHistoryList extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "InternetHistoryList";
-    private ImageView iv_back;
+    private ImageView iv_back, iv_contentEmptyBg;
     private SearchView sv_search;
-    private TextView tv_cancel;
+    private TextView tv_cancel, tv_contentEmptyTitle;
     private RecyclerView rv_historyList;
     private InternetHistoryAdapter adapter;
     private List<InternetHistoryBean> mData;
@@ -38,8 +40,8 @@ public class InternetHistoryList extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_internet_history_list);
         mData = new ArrayList<>();
-        loadData();
         initView();
+        loadData();
     }
 
     private void loadData() {
@@ -48,7 +50,7 @@ public class InternetHistoryList extends AppCompatActivity implements View.OnCli
         SQLiteDatabase db = helper.getReadableDatabase();
         String sortOrder = "timestamp DESC";
         Cursor cursor = db.query(InternetHistoryHelper.TABLE_HISTORY, null, null, null, null, null, sortOrder);
-        while(cursor.moveToNext()){
+        while (cursor.moveToNext()) {
             long itemId = cursor.getLong(cursor.getColumnIndexOrThrow("id"));
             String itemTitle = cursor.getString(cursor.getColumnIndexOrThrow("title"));
             String itemUrl = cursor.getString(cursor.getColumnIndexOrThrow("url"));
@@ -58,34 +60,55 @@ public class InternetHistoryList extends AppCompatActivity implements View.OnCli
         cursor.close();
         db.close();
         helper.close();
+        if (mData.size() <= 0) {
+            showEmptyListBg();
+        }else{
+            closeEmptyListBg();
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    private void showEmptyListBg() {
+        iv_contentEmptyBg.setVisibility(View.VISIBLE);
+        tv_contentEmptyTitle.setVisibility(View.VISIBLE);
+    }
+
+    private void closeEmptyListBg() {
+        iv_contentEmptyBg.setVisibility(View.INVISIBLE);
+        tv_contentEmptyTitle.setVisibility(View.INVISIBLE);
     }
 
     private void initView() {
+        iv_contentEmptyBg = (ImageView) findViewById(R.id.iv_content_is_empty_bg);
+        tv_contentEmptyTitle = (TextView) findViewById(R.id.tv_content_is_empty_title);
+
         iv_back = (ImageView) findViewById(R.id.iv_back_internetHistory);
         sv_search = (SearchView) findViewById(R.id.sv_search_historyList);
         sv_search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
                 tv_cancel.bringToFront();
+                searchKey(s);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
                 // 获取SearchView的布局参数
-
+                searchKey(s);
                 return false;
             }
         });
         sv_search.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             final RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) sv_search.getLayoutParams();
+
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     //光标获取焦点
                     layoutParams.width = dpToPx(280); // 初始宽度（单位为像素
                     Log.d(TAG, "onFocusChange: " + "hasFocus");
-                }else{
+                } else {
                     //光标失去焦点
                     layoutParams.width = dpToPx(320); // 更宽的宽度（单位为像素
                     Log.d(TAG, "onFocusChange: " + "noFocus");
@@ -106,6 +129,38 @@ public class InternetHistoryList extends AppCompatActivity implements View.OnCli
         rv_historyList.setLayoutManager(new LinearLayoutManager(this));
         rv_historyList.setAdapter(adapter);
     }
+
+    private void searchKey(String s) {
+        if (s.equals("")) {
+            loadData();
+        } else {
+            Pattern pattern = Pattern.compile(".*" + s + ".*");
+            mData.clear();
+            InternetHistoryHelper helper = new InternetHistoryHelper(this);
+            SQLiteDatabase db = helper.getReadableDatabase();
+            String sortOrder = "timestamp DESC";
+            Cursor cursor = db.query(InternetHistoryHelper.TABLE_HISTORY, null, null, null, null, null, sortOrder);
+            while (cursor.moveToNext()) {
+                long itemId = cursor.getLong(cursor.getColumnIndexOrThrow("id"));
+                String itemTitle = cursor.getString(cursor.getColumnIndexOrThrow("title"));
+                String itemUrl = cursor.getString(cursor.getColumnIndexOrThrow("url"));
+                String itemTimestamp = cursor.getString(cursor.getColumnIndexOrThrow("timestamp"));
+                Matcher matcher = pattern.matcher(itemTitle);
+                if (matcher.find())
+                    mData.add(new InternetHistoryBean(itemId, itemTitle, itemUrl, itemTimestamp));
+            }
+            cursor.close();
+            db.close();
+            helper.close();
+        }
+        adapter.notifyDataSetChanged();
+        if(mData.size() <= 0){
+            showEmptyListBg();
+        }else{
+            closeEmptyListBg();
+        }
+    }
+
     public int dpToPx(int dp) {
         float density = getResources().getDisplayMetrics().density;
         return (int) (dp * density);

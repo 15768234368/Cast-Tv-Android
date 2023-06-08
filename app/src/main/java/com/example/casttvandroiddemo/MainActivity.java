@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
     private LinearLayout ll_edit, ll_navigate;
     private EditText et_edit;
     private ImageView iv_edit;
-
+    private ViewTreeObserver.OnGlobalLayoutListener keyboardLayoutListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
                     }
 
                 }
-                if (newText.length() >= 0 && index > newText.length()) {
+                if (index >= newText.length()) {
                     if (FragmentRemoteControl.RokuLocation != null) {
                         String RokuLocationUrl = getRokuLocationUrl(FragmentRemoteControl.RokuLocation);
                         httpPost(RokuLocationUrl + "keypress/Backspace");
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
             }
         });
         //设置全局监听
-        ViewTreeObserver.OnGlobalLayoutListener keyboardLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+        keyboardLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 Rect r = new Rect();
@@ -140,8 +140,7 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
                 }
             }
         };
-        // 添加布局监听器
-        getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener(keyboardLayoutListener);
+
         //设置收起键盘的监听器
         iv_edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
                 } else {
                     transaction.show(fragmentInternet);
                 }
+
                 iv_browserView.setImageResource(R.mipmap.browser_homepage_selected);
                 tv_browserView.setTextColor(0xFF0BBD6A);
                 break;
@@ -229,4 +229,9 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
     public String getRokuLocationUrl(String ipAddress) {
         return "http://" + ipAddress + ":8060/";
     }
+
+    public ViewTreeObserver.OnGlobalLayoutListener getKeyboardLayoutListener() {
+        return keyboardLayoutListener;
+    }
+
 }

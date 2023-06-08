@@ -19,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.casttvandroiddemo.utils.RemoteUtils;
+
 import java.io.IOException;
 
 import okhttp3.Call;
@@ -40,7 +42,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
     private ImageView iv_menu, iv_volumeDown, iv_volumeUp, iv_volumeMute;
     private TextView tv_selectDevice;
     public static String RokuLocation = null;
-    public String RokuLocationUrl = getRokuLocationUrl(RokuLocation);
+    public static String RokuLocationUrl = RemoteUtils.getRokuLocationUrl(RokuLocation);
 
 
     @Override
@@ -52,6 +54,8 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // 添加布局监听器
+        getActivity().getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener(((MainActivity) getActivity()).getKeyboardLayoutListener());
         return view = inflater.inflate(R.layout.fragment_remote_control_tab, container, false);
     }
 
@@ -101,9 +105,6 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
         iv_volumeUp.setOnClickListener(this);
 
     }
-    public String getRokuLocationUrl(String ipAddress) {
-        return "http://" + ipAddress + ":8060/";
-    }
 
     @Override
     public void onClick(View v) {
@@ -113,7 +114,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
                 startActivity(intent_setting);
                 break;
             case R.id.iv_disconnect_homepage:
-                httpPost("keypress/PowerOff");
+                RemoteUtils.httpPost(RokuLocationUrl,"keypress/PowerOff");
                 break;
             case R.id.tv_select_device_homepage:
 //                findDevice();
@@ -128,49 +129,49 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
                 launchChannel();
                 break;
             case R.id.iv_up_homepage:
-                httpPost("keypress/Up");
+                RemoteUtils.httpPost(RokuLocationUrl,"keypress/Up");
                 break;
             case R.id.iv_down_homepage:
-                httpPost("keypress/Down");
+                RemoteUtils.httpPost(RokuLocationUrl,"keypress/Down");
                 break;
             case R.id.iv_left_homepage:
-                httpPost("keypress/Left");
+                RemoteUtils.httpPost(RokuLocationUrl,"keypress/Left");
                 break;
             case R.id.iv_right_homepage:
-                httpPost("keypress/Right");
+                RemoteUtils.httpPost(RokuLocationUrl,"keypress/Right");
                 break;
             case R.id.iv_ok_homepage:
-                httpPost("keypress/Select");
+                RemoteUtils.httpPost(RokuLocationUrl,"keypress/Select");
                 break;
             case R.id.iv_back_homepage:
-                httpPost("keypress/Back");
+                RemoteUtils.httpPost(RokuLocationUrl,"keypress/Back");
                 break;
             case R.id.iv_home_homepage:
-                httpPost("keypress/Home");
+                RemoteUtils.httpPost(RokuLocationUrl,"keypress/Home");
                 break;
             case R.id.iv_rewind_homepage:
-                httpPost("keypress/Rev");
+                RemoteUtils.httpPost(RokuLocationUrl,"keypress/Rev");
                 break;
             case R.id.iv_play_pause_homepage:
-                httpPost("keypress/Play");
+                RemoteUtils.httpPost(RokuLocationUrl,"keypress/Play");
                 break;
             case R.id.iv_forward_homepage:
-                httpPost("keypress/Fwd");
+                RemoteUtils.httpPost(RokuLocationUrl,"keypress/Fwd");
                 break;
             case R.id.iv_backspace_homepage:
-                httpPost("keypress/Backspace");
+                RemoteUtils.httpPost(RokuLocationUrl,"keypress/Backspace");
                 break;
             case R.id.iv_menu_homepage:
-                httpPost("keypress/Info");
+                RemoteUtils.httpPost(RokuLocationUrl,"keypress/Info");
                 break;
             case R.id.iv_volume_down_homepage:
-                httpPost("keypress/VolumeDown");
+                RemoteUtils.httpPost(RokuLocationUrl,"keypress/VolumeDown");
                 break;
             case R.id.iv_volume_mute_homepage:
-                httpPost("keypress/VolumeMute");
+                RemoteUtils.httpPost(RokuLocationUrl,"keypress/VolumeMute");
                 break;
             case R.id.iv_volume_up_homepage:
-                httpPost("keypress/VolumeUp");
+                RemoteUtils.httpPost(RokuLocationUrl,"keypress/VolumeUp");
                 break;
         }
     }
@@ -196,44 +197,24 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
                 boolean isInstall = false;
                 for (String line : lines) {
                     if (line.startsWith("\t<app id=\"698776\"")) {
-                        httpPost("launch/698776"); //已经存在该频道，无需安装，直接启动
+                        RemoteUtils.httpPost(RokuLocationUrl,"launch/698776"); //已经存在该频道，无需安装，直接启动
                         isInstall = true;
                     }
                 }
                 if (!isInstall)
-                    httpPost("install/698776");//未存在该频道，需要安装
+                    RemoteUtils.httpPost(RokuLocationUrl,"install/698776");//未存在该频道，需要安装
             }
         });
     }
 
 
-    private void httpPost(String method) {
-        OkHttpClient client = new OkHttpClient();
-        String url = RokuLocationUrl + method;
-        RequestBody requestBody = RequestBody.create(MediaType.get("text/plain"), "");
-        Request request = new Request.Builder()
-                .url(url)
-                .post(requestBody)
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.d(TAG, "onFailure: " + method + " " + e.toString());
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                Log.d(TAG, "onResponse: " + method + " " + response.body().string());
-            }
-        });
-    }
 
 
     @Override
     public void onResume() {
         setConnectionStatus(RokuLocation != null);
         if (RokuLocation != null)
-            RokuLocationUrl = getRokuLocationUrl(RokuLocation);
+            RokuLocationUrl = RemoteUtils.getRokuLocationUrl(RokuLocation);
         else
             RokuLocationUrl = null;
 

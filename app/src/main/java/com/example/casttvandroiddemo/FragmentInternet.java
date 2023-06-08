@@ -23,6 +23,7 @@ public class FragmentInternet extends Fragment {
     private FragmentCommonUrl fragmentCommonUrl;
     private FragmentManager manager;
     private ImageView iv_setting;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -67,8 +68,14 @@ public class FragmentInternet extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String url) {
+                String newUrl;
+                if (url.startsWith("https") || url.startsWith("http")) {
+                    newUrl = url;
+                }else{
+                    newUrl = "https://www.google.com.hk/search?q=" + url;
+                }
                 Intent intent = new Intent(getContext(), WebViewActivity.class);
-                intent.putExtra("url", url);
+                intent.putExtra("url", newUrl);
                 startActivity(intent);
                 return false;
             }
@@ -83,6 +90,8 @@ public class FragmentInternet extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // 移除布局监听器
+        getActivity().getWindow().getDecorView().getViewTreeObserver().removeOnGlobalLayoutListener(((MainActivity) getActivity()).getKeyboardLayoutListener());
         return view = inflater.inflate(R.layout.fragment_internet_tab, container, false);
     }
 

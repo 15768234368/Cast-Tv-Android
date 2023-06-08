@@ -62,4 +62,26 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/rl_search_internetHistory"
         android:layout_marginTop="10dp"/>
+    <ImageView
+        android:id="@+id/iv_content_is_empty_bg"
+        android:layout_width="307dp"
+        android:layout_height="164dp"
+        android:src="@mipmap/content_is_empty"
+        android:layout_below="@id/rl_search_internetHistory"
+        android:layout_marginTop="54dp"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        />
+    <TextView
+        android:id="@+id/tv_content_is_empty_title"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:text="无搜索内容"
+        android:textColor="#FF202020"
+        android:textSize="14sp"
+        android:layout_below="@id/iv_content_is_empty_bg"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:visibility="gone"
+        />
 </RelativeLayout>

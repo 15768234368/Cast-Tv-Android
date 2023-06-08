@@ -19,6 +19,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,11 +35,16 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -102,6 +108,7 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         iv_history = (ImageView) findViewById(R.id.iv_history_browserCast);
         iv_remote = (ImageView) findViewById(R.id.iv_remote_browserCast);
 
+
         iv_back.setOnClickListener(this);
         iv_forward.setOnClickListener(this);
         iv_cast.setOnClickListener(this);
@@ -118,10 +125,10 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         webView.getSettings().setBuiltInZoomControls(true);
 
         webView.setWebViewClient(new WebViewClient() {
+
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 //页面开始加载时的操作
-                Log.d(TAG, "onPageStarted: " + url);
             }
 
 
@@ -141,13 +148,6 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                 if (newUrl.startsWith("http:") || newUrl.startsWith("https:")) {
                     view.loadUrl(newUrl);
                     return false;
-                }
-                if (newUrl.equals("chrome://history")) {
-                    // 加载Google Chrome的历史记录页
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(newUrl));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    return true;
                 }
                 return true;
             }
@@ -184,7 +184,14 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                webView.loadUrl(s);
+                if (s.startsWith("https") || s.startsWith("http")){
+                    webView.loadUrl(s);
+                }
+                else{
+                    String newUrl = "https://www.google.com.hk/search?q=" + s;
+                    Log.d(TAG, "onQueryTextSubmit: " + newUrl);
+                    webView.loadUrl(newUrl);
+                }
                 return false;
             }
 

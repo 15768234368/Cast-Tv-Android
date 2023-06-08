@@ -1,62 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".WebViewActivity"
-    android:orientation="vertical">
+    tools:context=".WebViewActivity">
+
     <SearchView
         android:id="@+id/searchView"
+        style="@style/CustomSearchViewStyle"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="10dp"
         android:background="@drawable/search_shape"
         android:iconifiedByDefault="false"
-        android:queryHint="搜索或输入网址"
-        android:layout_marginTop="8dp"
-        style="@style/CustomSearchViewStyle"/>
+        android:queryHint="搜索或输入网址" />
 
-    <WebView
-        android:id="@+id/webView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:orientation="horizontal">
-        <ImageView
-            android:id="@+id/iv_back_browserCast"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@mipmap/back_lighted_browser_cast"/>
-        <ImageView
-            android:id="@+id/iv_forward_browserCast"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@mipmap/forward_unlighted_browser_cast"/>
-        <ImageView
-            android:id="@+id/iv_cast_browserCast"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@mipmap/cast_unlighted_browser_cast"/>
-        <ImageView
-            android:id="@+id/iv_history_browserCast"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@mipmap/history_browser_cast"/>
-        <ImageView
-            android:id="@+id/iv_remote_browserCast"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@mipmap/remote_browser_cast"/>
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:layout_below="@id/searchView"
+        android:orientation="vertical"
+        android:layout_marginTop="8dp">
 
-</LinearLayout>
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:id="@+id/ll_internetBottom"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_below="@id/webView"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_back_browserCast"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@mipmap/back_lighted_browser_cast" />
+
+            <ImageView
+                android:id="@+id/iv_forward_browserCast"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@mipmap/forward_unlighted_browser_cast" />
+
+            <ImageView
+                android:id="@+id/iv_cast_browserCast"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@mipmap/cast_unlighted_browser_cast" />
+
+            <ImageView
+                android:id="@+id/iv_history_browserCast"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@mipmap/history_browser_cast" />
+
+            <ImageView
+                android:id="@+id/iv_remote_browserCast"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@mipmap/remote_browser_cast" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
