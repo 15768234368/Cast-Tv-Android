@@ -287,18 +287,21 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
         adapter.notifyDataSetChanged();
     }
     private void deleteDevice() {
+        DeviceManageHelper helper = new DeviceManageHelper(this);
+        SQLiteDatabase db = helper.getWritableDatabase();
         for(int i = 0; i < mData.size(); ++i){
             if(mData.get(i).getIsDelete() == 2){
-                DeviceManageHelper helper = new DeviceManageHelper(this);
-                SQLiteDatabase db = helper.getWritableDatabase();
                 db.delete(DeviceManageHelper.TABLE_HISTORY, DeviceManageHelper.USER_DEVICE_IPADDRESS + "=?", new String[]{mData.get(i).getUserDeviceIpAddress()});
-                db.close();
+                if(mData.get(i).getUserDeviceIpAddress().equals(FragmentRemoteControl.RokuLocation))
+                    FragmentRemoteControl.RokuLocation = null;
             }
         }
+        db.close();
         mData.clear();
         loadData();
         adapter.notifyDataSetChanged();
         cancelDelete();
+
     }
     public void showRefreshDialog() {
         dialog = new Dialog(this);

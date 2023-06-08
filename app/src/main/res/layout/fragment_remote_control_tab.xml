@@ -58,30 +58,30 @@
                     android:id="@+id/iv_deviceIcon_homepage"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
+                    android:layout_centerVertical="true"
                     android:layout_marginStart="16dp"
-                    android:src="@mipmap/device_icon"
-                    android:layout_centerVertical="true"/>
+                    android:src="@mipmap/device_icon" />
 
                 <TextView
                     android:id="@+id/tv_select_device_homepage"
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
-                    android:layout_toRightOf="@id/iv_deviceIcon_homepage"
+                    android:layout_centerVertical="true"
                     android:layout_marginStart="8dp"
+                    android:layout_toRightOf="@id/iv_deviceIcon_homepage"
                     android:text="选择连接设备"
                     android:textColor="#FF202020"
-                    android:textSize="14sp"
-                    android:layout_centerVertical="true"/>
+                    android:textSize="14sp" />
 
                 <ImageView
                     android:id="@+id/iv_isConnected"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
                     android:layout_marginRight="12dp"
                     android:layout_toRightOf="@id/tv_select_device_homepage"
-                    android:src="@mipmap/no_connected"
-                    android:layout_centerVertical="true"/>
+                    android:src="@mipmap/no_connected" />
             </RelativeLayout>
 
             <ImageView
@@ -241,7 +241,7 @@
                     android:src="@mipmap/forward_homepage" />
 
                 <ImageView
-                    android:id="@+id/iv_refresh_homepage"
+                    android:id="@+id/iv_backspace_homepage"
                     android:layout_width="73dp"
                     android:layout_height="52dp"
                     android:layout_marginStart="12dp"
@@ -286,4 +286,5 @@
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>
+
 </RelativeLayout>

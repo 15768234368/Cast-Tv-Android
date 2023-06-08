@@ -6,6 +6,7 @@ public class DeviceBean {
     private String userDeviceIpAddress;
     //isOnline: 1-在线且已连接；2-在线；0-不在线
     private int isOnline;
+//    删除的逻辑,平常的isDelete都是为0，当值为1的时候，删除框出现，当值为2的时候，选中删除框
     private int isDelete;
     public DeviceBean(String userDeviceName, String userDeviceLocation, String userDeviceIpAddress) {
         this.userDeviceName = userDeviceName;

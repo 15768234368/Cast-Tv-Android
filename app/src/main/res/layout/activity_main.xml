@@ -59,4 +59,32 @@
                 />
         </LinearLayout>
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_keyboard_edit_homepage"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:background="#FFFFFFFF"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone">
+        <EditText
+            android:id="@+id/et_keyboard_edit_homepage"
+            android:layout_width="272dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/shape_keyboard_editbg"
+            android:hint="请输入内容"
+            android:paddingStart="16dp"
+            android:textColorHint="#FF999999"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/iv_keyboard_edit_homepage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:src="@mipmap/retract_keyboard_homepage" />
+
+    </LinearLayout>
 </RelativeLayout>

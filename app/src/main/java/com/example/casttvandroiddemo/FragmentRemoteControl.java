@@ -2,12 +2,15 @@ package com.example.casttvandroiddemo;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -39,6 +42,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
     public static String RokuLocation = null;
     public String RokuLocationUrl = getRokuLocationUrl(RokuLocation);
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -69,7 +73,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
         iv_rewind = view.findViewById(R.id.iv_rewind_homepage);
         iv_pause = view.findViewById(R.id.iv_play_pause_homepage);
         iv_forward = view.findViewById(R.id.iv_forward_homepage);
-        iv_refresh = view.findViewById(R.id.iv_refresh_homepage);
+        iv_refresh = view.findViewById(R.id.iv_backspace_homepage);
         iv_menu = view.findViewById(R.id.iv_menu_homepage);
         iv_volumeDown = view.findViewById(R.id.iv_volume_down_homepage);
         iv_volumeMute = view.findViewById(R.id.iv_volume_mute_homepage);
@@ -95,8 +99,8 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
         iv_volumeDown.setOnClickListener(this);
         iv_volumeMute.setOnClickListener(this);
         iv_volumeUp.setOnClickListener(this);
-    }
 
+    }
     public String getRokuLocationUrl(String ipAddress) {
         return "http://" + ipAddress + ":8060/";
     }
@@ -153,8 +157,8 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
             case R.id.iv_forward_homepage:
                 httpPost("keypress/Fwd");
                 break;
-            case R.id.iv_refresh_homepage:
-                httpPost("keypress/InstantReplay");
+            case R.id.iv_backspace_homepage:
+                httpPost("keypress/Backspace");
                 break;
             case R.id.iv_menu_homepage:
                 httpPost("keypress/Info");
@@ -228,7 +232,11 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
     @Override
     public void onResume() {
         setConnectionStatus(RokuLocation != null);
-        RokuLocationUrl = getRokuLocationUrl(RokuLocation);
+        if (RokuLocation != null)
+            RokuLocationUrl = getRokuLocationUrl(RokuLocation);
+        else
+            RokuLocationUrl = null;
+
         super.onResume();
     }
 

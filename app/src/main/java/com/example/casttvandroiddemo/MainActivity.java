@@ -2,30 +2,30 @@ package com.example.casttvandroiddemo;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.app.Activity;
-import android.app.Application;
-import android.app.ProgressDialog;
-import android.app.VoiceInteractor;
 import android.content.Context;
+import android.content.IntentFilter;
+import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.DisplayMetrics;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Spanned;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.casttvandroiddemo.utils.StringUtils;
+import com.example.casttvandroiddemo.utils.ViewUtils;
+
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
 
 import me.jessyan.autosize.internal.CustomAdapt;
 import okhttp3.Call;
@@ -44,13 +44,18 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
     private FragmentInternet fragmentInternet;
     private ImageView iv_remoteControl, iv_browserView;
     private TextView tv_remoteControl, tv_browserView;
+
+    //键盘弹出的变量
+    private LinearLayout ll_edit, ll_navigate;
+    private EditText et_edit;
+    private ImageView iv_edit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
         selectTab(0);
-//        initView();
     }
 
     private void initView() {
@@ -72,18 +77,92 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
 
         tv_remoteControl = findViewById(R.id.tv_remote_homepage);
         tv_browserView = findViewById(R.id.tv_browser_homepage);
+
+        ll_navigate = (LinearLayout) findViewById(R.id.ll_bottom);
+        ll_edit = (LinearLayout) findViewById(R.id.ll_keyboard_edit_homepage);
+        et_edit = (EditText) findViewById(R.id.et_keyboard_edit_homepage);
+        iv_edit = (ImageView) findViewById(R.id.iv_keyboard_edit_homepage);
+        //设置EditText的监听器
+        ViewUtils.setEditViewLimit(et_edit);
+        et_edit.addTextChangedListener(new TextWatcher() {
+            int index = 0;
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String newText = editable.toString();
+                if (!newText.equals("") && newText.length() > index) {
+                    if (FragmentRemoteControl.RokuLocation != null) {
+                        String RokuLocationUrl = getRokuLocationUrl(FragmentRemoteControl.RokuLocation);
+                        httpPost(RokuLocationUrl + "keypress/Lit_" + newText.charAt(newText.length() - 1));
+                    }
+
+                }
+                if (newText.length() >= 0 && index > newText.length()) {
+                    if (FragmentRemoteControl.RokuLocation != null) {
+                        String RokuLocationUrl = getRokuLocationUrl(FragmentRemoteControl.RokuLocation);
+                        httpPost(RokuLocationUrl + "keypress/Backspace");
+                    }
+                }
+                index = newText.length();
+            }
+        });
+        //设置全局监听
+        ViewTreeObserver.OnGlobalLayoutListener keyboardLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                getWindow().getDecorView().getWindowVisibleDisplayFrame(r);
+                int screenHeight = getWindow().getDecorView().getRootView().getHeight();
+
+                int keyboardHeight = screenHeight - r.bottom;
+                boolean isKeyboardOpen = keyboardHeight > screenHeight * 0.15;
+
+                // 根据键盘的显示/隐藏状态进行相应的处理
+                if (isKeyboardOpen) {
+                    // 键盘显示时的处理逻辑
+                    ll_navigate.setVisibility(View.INVISIBLE);
+                    ll_edit.setVisibility(View.VISIBLE);
+                    et_edit.requestFocus();
+                } else {
+                    // 键盘隐藏时的处理逻辑
+                    ll_navigate.setVisibility(View.VISIBLE);
+                    ll_edit.setVisibility(View.INVISIBLE);
+                }
+            }
+        };
+        // 添加布局监听器
+        getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener(keyboardLayoutListener);
+        //设置收起键盘的监听器
+        iv_edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                et_edit.setText("");
+            }
+        });
     }
 
-    private void selectTab(int containerNum){
+    private void selectTab(int containerNum) {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         hideFragment(transaction);
-        switch (containerNum){
+        switch (containerNum) {
             case 0:
-                if(fragmentRemoteControl == null){
+                if (fragmentRemoteControl == null) {
                     fragmentRemoteControl = new FragmentRemoteControl();
                     transaction.add(R.id.container, fragmentRemoteControl);
-                }else{
+                } else {
                     transaction.show(fragmentRemoteControl);
                 }
                 iv_remoteControl.setImageResource(R.mipmap.remote_homepage_selected);
@@ -92,10 +171,10 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
 
 
             case 1:
-                if(fragmentInternet == null) {
+                if (fragmentInternet == null) {
                     fragmentInternet = new FragmentInternet();
                     transaction.add(R.id.container, fragmentInternet);
-                }else{
+                } else {
                     transaction.show(fragmentInternet);
                 }
                 iv_browserView.setImageResource(R.mipmap.browser_homepage_selected);
@@ -106,20 +185,15 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
     }
 
     private void hideFragment(FragmentTransaction transaction) {
-        if(fragmentRemoteControl != null)
+        if (fragmentRemoteControl != null)
             transaction.hide(fragmentRemoteControl);
-        if(fragmentInternet != null)
+        if (fragmentInternet != null)
             transaction.hide(fragmentInternet);
         iv_remoteControl.setImageResource(R.mipmap.remote_homepage_unselected);
         iv_browserView.setImageResource(R.mipmap.browser_homepage_unselected);
         tv_remoteControl.setTextColor(0XFF666666);
         tv_browserView.setTextColor(0XFF666666);
     }
-
-
-
-
-
 
 
     @Override
@@ -132,4 +206,27 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
         return 0;
     }
 
+    private void httpPost(String url) {
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = RequestBody.create(MediaType.get("text/plain"), "");
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d(TAG, "onFailure: " + url + " " + e.toString());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                Log.d(TAG, "onResponse: " + url + " " + response.body().string());
+            }
+        });
+    }
+
+    public String getRokuLocationUrl(String ipAddress) {
+        return "http://" + ipAddress + ":8060/";
+    }
 }
