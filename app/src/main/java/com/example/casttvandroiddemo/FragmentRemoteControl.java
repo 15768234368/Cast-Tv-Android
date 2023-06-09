@@ -217,7 +217,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
             RokuLocationUrl = RemoteUtils.getRokuLocationUrl(RokuLocation);
         else
             RokuLocationUrl = null;
-
+        Log.d(TAG, "onResume: " + RokuLocationUrl);
         super.onResume();
     }
 
