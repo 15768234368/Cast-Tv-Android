@@ -30,9 +30,10 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 public class CastVideoListAdapter extends RecyclerView.Adapter<CastVideoListAdapter.MyHolder> {
-    public interface OnItemClickListener{
+    public interface OnItemClickListener {
         void OnItemClick(View view, int position);
     }
+
     private OnItemClickListener onItemClickListener;
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -42,6 +43,7 @@ public class CastVideoListAdapter extends RecyclerView.Adapter<CastVideoListAdap
     private List<CastVideoBean> mData = WebViewActivity.mVideoBean;
     private Context mContext;
     private Activity mActivity;
+
     public CastVideoListAdapter(List<CastVideoBean> mData, Context mContext, Activity mActivity) {
         this.mData = mData;
         this.mContext = mContext;
@@ -75,6 +77,7 @@ public class CastVideoListAdapter extends RecyclerView.Adapter<CastVideoListAdap
     class MyHolder extends RecyclerView.ViewHolder {
         private ImageView iv_videoImage, iv_castToTv;
         private TextView tv_videoTitle;
+
         public MyHolder(@NonNull View itemView) {
             super(itemView);
             iv_videoImage = (ImageView) itemView.findViewById(R.id.iv_castItem_videoImage);
@@ -82,6 +85,7 @@ public class CastVideoListAdapter extends RecyclerView.Adapter<CastVideoListAdap
             tv_videoTitle = (TextView) itemView.findViewById(R.id.tv_castItem_videoTitle);
         }
     }
+
     public void getBitmapFromUrl(MyHolder holder, String videoPicUrl) {
         // 创建OkHttpClient实例
         OkHttpClient client = new OkHttpClient();

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -30,9 +29,9 @@
                 />
             <TextView
                 android:id="@+id/tv_remote_homepage"
-                android:layout_width="30dp"
+                android:layout_width="wrap_content"
                 android:layout_height="14dp"
-                android:text="遥控器"
+                android:text="@string/Remote"
                 android:textColor="#FF0BBD6A"
                 android:textSize="10sp"
                 />
@@ -51,9 +50,9 @@
                 />
             <TextView
                 android:id="@+id/tv_browser_homepage"
-                android:layout_width="30dp"
+                android:layout_width="wrap_content"
                 android:layout_height="14dp"
-                android:text="浏览器"
+                android:text="@string/Browser"
                 android:textColor="#FF666666"
                 android:textSize="10sp"
                 />
@@ -74,8 +73,9 @@
             android:layout_height="40dp"
             android:layout_marginStart="16dp"
             android:background="@drawable/shape_keyboard_editbg"
-            android:hint="请输入内容"
+            android:hint="@string/Please_enter_content"
             android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             android:textColorHint="#FF999999"
             android:textSize="14sp" />
 

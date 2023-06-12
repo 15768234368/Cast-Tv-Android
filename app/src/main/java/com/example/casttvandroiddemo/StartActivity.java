@@ -1,17 +1,14 @@
 package com.example.casttvandroiddemo;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.casttvandroiddemo.utils.IntentUtils;
 import com.example.casttvandroiddemo.utils.OnlineDeviceUtils;
@@ -45,6 +42,8 @@ public class StartActivity extends AppCompatActivity {
 
     private void setBackEvent() {
         OnlineDeviceUtils.findDevice();
+        SharedPreferences sp = getSharedPreferences("setting", Context.MODE_PRIVATE);
+        SettingActivity.isVibrator = sp.getBoolean("isVibrator", false);
     }
 
     private void initView() {

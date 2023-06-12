@@ -166,6 +166,8 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
                 }
                 iv_remoteControl.setImageResource(R.mipmap.remote_homepage_selected);
                 tv_remoteControl.setTextColor(0xFF0BBD6A);
+                getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener(keyboardLayoutListener);
+
                 break;
 
 
@@ -179,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
 
                 iv_browserView.setImageResource(R.mipmap.browser_homepage_selected);
                 tv_browserView.setTextColor(0xFF0BBD6A);
+                getWindow().getDecorView().getViewTreeObserver().removeOnGlobalLayoutListener(keyboardLayoutListener);
                 break;
         }
         transaction.commit();

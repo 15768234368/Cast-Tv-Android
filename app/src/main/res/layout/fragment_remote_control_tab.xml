@@ -26,11 +26,11 @@
                     android:src="@mipmap/setting_homepage" />
 
                 <TextView
-                    android:layout_width="54dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="26dp"
                     android:layout_gravity="center"
                     android:layout_marginStart="105dp"
-                    android:text="遥控器"
+                    android:text="@string/Remote"
                     android:textColor="#FF202020"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -47,9 +47,10 @@
 
             <RelativeLayout
                 android:id="@+id/ll_select_device"
-                android:layout_width="198dp"
+                android:layout_width="wrap_content"
                 android:layout_height="52dp"
                 android:layout_alignTop="@id/iv_disconnect_homepage"
+                android:layout_alignEnd="@id/ll_channel_homepage"
                 android:layout_marginStart="13dp"
                 android:layout_toEndOf="@id/iv_disconnect_homepage"
                 android:background="@drawable/shape_select_device">
@@ -59,7 +60,7 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="20dp"
                     android:src="@mipmap/device_icon" />
 
                 <TextView
@@ -68,30 +69,24 @@
                     android:layout_height="20dp"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="8dp"
-                    android:layout_toRightOf="@id/iv_deviceIcon_homepage"
-                    android:text="选择连接设备"
+                    android:layout_toEndOf="@id/iv_deviceIcon_homepage"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:text="@string/Select_device"
                     android:textColor="#FF202020"
+                    android:layout_toStartOf="@id/iv_isConnected"
                     android:textSize="14sp" />
 
                 <ImageView
                     android:id="@+id/iv_isConnected"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="12dp"
-                    android:layout_toRightOf="@id/tv_select_device_homepage"
+                    android:layout_marginStart="16dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="16dp"
                     android:src="@mipmap/no_connected" />
             </RelativeLayout>
-
-            <ImageView
-                android:id="@+id/iv_cast_homepage"
-                android:layout_width="52dp"
-                android:layout_height="52dp"
-                android:layout_alignTop="@id/ll_select_device"
-                android:layout_marginStart="13dp"
-                android:layout_toEndOf="@id/ll_select_device"
-                android:src="@mipmap/cast_homepage" />
 
             <LinearLayout
                 android:id="@+id/ll_keyboard_homepage"
@@ -112,7 +107,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:layout_marginStart="12dp"
-                    android:text="键盘"
+                    android:text="@string/Keyboard"
                     android:textColor="#FF202020"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -124,7 +119,7 @@
                 android:layout_below="@id/iv_disconnect_homepage"
                 android:layout_alignTop="@id/ll_keyboard_homepage"
                 android:layout_marginStart="14dp"
-                android:layout_toRightOf="@id/ll_keyboard_homepage"
+                android:layout_toEndOf="@id/ll_keyboard_homepage"
                 android:background="@drawable/shape_keyboard"
                 android:gravity="center">
 
@@ -137,7 +132,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:layout_marginStart="12dp"
-                    android:text="频道"
+                    android:text="@string/Channels"
                     android:textColor="#FF202020"
                     android:textSize="14sp" />
             </LinearLayout>

@@ -6,8 +6,8 @@
     android:layout_gravity="center">
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="24dp"
-        android:text="您确定要移除设备吗？"
+        android:layout_height="wrap_content"
+        android:text="@string/are_you_sure_you_want_to_remove_device"
         android:textColor="#FF34363B"
         android:textSize="16sp"
         android:layout_marginStart="16dp"
@@ -16,8 +16,8 @@
     <TextView
         android:id="@+id/tv_cancelDelete_dialog"
         android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:text="取消操作"
+        android:layout_height="wrap_content"
+        android:text="@string/Cancel"
         android:textColor="#FF959BA6"
         android:textSize="14sp"
         android:layout_alignParentBottom="true"
@@ -28,7 +28,7 @@
         android:id="@+id/tv_confirmDelete_dialog"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
-        android:text="确认移除"
+        android:text="@string/remove"
         android:textColor="#FFFF3535"
         android:textSize="14sp"
         android:layout_alignParentBottom="true"

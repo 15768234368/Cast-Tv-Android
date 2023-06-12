@@ -107,7 +107,8 @@ public class CastVideoListActivity extends AppCompatActivity {
         int cnt = 0;
         if (WebViewActivity.mVideoBean != null)
             cnt = WebViewActivity.mVideoBean.size();
-        tv_castVideoCnt.setText("共" + cnt + "个视频");
+        String videoCount = getResources().getString(R.string.x_videos_in_total, cnt);
+        tv_castVideoCnt.setText(videoCount);
     }
 
     public void showDialogChannelInstall() {

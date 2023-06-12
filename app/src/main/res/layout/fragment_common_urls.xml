@@ -5,11 +5,11 @@
 
     <TextView
         android:id="@+id/tv_commonUrls"
-        android:layout_width="64dp"
+        android:layout_width="wrap_content"
         android:layout_height="24dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
-        android:text="常用网址"
+        android:text="@string/recommended_url"
         android:textColor="#FF202020"
         android:textSize="16sp" />
 
@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="16dp"
             android:layout_marginTop="6dp"
-            android:text="Youtube"
+            android:text="@string/youtube"
             android:textColor="#FF202020"
             android:textSize="14sp" />
     </LinearLayout>
@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/ll_keyTo_youtube"
         android:layout_marginStart="20dp"
-        android:layout_toRightOf="@id/ll_keyTo_youtube"
+        android:layout_toEndOf="@id/ll_keyTo_youtube"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -60,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="16dp"
             android:layout_marginTop="6dp"
-            android:text="BiliBili"
+            android:text="@string/bilibili"
             android:textColor="#FF202020"
             android:textSize="14sp" />
     </LinearLayout>
@@ -71,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/ll_keyTo_youtube"
         android:layout_marginStart="20dp"
-        android:layout_toRightOf="@id/ll_keyTo_BiliBili"
+        android:layout_toEndOf="@id/ll_keyTo_BiliBili"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -86,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="16dp"
             android:layout_marginTop="6dp"
-            android:text="ESPN"
+            android:text="@string/espn"
             android:textColor="#FF202020"
             android:textSize="14sp" />
     </LinearLayout>

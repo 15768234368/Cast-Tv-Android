@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Cast TV Android Demo</string>
     <string name="agreement_content">Cast TV Android Demo is an application that provides functions of remote control and screen projection. In order to provide the above functions, this application needs to be connected to the Internet, turn on/off WLAN, and turn on/off the local network permission to perform screen projection operations. Umeng SDK is used to collect device Mac address, unique device identification code (IMEI/Android ID/OPENUDID/GUID), Android advertising identifier, SIM card IMSI information AdMob SDK is used to obtain unique identifier, device type and settings, operating system , mobile network information (including carrier name and phone number), and app version number, IP address, crash reports</string>
@@ -15,11 +16,11 @@
     <string name="video_name">video_name</string>
     <string name="office">Office</string>
     <string name="www_baidu_com">www.baidu.com</string>
-    <string name="baidu">百度</string>
+    <string name="baidu">baidu</string>
     <string name="Video_List">Video List</string>
     <string name="x_videos_in_total">%1$d videos in total</string>
     <string name="Automatically_search_the_device...">Automatically search the device...</string>
-    <string name="make_sure_the_android_device_is_on_the_same_wi_fi_as_roku">Make sure the Android device is on the same Wi-Fi as Roku</string>
+    <string name="make_sure_the_android_device_is_on_the_same_wi_fi_as_roku">Make sure the iOS device is on the same Wi-Fi as Roku</string>
     <string name="add_connected_device">Add connected device</string>
     <string name="Redetect">Redetect</string>
     <string name="Settings">Settings</string>

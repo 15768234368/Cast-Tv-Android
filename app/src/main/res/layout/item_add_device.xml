@@ -22,7 +22,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:layout_toEndOf="@id/iv_item_deviceIcon"
-        android:text="Streaming Stick 4K"
+        android:text="@string/streaming_stick_4k"
         android:textColor="#FF202020"
         android:textSize="14sp" />
 
@@ -30,7 +30,7 @@
         android:id="@+id/tv_item_user_deviceLocation"
         android:layout_width="wrap_content"
         android:layout_height="13dp"
-        android:text="living room"
+        android:text="@string/living_room"
         android:textColor="#FF999999"
         android:textSize="11sp"
         android:layout_below="@id/tv_item_user_deviceName"
@@ -40,7 +40,7 @@
         android:id="@+id/tv_item_user_deviceIpAddress"
         android:layout_width="wrap_content"
         android:layout_height="17dp"
-        android:text="ip地址:192.168.1.1"
+        android:text="@string/ip"
         android:textColor="#FF999999"
         android:textSize="12sp"
         android:layout_below="@id/tv_item_user_deviceLocation"

@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="18dp"
-        android:text="Streaming Stick 4K"
+        android:text="@string/streaming_stick_4k"
         android:textColor="#4D202020"
         android:textSize="14sp" />
 
@@ -24,7 +24,7 @@
         android:layout_below="@id/tv_user_device_name"
         android:layout_alignStart="@id/tv_user_device_name"
         android:layout_marginTop="6dp"
-        android:text="Office"
+        android:text="@string/office"
         android:textColor="#4D999999"
         android:textSize="11sp" />
 

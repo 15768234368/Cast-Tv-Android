@@ -15,7 +15,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="20dp"
-        android:text="投屏成功"
+        android:text="@string/casting_successful"
         android:textColor="#FFFFFFFF"
         android:textSize="14sp"
         android:layout_below="@id/iv_dialog_successIcon"

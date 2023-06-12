@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="26dp"
             android:layout_centerInParent="true"
-            android:text="设置页"
+            android:text="@string/setting"
             android:textColor="#FF202020"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -36,7 +36,7 @@
         android:layout_below="@id/rl_topTitle"
         android:layout_marginStart="20dp"
         android:layout_marginTop="24dp"
-        android:text="辅助功能"
+        android:text="@string/accessibility"
         android:textColor="#FF999999"
         android:textSize="14sp" />
 
@@ -52,7 +52,7 @@
             android:layout_height="20dp"
             android:layout_centerVertical="true"
             android:layout_marginStart="20dp"
-            android:text="按钮震动"
+            android:text="@string/button_vibration"
             android:textColor="#FF202020"
             android:textSize="14sp" />
 
@@ -79,7 +79,7 @@
             android:layout_height="20dp"
             android:layout_centerVertical="true"
             android:layout_marginStart="20dp"
-            android:text="开启隐藏字幕"
+            android:text="@string/enable_closed_captions"
             android:textColor="#FF202020"
             android:textSize="14sp" />
         <ImageView
@@ -93,9 +93,9 @@
     </RelativeLayout>
     <TextView
         android:id="@+id/tv_aboutUs_setting"
-        android:layout_width="56dp"
+        android:layout_width="wrap_content"
         android:layout_height="20dp"
-        android:text="关于我们"
+        android:text="@string/about_us"
         android:textColor="#FF999999"
         android:textSize="14sp"
         android:layout_below="@id/rl_enableClosedCaptioning_setting"
@@ -113,7 +113,7 @@
             android:layout_height="20dp"
             android:layout_centerVertical="true"
             android:layout_marginStart="20dp"
-            android:text="意见反馈"
+            android:text="@string/feedback"
             android:textColor="#FF202020"
             android:textSize="14sp" />
         <ImageView
@@ -136,7 +136,7 @@
             android:layout_height="20dp"
             android:layout_centerVertical="true"
             android:layout_marginStart="20dp"
-            android:text="分享给好友"
+            android:text="@string/share_with_friends"
             android:textColor="#FF202020"
             android:textSize="14sp" />
         <ImageView
@@ -159,7 +159,7 @@
             android:layout_height="20dp"
             android:layout_centerVertical="true"
             android:layout_marginStart="20dp"
-            android:text="给个评价"
+            android:text="@string/give_a_comment"
             android:textColor="#FF202020"
             android:textSize="14sp" />
         <ImageView
@@ -182,7 +182,7 @@
             android:layout_height="20dp"
             android:layout_centerVertical="true"
             android:layout_marginStart="20dp"
-            android:text="隐私政策"
+            android:text="@string/privacy_policy"
             android:textColor="#FF202020"
             android:textSize="14sp" />
         <ImageView
@@ -205,7 +205,7 @@
             android:layout_height="20dp"
             android:layout_centerVertical="true"
             android:layout_marginStart="20dp"
-            android:text="用户协议"
+            android:text="@string/user_agreements"
             android:textColor="#FF202020"
             android:textSize="14sp" />
         <ImageView

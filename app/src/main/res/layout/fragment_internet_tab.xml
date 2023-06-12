@@ -6,10 +6,11 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <LinearLayout
             android:id="@+id/ll_settingTop"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="20dp">
 
             <ImageView
@@ -21,11 +22,11 @@
                 android:src="@mipmap/setting_homepage" />
 
             <TextView
-                android:layout_width="54dp"
+                android:layout_width="wrap_content"
                 android:layout_height="26dp"
                 android:layout_gravity="center"
                 android:layout_marginStart="105dp"
-                android:text="浏览器"
+                android:text="@string/Browser"
                 android:textColor="#FF202020"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -41,7 +42,7 @@
             android:layout_marginTop="24dp"
             android:background="@drawable/search_shape"
             android:iconifiedByDefault="false"
-            android:queryHint="搜索或输入网址"/>
+            android:queryHint="@string/Search_or_enter_a_URL" />
     </RelativeLayout>
 
     <FrameLayout

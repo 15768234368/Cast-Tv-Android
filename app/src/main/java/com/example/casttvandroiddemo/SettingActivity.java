@@ -1,6 +1,8 @@
 package com.example.casttvandroiddemo;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -16,6 +18,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     private Switch aSwitch;
     private RelativeLayout rl_enableClosedCaptioning, rl_feedback, rl_sharing, rl_userComment, rl_privacyPolicy, rl_userPolicy;
     private ImageView iv_back;
+    public static boolean isVibrator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,19 +46,20 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         rl_privacyPolicy.setOnClickListener(this);
         rl_userPolicy.setOnClickListener(this);
         iv_back.setOnClickListener(this);
+        aSwitch.setChecked(isVibrator);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.sw_buttonVibration_setting:
-                getApplicationContext();
-//                Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-//                vibrator.vibrate(200);
+                isVibrator = aSwitch.isChecked();
+                SharedPreferences sp = getSharedPreferences("setting", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putBoolean("isVibrator", isVibrator);
+                editor.apply();
                 break;
             case R.id.rl_enableClosedCaptioning_setting:
-                Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-                vibrator.vibrate(1000);
                 Intent intent_ecc = new Intent(this, EnableClosedCaptioningActivity.class);
                 startActivity(intent_ecc);
                 break;
@@ -65,11 +69,11 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.rl_feedback_setting:
                 Intent intent_feedback = new Intent(Intent.ACTION_SEND);
                 intent_feedback.setType("text/plain");
-                startActivity(Intent.createChooser(intent_feedback, "选择邮件客户端"));
+                startActivity(Intent.createChooser(intent_feedback, getString(R.string.Select_Mail_Client)));
                 break;
             case R.id.rl_sharing_setting:
                 //输入App的安装网址
-                String sharingUrl = "123";
+                String sharingUrl = "";
                 Intent intent_sharing = new Intent();
                 intent_sharing.setAction(Intent.ACTION_SEND);
                 intent_sharing.putExtra(Intent.EXTRA_TEXT, sharingUrl);
@@ -77,6 +81,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 startActivity(Intent.createChooser(intent_sharing, null));
                 break;
             case R.id.rl_userComment_setting:
+                //输入评论的网址
                 try {
                     String commentUrl = "";
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(commentUrl)));

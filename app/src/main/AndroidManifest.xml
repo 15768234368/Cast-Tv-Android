@@ -35,7 +35,8 @@
         <activity
             android:name=".WebViewActivity"
             android:exported="false" />
-        <activity android:name=".StartActivity">
+        <activity android:name=".StartActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,5 +1,7 @@
 package com.example.casttvandroiddemo;
 
+import static com.example.casttvandroiddemo.FragmentRemoteControl.RokuLocationUrl;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.transition.Transition;
@@ -90,10 +92,14 @@ public class FragmentInternet extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView: ");
         // 移除布局监听器
-        getActivity().getWindow().getDecorView().getViewTreeObserver().removeOnGlobalLayoutListener(((MainActivity) getActivity()).getKeyboardLayoutListener());
         return view = inflater.inflate(R.layout.fragment_internet_tab, container, false);
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: " + RokuLocationUrl);
+    }
 }

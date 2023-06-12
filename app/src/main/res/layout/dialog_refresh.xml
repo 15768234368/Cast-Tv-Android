@@ -13,9 +13,9 @@
         android:layout_marginTop="32dp"
         />
     <TextView
-        android:layout_width="98dp"
+        android:layout_width="wrap_content"
         android:layout_height="20dp"
-        android:text="刷新中，请稍后"
+        android:text="@string/refreshing_please_wait"
         android:textColor="#FFFFFFFF"
         android:textSize="14sp"
         android:layout_centerHorizontal="true"

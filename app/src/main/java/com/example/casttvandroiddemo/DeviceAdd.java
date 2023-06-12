@@ -165,8 +165,8 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
 
     private void searchDevice() {
         iv_searchImage.setImageResource(R.mipmap.search1);
-        tv_ipTitle1.setText("自动搜索设备中...");
-        tv_ipTitle2.setText("请确保iOS设备与Roku在同一Wi-Fi上");
+        tv_ipTitle1.setText(R.string.Automatically_search_the_device___);
+        tv_ipTitle2.setText(R.string.make_sure_the_android_device_is_on_the_same_wi_fi_as_roku);
         btn_research.setVisibility(View.INVISIBLE);
         btn_goToSetting.setVisibility(View.INVISIBLE);
         findDevice();
@@ -213,15 +213,15 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
 
     public void setUndetected() {
         iv_searchImage.setImageResource(R.mipmap.no_device_detected);
-        tv_ipTitle1.setText("未检测到Roku");
-        tv_ipTitle2.setText("请检查iOS设备与Roku是否在同一Wi-Fi上");
+        tv_ipTitle1.setText(R.string.No_Roku_detected);
+        tv_ipTitle2.setText(R.string.Please_check_the_Android_device_is_on_the_same_WiFi_as_Roku);
         btn_research.setVisibility(View.VISIBLE);
     }
 
     public void setNoNetWorkConnecting() {
         iv_searchImage.setImageResource(R.mipmap.no_network_device_manage);
-        tv_ipTitle1.setText("请允许网络权限并连接到Wi-Fi");
-        tv_ipTitle2.setText("否则您将无法连接到Roku设备");
+        tv_ipTitle1.setText(R.string.Please_allow_network_permissions_and_connect_to_WiFi);
+        tv_ipTitle2.setText(R.string.otherwise_you_will_not_be_able_to_connect_to_Roku_devices);
         btn_goToSetting.setVisibility(View.VISIBLE);
     }
 

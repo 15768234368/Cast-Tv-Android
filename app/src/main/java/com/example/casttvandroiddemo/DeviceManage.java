@@ -194,9 +194,9 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
         }
 
         if (delete_cnt == mData.size()) {
-            tv_allSelectDelete.setText("全不选");
+            tv_allSelectDelete.setText(R.string.Deselect);
         } else {
-            tv_allSelectDelete.setText("全选");
+            tv_allSelectDelete.setText(R.string.Select_all);
         }
     }
 
@@ -226,8 +226,8 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
         adapter.setDelete(true);
         isDeleteSelect = true;
         //UI设计
-        tv_topTitle.setText("选择设备");
-        tv_updateDevice.setText("取消");
+        tv_topTitle.setText(R.string.Select_device);
+        tv_updateDevice.setText(R.string.Cancel);
         tv_allSelectDelete.setVisibility(View.VISIBLE);
         btn_deleteDevice.setVisibility(View.VISIBLE);
         btn_deleteDevice.setBackgroundResource(R.drawable.shape_device_delete_50alpha);
@@ -247,7 +247,7 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
         delete_cnt = mData.size();
         btn_deleteDevice.setBackgroundResource(R.drawable.shape_device_delete_100alpha);
         isAllSelect = true;
-        tv_allSelectDelete.setText("全不选");
+        tv_allSelectDelete.setText(R.string.Deselect);
         for (int i = 0; i < mData.size(); ++i) {
             mData.get(i).setIsDelete(2);
         }
@@ -258,7 +258,7 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
         delete_cnt = 0;
         btn_deleteDevice.setBackgroundResource(R.drawable.shape_device_delete_50alpha);
         isAllSelect = false;
-        tv_allSelectDelete.setText("全选");
+        tv_allSelectDelete.setText(R.string.Select_all);
         for (int i = 0; i < mData.size(); ++i) {
             mData.get(i).setIsDelete(1);
         }
@@ -271,9 +271,9 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
         isDeleteSelect = false;
         isAllSelect = false;
         //UI设计
-        tv_allSelectDelete.setText("全选");
-        tv_topTitle.setText("设备管理");
-        tv_updateDevice.setText("编辑");
+        tv_allSelectDelete.setText(R.string.Select_all);
+        tv_topTitle.setText(R.string.Device_Management);
+        tv_updateDevice.setText(R.string.Edit);
         tv_allSelectDelete.setVisibility(View.INVISIBLE);
         btn_deleteDevice.setVisibility(View.INVISIBLE);
         iv_back.setVisibility(View.VISIBLE);

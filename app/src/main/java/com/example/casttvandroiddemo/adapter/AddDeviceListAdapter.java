@@ -44,7 +44,7 @@ public class AddDeviceListAdapter extends RecyclerView.Adapter<AddDeviceListAdap
         DeviceBean bean = mData.get(position);
         holder.tv_deviceName.setText(bean.getUserDeviceName());
         holder.tv_deviceLocation.setText(bean.getUserDeviceLocation());
-        holder.tv_deviceIpAddress.setText("ip地址:" + bean.getUserDeviceIpAddress());
+        holder.tv_deviceIpAddress.setText(context.getString(R.string.ip) + bean.getUserDeviceIpAddress());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

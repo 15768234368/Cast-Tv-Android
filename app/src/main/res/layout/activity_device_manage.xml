@@ -23,7 +23,7 @@
             android:id="@+id/tv_allSelect_delete"
             android:layout_width="wrap_content"
             android:layout_height="21dp"
-            android:text="全选"
+            android:text="@string/Select_all"
             android:textColor="#FF202020"
             android:textSize="15sp"
             android:layout_alignParentStart="true"
@@ -37,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="26dp"
             android:layout_centerInParent="true"
-            android:text="设备管理"
+            android:text="@string/Device_Management"
             android:textColor="#FF202020"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -49,7 +49,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="21dp"
-            android:text="编辑"
+            android:text="@string/Edit"
             android:textColor="#FF202020"
             android:textSize="15sp" />
     </RelativeLayout>
@@ -61,7 +61,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginStart="16dp"
         android:layout_marginTop="14dp"
-        android:text="常用设备"
+        android:text="@string/common_equipment"
         android:textColor="#FF666666"
         android:textSize="20sp" />
 
@@ -106,7 +106,7 @@
         android:id="@+id/tv_common_device_title2"
         android:layout_width="wrap_content"
         android:layout_height="24dp"
-        android:text="无设备，请添加设备"
+        android:text="@string/no_device_please_add_device"
         android:textColor="#FF202020"
         android:textSize="16sp"
         android:layout_below="@+id/iv_commonDevice_image"
@@ -118,7 +118,7 @@
         android:layout_width="120dp"
         android:layout_height="50dp"
         android:background="@drawable/shape_btn_research"
-        android:text="去设置"
+        android:text="@string/Settings"
         android:textColor="#FFFFFFFF"
         android:textSize="14sp"
         android:layout_below="@id/tv_common_device_title2"
@@ -129,7 +129,7 @@
         android:layout_width="252dp"
         android:layout_height="54dp"
         android:background="@drawable/shape_device_delete_50alpha"
-        android:text="删除"
+        android:text="@string/delete"
         android:textColor="#FFFFFFFF"
         android:textSize="14sp"
         android:layout_centerHorizontal="true"

@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="26dp"
             android:layout_centerInParent="true"
-            android:text="开启隐藏字幕"
+            android:text="@string/enable_closed_captions"
             android:textColor="#FF202020"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -40,34 +40,37 @@
 
     <TextView
         android:id="@+id/tv_title1"
-        android:layout_width="207dp"
+        android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_below="@id/iv_video_closed_captioning_setting"
         android:layout_alignStart="@id/iv_video_closed_captioning_setting"
+        android:layout_alignEnd="@id/iv_video_closed_captioning_setting"
         android:layout_marginTop="32dp"
-        android:text="1.  打开您的Roku设备进入设置；"
+        android:text="@string/_1_turn_on_your_roku_device_and_go_to_settings"
         android:textColor="#FF202020"
         android:textSize="14sp" />
 
     <TextView
         android:id="@+id/tv_title2"
-        android:layout_width="169dp"
-        android:layout_height="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@id/tv_title1"
         android:layout_alignStart="@id/tv_title1"
+        android:layout_alignEnd="@id/tv_title1"
         android:layout_marginTop="8dp"
-        android:text="2. 找到“Accessibility”；"
+        android:text="@string/_2_find_accessibility"
         android:textColor="#FF202020"
         android:textSize="14sp" />
 
     <TextView
         android:id="@+id/tv_title3"
         android:layout_width="328dp"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/tv_title2"
         android:layout_alignStart="@id/tv_title2"
+        android:layout_alignEnd="@id/tv_title2"
         android:layout_marginTop="8dp"
-        android:text="3. 选择“Captions mode”后并勾选“On always”开启设备隐藏字幕"
+        android:text='@string/_3_select_captions_mode_and_check_on_always_to_enable_device_subtitles'
         android:textColor="#FF202020"
         android:textSize="14sp" />
 </RelativeLayout>

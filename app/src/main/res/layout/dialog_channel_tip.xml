@@ -6,8 +6,8 @@
     android:background="@drawable/shape_channel_tip_dialog">
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="24dp"
-        android:text="尚未安装频道，请安装后再使用"
+        android:layout_height="wrap_content"
+        android:text="@string/the_channel_has_not_been_installed_please_install_it_before_use"
         android:textColor="#FF34363B"
         android:textSize="16sp"
         android:layout_marginStart="16dp"
@@ -15,9 +15,9 @@
         />
     <TextView
         android:id="@+id/tv_cancelInstall_channelDialog"
-        android:layout_width="58dp"
-        android:layout_height="20dp"
-        android:text="取消操作"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Cancel"
         android:textColor="#FF959BA6"
         android:textSize="14sp"
         android:layout_alignParentBottom="true"
@@ -27,9 +27,9 @@
         />
     <TextView
         android:id="@+id/tv_determineInstall_channelDialog"
-        android:layout_width="58dp"
-        android:layout_height="20dp"
-        android:text="确认安装"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/install"
         android:textColor="#FF0BBD6A"
         android:textSize="14sp"
         android:layout_alignParentBottom="true"

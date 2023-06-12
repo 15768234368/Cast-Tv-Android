@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="26dp"
             android:layout_centerInParent="true"
-            android:text="投屏视频列表"
+            android:text="@string/Video_List"
             android:textColor="#FF202020"
             android:textSize="18sp"
             android:textStyle="bold"/>
@@ -44,7 +44,7 @@
                 android:id="@+id/tv_castVideoCount"
                 android:layout_width="wrap_content"
                 android:layout_height="17dp"
-                android:text="共X个视频"
+                android:text="@string/x_videos_in_total"
                 android:textColor="#FF999999"
                 android:textSize="12sp"
                 android:layout_gravity="center"

@@ -16,7 +16,7 @@
         android:layout_marginEnd="10dp"
         android:background="@drawable/search_shape"
         android:iconifiedByDefault="false"
-        android:queryHint="搜索或输入网址" />
+        android:queryHint="@string/Search_or_enter_a_URL" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,7 +35,6 @@
             android:id="@+id/ll_internetBottom"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:layout_below="@id/webView"
             android:orientation="horizontal">
 
             <ImageView

@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="26dp"
             android:layout_centerInParent="true"
-            android:text="历史记录"
+            android:text="@string/history"
             android:textColor="#FF202020"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -44,13 +44,13 @@
             android:layout_marginStart="20dp"
             android:background="@drawable/shape_internet_history_search"
             android:iconifiedByDefault="false"
-            android:queryHint="搜索历史记录"
+            android:queryHint="Search history"
             android:textColorHint="#FF999999" />
         <TextView
             android:id="@+id/tv_cancel_historyList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="取消"
+            android:text="@string/Cancel"
             android:textColor="#000000"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
@@ -76,7 +76,7 @@
         android:id="@+id/tv_content_is_empty_title"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
-        android:text="无搜索内容"
+        android:text="@string/no_search_content"
         android:textColor="#FF202020"
         android:textSize="14sp"
         android:layout_below="@id/iv_content_is_empty_bg"
