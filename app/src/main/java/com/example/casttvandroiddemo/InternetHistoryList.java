@@ -95,7 +95,7 @@ public class InternetHistoryList extends AppCompatActivity implements View.OnCli
             @Override
             public boolean onQueryTextChange(String s) {
                 // 获取SearchView的布局参数
-                searchKey(s);
+                searchKey(transferToCapitalization(s));
                 return false;
             }
         });
@@ -130,7 +130,21 @@ public class InternetHistoryList extends AppCompatActivity implements View.OnCli
         rv_historyList.setAdapter(adapter);
     }
 
+    private String transferToCapitalization(String s) {
+        StringBuilder result = new StringBuilder();
+        for(int i = 0; i < s.length(); ++i){
+            if(s.charAt(i) >= 'A' && s.charAt(i) <= 'Z'){
+                result.append((char) (s.charAt(i) + 32));
+            } else {
+                result.append(s.charAt(i));
+            }
+        }
+        return result.toString();
+    }
+
+
     private void searchKey(String s) {
+        Log.d(TAG, "searchKey: " + s);
         if (s.equals("")) {
             loadData();
         } else {

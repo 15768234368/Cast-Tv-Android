@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Cast TV Android Demo</string>
-    <string name="agreement_content">Cast TV Android Demo is an application that provides functions of remote control and screen projection. In order to provide the above functions, this application needs to be connected to the Internet, turn on/off WLAN, and turn on/off the local network permission to perform screen projection operations. Umeng SDK is used to collect device Mac address, unique device identification code (IMEI/Android ID/OPENUDID/GUID), Android advertising identifier, SIM card IMSI information AdMob SDK is used to obtain unique identifier, device type and settings, operating system , mobile network information (including carrier name and phone number), and app version number, IP address, crash reports</string>
+    <string name="app_name">Web Caster</string>
+    <string name="agreement_content">Web Caster is an application that provides functions of remote control and screen projection. In order to provide the above functions, this application needs to be connected to the Internet, turn on/off WLAN, and turn on/off the local network permission to perform screen projection operations. Umeng SDK is used to collect device Mac address, unique device identification code (IMEI/Android ID/OPENUDID/GUID), Android advertising identifier, SIM card IMSI information AdMob SDK is used to obtain unique identifier, device type and settings, operating system , mobile network information (including carrier name and phone number), and app version number, IP address, crash reports</string>
     <string name="Remote">Remote</string>
     <string name="Browser">Browser</string>
     <string name="Please_enter_content">Please enter content</string>

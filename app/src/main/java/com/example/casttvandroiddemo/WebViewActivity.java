@@ -229,9 +229,11 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                if (s.startsWith("https") || s.startsWith("http")) {
+                if (s.startsWith("https://") || s.startsWith("http://")) {
                     webView.loadUrl(s);
-                } else {
+                } else if(s.startsWith("www")) {
+                    webView.loadUrl("https://" + s);
+                }else{
                     String newUrl = "https://www.google.com/search?q=" + s;
                     Log.d(TAG, "onQueryTextSubmit: " + newUrl);
                     webView.loadUrl(newUrl);

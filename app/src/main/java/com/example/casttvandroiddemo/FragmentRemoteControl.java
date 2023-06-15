@@ -62,6 +62,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
     private View view_forward_coverBlack10, view_backspace_coverBlack10, view_menu_coverBlack10, view_volume_down_coverBlack10;
     private View view_volume_mute_coverBlack10, view_volume_up_coverBlack10;
     private View view_ok_coverBlack10;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -506,13 +507,13 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
                 String[] lines = channelXml.split("\n");
                 boolean isInstall = false;
                 for (String line : lines) {
-                    if (line.startsWith("\t<app id=\"698776\"")) {
-                        RemoteUtils.httpPost(RokuLocationUrl, "launch/698776"); //已经存在该频道，无需安装，直接启动
+                    if (line.startsWith("\t<app id=\"706370\"")) {
+                        RemoteUtils.httpPost(RokuLocationUrl, "launch/706370"); //已经存在该频道，无需安装，直接启动
                         isInstall = true;
                     }
                 }
                 if (!isInstall)
-                    RemoteUtils.httpPost(RokuLocationUrl, "install/698776");//未存在该频道，需要安装
+                    RemoteUtils.httpPost(RokuLocationUrl, "install/706370");//未存在该频道，需要安装
             }
         });
     }
@@ -542,4 +543,6 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
             tv_selectDevice.setText(R.string.Select_device);
         }
     }
+
+
 }

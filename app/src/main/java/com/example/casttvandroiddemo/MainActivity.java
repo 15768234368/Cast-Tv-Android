@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
     private EditText et_edit;
     private ImageView iv_edit;
     private ViewTreeObserver.OnGlobalLayoutListener keyboardLayoutListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,6 +158,20 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
             }
         });
     }
+    private void hideKeyboard() {
+        if (getCurrentFocus() != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+        // 如果当前显示的是 FragmentRemoteControl，隐藏黑色遮罩层
+        if (fragmentRemoteControl != null && fragmentRemoteControl.isVisible()) {
+            View coverView = fragmentRemoteControl.getView().findViewById(R.id.view_coverBlack80);
+            if (coverView != null) {
+                coverView.setVisibility(View.INVISIBLE);
+            }
+        }
+    }
+
 
     private void selectTab(int containerNum) {
         FragmentManager manager = getSupportFragmentManager();
@@ -248,4 +263,6 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
         String FRAGMENTS_TAG = "android:support:fragments";
         outState.remove(FRAGMENTS_TAG);
     }
+
+
 }

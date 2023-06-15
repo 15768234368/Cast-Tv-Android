@@ -6,11 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.transition.Transition;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -71,10 +74,12 @@ public class FragmentInternet extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String url) {
                 String newUrl;
-                if (url.startsWith("https") || url.startsWith("http")) {
+                if (url.startsWith("https://") || url.startsWith("http://")) {
                     newUrl = url;
-                }else{
-                    newUrl = "https://www.google.com.hk/search?q=" + url;
+                } else if (url.startsWith("www")) {
+                    newUrl = "https://" + url;
+                } else {
+                    newUrl = "https://www.google.com/search?q=" + url;
                 }
                 Intent intent = new Intent(getContext(), WebViewActivity.class);
                 intent.putExtra("url", newUrl);
@@ -87,6 +92,10 @@ public class FragmentInternet extends Fragment {
                 return false;
             }
         });
+        int id = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+        //获取TextView
+        TextView textView = (TextView) searchView.findViewById(id);//设置字体大小为14sp
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);//14sp
     }
 
     @Nullable

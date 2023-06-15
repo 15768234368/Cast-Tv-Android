@@ -32,7 +32,7 @@ import okhttp3.Response;
 public class RemoteControlActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "RemoteControlActivity";
     private ImageView iv_up, iv_down, iv_left, iv_right, iv_enter;
-    private ImageView iv_setting, iv_disconnect, iv_isConnect;
+    private ImageView iv_close, iv_disconnect, iv_isConnect;
     private ImageView iv_back, iv_home;
     private LinearLayout ll_keyboard, ll_channel;
     private ImageView iv_rewind, iv_pause, iv_forward, iv_refresh;
@@ -44,12 +44,12 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_remote_control_tab);
+        setContentView(R.layout.activity_remote_control);
         initView();
     }
 
     private void initView() {
-        iv_setting = findViewById(R.id.iv_setting_homepage);
+        iv_close = findViewById(R.id.iv_close_homepage);
         iv_isConnect = findViewById(R.id.iv_isConnected);
         iv_disconnect = findViewById(R.id.iv_disconnect_homepage);
         tv_selectDevice = findViewById(R.id.tv_select_device_homepage);
@@ -71,7 +71,7 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
         iv_volumeMute = findViewById(R.id.iv_volume_mute_homepage);
         iv_volumeUp = findViewById(R.id.iv_volume_up_homepage);
 
-        iv_setting.setOnClickListener(this);
+        iv_close.setOnClickListener(this);
         iv_disconnect.setOnClickListener(this);
         tv_selectDevice.setOnClickListener(this);
         ll_keyboard.setOnClickListener(this);
@@ -115,9 +115,8 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
             return ;
         }
         switch (v.getId()) {
-            case R.id.iv_setting_homepage:
-                Intent intent_setting = new Intent(this, SettingActivity.class);
-                startActivity(intent_setting);
+            case R.id.iv_close_homepage:
+                finish();
                 break;
             case R.id.iv_disconnect_homepage:
                 RemoteUtils.httpPost(RokuLocationUrl, "keypress/PowerOff");
@@ -200,13 +199,13 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
                 String[] lines = channelXml.split("\n");
                 boolean isInstall = false;
                 for (String line : lines) {
-                    if (line.startsWith("\t<app id=\"698776\"")) {
-                        RemoteUtils.httpPost(RokuLocationUrl, "launch/698776"); //已经存在该频道，无需安装，直接启动
+                    if (line.startsWith("\t<app id=\"706370\"")) {
+                        RemoteUtils.httpPost(RokuLocationUrl, "launch/706370"); //已经存在该频道，无需安装，直接启动
                         isInstall = true;
                     }
                 }
                 if (!isInstall)
-                    RemoteUtils.httpPost(RokuLocationUrl, "install/698776");//未存在该频道，需要安装
+                    RemoteUtils.httpPost(RokuLocationUrl, "install/706370");//未存在该频道，需要安装
             }
         });
     }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">投屏繁体</string>
-    <string name="agreement_content">Cast TV Android Demo 是提供遙控、投屏功能的應用。為提供上述功能，本應用需聯網，開啟/關閉WLAN,開啟/關閉本地網絡權限進行投屏操作。友盟SDK 用於採集設備Mac地址、唯一設備識別碼（IMEI/Android ID/OPENUDID/GUID）、安卓廣告標識符、SIM卡 IMSI信息 AdMob SDK 用於獲取唯一標識符、設備類型 和設置、操作系統、移動網絡信息（包括運營商名稱和電話號碼）以及應用版本號、IP地址、崩潰報告</string>
+    <string name="app_name">Web Caster</string>
+    <string name="agreement_content">Web Caster 是提供遙控、投屏功能的應用。為提供上述功能，本應用需聯網，開啟/關閉WLAN,開啟/關閉本地網絡權限進行投屏操作。友盟SDK 用於採集設備Mac地址、唯一設備識別碼（IMEI/Android ID/OPENUDID/GUID）、安卓廣告標識符、SIM卡 IMSI信息 AdMob SDK 用於獲取唯一標識符、設備類型 和設置、操作系統、移動網絡信息（包括運營商名稱和電話號碼）以及應用版本號、IP地址、崩潰報告</string>
     <string name="Remote">遙控器</string>
     <string name="Browser">瀏覽器</string>
     <string name="Please_enter_content">請輸入內容</string>

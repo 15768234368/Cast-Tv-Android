@@ -69,6 +69,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.rl_feedback_setting:
                 Intent intent_feedback = new Intent(Intent.ACTION_SEND);
                 intent_feedback.setType("text/plain");
+                intent_feedback.putExtra(Intent.EXTRA_EMAIL, new String[]{"WebCasterTV@outlook.com"});
                 startActivity(Intent.createChooser(intent_feedback, getString(R.string.Select_Mail_Client)));
                 break;
             case R.id.rl_sharing_setting:
@@ -92,7 +93,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.rl_privacyPolicy_setting:
                 try {
-                    String privacyPolicyUrl = "https://androidcasttv.github.io/AndCastTV/PrivacyPolicy/zh.html";
+                    String privacyPolicyUrl = "https://webcastertv.github.io/AndWebCaster/PrivacyPolicy/index.html";
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(privacyPolicyUrl)));
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -101,7 +102,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.rl_userPolicy_setting:
                 try {
-                    String userPolicyUrl = "https://androidcasttv.github.io/AndCastTV/UserAgreement/zh.html";
+                    String userPolicyUrl = "https://webcastertv.github.io/AndWebCaster/UserAgreement/index.html";
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(userPolicyUrl)));
                 } catch (Exception e) {
                     e.printStackTrace();
