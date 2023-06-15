@@ -6,6 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.casttvandroiddemo.FragmentRemoteControl;
 import com.example.casttvandroiddemo.bean.DeviceBean;
 
 import org.w3c.dom.Document;
@@ -42,6 +43,15 @@ public class OnlineDeviceUtils {
     private static final int BUFFER_SIZE = 4096;
     public static List<String> mRokuLocation_onLine = new ArrayList<>();
     public static List<DeviceBean> mDeviceData_onLine = new ArrayList<>();
+    private static OnConnectedListener onConnectedListener;
+    public interface OnConnectedListener{
+        public void autoConnect();
+    }
+
+    public static void setOnConnectedListener(OnConnectedListener onConnectedListener) {
+        OnlineDeviceUtils.onConnectedListener = onConnectedListener;
+    }
+
     public static void findDevice() {
         mRokuLocation_onLine.clear();
         mDeviceData_onLine.clear();
@@ -89,6 +99,7 @@ public class OnlineDeviceUtils {
         for (String response : responses) {
             // 解析响应报文，提取设备信息
             String rokuLocation = extractRokuLocation(response);
+            Log.d(TAG, "processDeviceResponses: " + rokuLocation);
             // 处理设备信息，可以将其显示在界面上或进行其他操作
             mRokuLocation_onLine.add(rokuLocation);
         }
@@ -102,7 +113,7 @@ public class OnlineDeviceUtils {
 //        }
     }
 
-    private static String extractRokuLocation(String response) {
+    public static String extractRokuLocation(String response) {
         String[] lines = response.split("\n");
         for (String line : lines) {
             if (line.startsWith("LOCATION:")) {
@@ -131,16 +142,28 @@ public class OnlineDeviceUtils {
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     String responseBody = response.body().string();
-                    Log.d(TAG, "onResponse: " + responseBody);
                     String[] info = getInfoFromXML(responseBody);
                     String ipAddress = null;
                     //使用正则表达式提取出ip地址
                     Pattern pattern = Pattern.compile("(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})");
                     Matcher matcher = pattern.matcher(url);
-                    if (matcher.find()) {
-                        ipAddress = matcher.group(0);
+                    if (!matcher.find()) {
+                        return ;
                     }
-                    mDeviceData_onLine.add(new DeviceBean(info[0], info[1], ipAddress));
+                    ipAddress = matcher.group(0);
+                    int i;
+                    for (i = 0; i < mDeviceData_onLine.size(); ++i) {
+                        if (info[0].equals(mDeviceData_onLine.get(i).getUserDeviceUDN())) {
+                            mDeviceData_onLine.get(i).setUserDeviceName(info[1]);
+                            mDeviceData_onLine.get(i).setUserDeviceLocation(info[2]);
+                            mDeviceData_onLine.get(i).setUserDeviceIpAddress(ipAddress);
+                            break;
+                        }
+                    }
+                    if (i >= mDeviceData_onLine.size())
+                        mDeviceData_onLine.add(new DeviceBean(info[0], info[1], info[2], ipAddress));
+                    if(onConnectedListener != null)
+                        onConnectedListener.autoConnect();
                 }
             });
         }
@@ -148,11 +171,13 @@ public class OnlineDeviceUtils {
 
     /**
      * 从XML文件中解析出deviceName和deviceLocation
+     * 0-UDN 1-Name 2-Location
      *
      * @param body XML的String形式
      * @return deviceName和deviceLocation
      */
     public static String[] getInfoFromXML(String body) {
+        String deviceUDN = null;
         String deviceName = null;
         String deviceLocation = null;
         try {
@@ -162,7 +187,12 @@ public class OnlineDeviceUtils {
 
             //获取根元素
             Element root = document.getDocumentElement();
-
+            //获取<udn> 元素
+            NodeList udnNodeList = root.getElementsByTagName("udn");
+            if (udnNodeList.getLength() > 0) {
+                Element udnElement = (Element) udnNodeList.item(0);
+                deviceUDN = udnElement.getTextContent();
+            }
             //获取<user-device-name> 元素
             NodeList nameNodeList = root.getElementsByTagName("user-device-name");
             if (nameNodeList.getLength() > 0) {
@@ -181,6 +211,7 @@ public class OnlineDeviceUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new String[]{deviceName, deviceLocation};
+        return new String[]{deviceUDN, deviceName, deviceLocation};
     }
+
 }

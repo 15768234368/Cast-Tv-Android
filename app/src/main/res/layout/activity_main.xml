@@ -4,60 +4,72 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/ll_bottom"/>
+        android:layout_above="@+id/ll_bottomLine" />
+
+    <LinearLayout
+        android:id="@+id/ll_bottomLine"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_above="@id/ll_bottom"
+        android:background="#FFDEDEDE"
+        android:orientation="horizontal" />
 
     <LinearLayout
         android:id="@+id/ll_bottom"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_alignParentBottom="true">
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
+
             <ImageView
                 android:id="@+id/iv_remote_homepage"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:src="@mipmap/remote_homepage_selected"
-                />
+                android:src="@mipmap/remote_homepage_selected" />
+
             <TextView
                 android:id="@+id/tv_remote_homepage"
                 android:layout_width="wrap_content"
                 android:layout_height="14dp"
                 android:text="@string/Remote"
                 android:textColor="#FF0BBD6A"
-                android:textSize="10sp"
-                />
+                android:textSize="10sp" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
+
             <ImageView
                 android:id="@+id/iv_browser_homepage"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:src="@mipmap/browser_homepage_unselected"
-                />
+                android:src="@mipmap/browser_homepage_unselected" />
+
             <TextView
                 android:id="@+id/tv_browser_homepage"
                 android:layout_width="wrap_content"
                 android:layout_height="14dp"
                 android:text="@string/Browser"
                 android:textColor="#FF666666"
-                android:textSize="10sp"
-                />
+                android:textSize="10sp" />
         </LinearLayout>
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/ll_keyboard_edit_homepage"
         android:layout_width="match_parent"
@@ -67,6 +79,7 @@
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:visibility="gone">
+
         <EditText
             android:id="@+id/et_keyboard_edit_homepage"
             android:layout_width="272dp"

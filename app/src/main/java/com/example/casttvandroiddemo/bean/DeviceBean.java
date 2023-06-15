@@ -1,6 +1,9 @@
 package com.example.casttvandroiddemo.bean;
 
-public class DeviceBean {
+import androidx.annotation.NonNull;
+
+public class DeviceBean implements Cloneable{
+    private String userDeviceUDN;
     private String userDeviceName;
     private String userDeviceLocation;
     private String userDeviceIpAddress;
@@ -8,13 +11,15 @@ public class DeviceBean {
     private int isOnline;
 //    删除的逻辑,平常的isDelete都是为0，当值为1的时候，删除框出现，当值为2的时候，选中删除框
     private int isDelete;
-    public DeviceBean(String userDeviceName, String userDeviceLocation, String userDeviceIpAddress) {
+    public DeviceBean(String UDN, String userDeviceName, String userDeviceLocation, String userDeviceIpAddress) {
+        this.userDeviceUDN = UDN;
         this.userDeviceName = userDeviceName;
         this.userDeviceLocation = userDeviceLocation;
         this.userDeviceIpAddress = userDeviceIpAddress;
     }
 
-    public DeviceBean(String userDeviceName, String userDeviceLocation, String userDeviceIpAddress, int isOnline) {
+    public DeviceBean(String UDN, String userDeviceName, String userDeviceLocation, String userDeviceIpAddress, int isOnline) {
+        this.userDeviceUDN = UDN;
         this.userDeviceName = userDeviceName;
         this.userDeviceLocation = userDeviceLocation;
         this.userDeviceIpAddress = userDeviceIpAddress;
@@ -22,6 +27,18 @@ public class DeviceBean {
     }
 
     public DeviceBean() {
+    }
+    @NonNull
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+    public void setUserDeviceUDN(String userDeviceUDN) {
+        this.userDeviceUDN = userDeviceUDN;
+    }
+
+    public String getUserDeviceUDN() {
+        return userDeviceUDN;
     }
 
     public int getIsDelete() {

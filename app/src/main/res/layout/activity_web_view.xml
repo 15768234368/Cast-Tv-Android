@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".WebViewActivity">
 
+
     <SearchView
         android:id="@+id/searchView"
         style="@style/CustomSearchViewStyle"
@@ -18,24 +19,75 @@
         android:iconifiedByDefault="false"
         android:queryHint="@string/Search_or_enter_a_URL" />
 
-    <LinearLayout
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/searchView"
-        android:orientation="vertical"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="8dp"
+        android:orientation="vertical">
 
         <WebView
             android:id="@+id/webView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_above="@id/ll_bottomLine" />
+        <View
+            android:id="@+id/view_detectCastBg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#80000000"
+            android:visibility="invisible" />
+        <RelativeLayout
+            android:id="@+id/rl_detectCastContentTip"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/ll_internetBottom"
+            android:layout_centerHorizontal="true"
+            android:background="@mipmap/rectangle"
+            android:layout_marginBottom="8dp"
+            android:visibility="invisible">
+            <TextView
+                android:id="@+id/tv_castTip"
+                android:layout_width="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:layout_height="wrap_content"
+                android:text="检测到投屏内容，点击后进行投屏"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16dp"
+                android:textColor="#FF202020"
+                android:textSize="12sp"
+                />
+            <TextView
+                android:id="@+id/tv_closeCastContentTip"
+                android:layout_width="72dp"
+                android:layout_height="24dp"
+                android:text="知道了"
+                android:textSize="10sp"
+                android:textColor="#FF0BBD6A"
+                android:layout_below="@id/tv_castTip"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="36dp"
+                android:gravity="center"
+                android:background="@drawable/shape_bottom_tip"/>
 
+        </RelativeLayout>
+        <LinearLayout
+            android:id="@+id/ll_bottomLine"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#FFDEDEDE"
+            android:layout_above="@id/ll_internetBottom"
+            android:orientation="horizontal" />
         <LinearLayout
             android:id="@+id/ll_internetBottom"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true">
 
             <ImageView
                 android:id="@+id/iv_back_browserCast"
@@ -51,11 +103,13 @@
                 android:layout_weight="1"
                 android:src="@mipmap/forward_unlighted_browser_cast" />
 
+
             <ImageView
                 android:id="@+id/iv_cast_browserCast"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:background="@drawable/shape_cast_dialog"
                 android:src="@mipmap/cast_unlighted_browser_cast" />
 
             <ImageView
@@ -72,5 +126,5 @@
                 android:layout_weight="1"
                 android:src="@mipmap/remote_browser_cast" />
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>

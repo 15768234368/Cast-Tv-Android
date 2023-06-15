@@ -20,7 +20,7 @@
     <string name="Video_List">Video List</string>
     <string name="x_videos_in_total">%1$d videos in total</string>
     <string name="Automatically_search_the_device...">Automatically search the device...</string>
-    <string name="make_sure_the_android_device_is_on_the_same_wi_fi_as_roku">Make sure the iOS device is on the same Wi-Fi as Roku</string>
+    <string name="make_sure_the_android_device_is_on_the_same_wi_fi_as_roku">Make sure the Android device is on the same Wi-Fi as Roku</string>
     <string name="add_connected_device">Add connected device</string>
     <string name="Redetect">Redetect</string>
     <string name="Settings">Settings</string>

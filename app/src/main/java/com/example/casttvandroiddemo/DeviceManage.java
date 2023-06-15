@@ -70,17 +70,22 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_manage);
         initView();
+        loadData();
+        if (adapter != null)
+            adapter.notifyDataSetChanged();
     }
 
     private void loadData() {
+        mData.clear();
         try {
             DeviceManageHelper helper = new DeviceManageHelper(this);
             SQLiteDatabase db = helper.getReadableDatabase();
             Cursor cursor = db.query(DeviceManageHelper.TABLE_HISTORY, null, null, null, null, null, null);
             while (cursor.moveToNext()) {
-                String deviceName = cursor.getString(1);
-                String deviceLocation = cursor.getString(2);
-                String deviceIpAddress = cursor.getString(0);
+                String deviceUDN = cursor.getString(0);
+                String deviceIpAddress = cursor.getString(1);
+                String deviceName = cursor.getString(2);
+                String deviceLocation = cursor.getString(3);
                 int isOnline = 0;//默认不在线
                 for (String item : OnlineDeviceUtils.mRokuLocation_onLine) {
                     if (item.contains(deviceIpAddress)) {
@@ -90,7 +95,7 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
                         break;
                     }
                 }
-                mData.add(new DeviceBean(deviceName, deviceLocation, deviceIpAddress, isOnline));
+                mData.add(new DeviceBean(deviceUDN, deviceName, deviceLocation, deviceIpAddress, isOnline));
             }
             cursor.close();
             helper.close();
@@ -107,14 +112,19 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
             iv_titleImage.setVisibility(View.INVISIBLE);
             btn_addDevice.setVisibility(View.INVISIBLE);
             tv_titleText.setVisibility(View.INVISIBLE);
+            tv_updateDevice.setVisibility(View.VISIBLE);
+            iv_refresh.setVisibility(View.VISIBLE);
         } else {
             recyclerView.setVisibility(View.INVISIBLE);
             iv_addDevice.setVisibility(View.INVISIBLE);
             iv_titleImage.setVisibility(View.VISIBLE);
             btn_addDevice.setVisibility(View.VISIBLE);
             tv_titleText.setVisibility(View.VISIBLE);
+            tv_updateDevice.setVisibility(View.INVISIBLE);
+            iv_refresh.setVisibility(View.INVISIBLE);
         }
     }
+
 
 
     private void initView() {
@@ -164,6 +174,11 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
                         if (position == i && mData.get(i).getIsOnline() != 0) {
                             mData.get(i).setIsOnline(1);
                             FragmentRemoteControl.RokuLocation = mData.get(i).getUserDeviceIpAddress();
+                            try {
+                                FragmentRemoteControl.ConnectingDevice = (DeviceBean) mData.get(i).clone();
+                            } catch (CloneNotSupportedException e) {
+                                throw new RuntimeException(e);
+                            }
                         } else if (position != i && mData.get(i).getIsOnline() == 1)
                             mData.get(i).setIsOnline(2);
                     }
@@ -188,9 +203,11 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
         if (delete_cnt > 0) {
             btn_deleteDevice.setVisibility(View.VISIBLE);
             btn_deleteDevice.setBackgroundResource(R.drawable.shape_device_delete_100alpha);
+            btn_deleteDevice.setEnabled(true);
         } else {
             btn_deleteDevice.setVisibility(View.VISIBLE);
             btn_deleteDevice.setBackgroundResource(R.drawable.shape_device_delete_50alpha);
+            btn_deleteDevice.setEnabled(false);
         }
 
         if (delete_cnt == mData.size()) {
@@ -202,10 +219,6 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onResume() {
-        mData.clear();
-        loadData();
-        if (adapter != null)
-            adapter.notifyDataSetChanged();
         super.onResume();
     }
 
@@ -223,6 +236,8 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
 
 
     public void editingDeviceStatus() {
+
+
         adapter.setDelete(true);
         isDeleteSelect = true;
         //UI设计
@@ -231,6 +246,7 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
         tv_allSelectDelete.setVisibility(View.VISIBLE);
         btn_deleteDevice.setVisibility(View.VISIBLE);
         btn_deleteDevice.setBackgroundResource(R.drawable.shape_device_delete_50alpha);
+        btn_deleteDevice.setEnabled(false);
         iv_back.setVisibility(View.INVISIBLE);
         iv_refresh.setVisibility(View.INVISIBLE);
         iv_addDevice.setVisibility(View.INVISIBLE);
@@ -246,6 +262,7 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
     private void allSelect() {
         delete_cnt = mData.size();
         btn_deleteDevice.setBackgroundResource(R.drawable.shape_device_delete_100alpha);
+        btn_deleteDevice.setEnabled(true);
         isAllSelect = true;
         tv_allSelectDelete.setText(R.string.Deselect);
         for (int i = 0; i < mData.size(); ++i) {
@@ -257,6 +274,7 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
     private void allUnselect() {
         delete_cnt = 0;
         btn_deleteDevice.setBackgroundResource(R.drawable.shape_device_delete_50alpha);
+        btn_deleteDevice.setEnabled(false);
         isAllSelect = false;
         tv_allSelectDelete.setText(R.string.Select_all);
         for (int i = 0; i < mData.size(); ++i) {
@@ -286,13 +304,14 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
         }
         adapter.notifyDataSetChanged();
     }
+
     private void deleteDevice() {
         DeviceManageHelper helper = new DeviceManageHelper(this);
         SQLiteDatabase db = helper.getWritableDatabase();
-        for(int i = 0; i < mData.size(); ++i){
-            if(mData.get(i).getIsDelete() == 2){
+        for (int i = 0; i < mData.size(); ++i) {
+            if (mData.get(i).getIsDelete() == 2) {
                 db.delete(DeviceManageHelper.TABLE_HISTORY, DeviceManageHelper.USER_DEVICE_IPADDRESS + "=?", new String[]{mData.get(i).getUserDeviceIpAddress()});
-                if(mData.get(i).getUserDeviceIpAddress().equals(FragmentRemoteControl.RokuLocation))
+                if (mData.get(i).getUserDeviceIpAddress().equals(FragmentRemoteControl.RokuLocation))
                     FragmentRemoteControl.RokuLocation = null;
             }
         }
@@ -303,8 +322,10 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
         cancelDelete();
 
     }
+
     public void showRefreshDialog() {
         dialog = new Dialog(this);
+        dialog.setCancelable(false);
         dialog.setContentView(R.layout.dialog_refresh);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
@@ -316,10 +337,12 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
         });
         dialog.show();
     }
+
     private void showDeleteDialog() {
         dialog = new Dialog(this);
+        dialog.setCancelable(false);
         dialog.setContentView(R.layout.dialog_delete);
-        dialog.findViewById(R.id.tv_cancelDelete_dialog).setOnClickListener(new View.OnClickListener(){
+        dialog.findViewById(R.id.tv_cancelDelete_dialog).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.cancel();
@@ -341,7 +364,7 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
             case R.id.iv_addDevice_device_manage:
             case R.id.btn_goToAdd_device_manage:
                 Intent intent = new Intent(DeviceManage.this, DeviceAdd.class);
-                startActivity(intent);
+                startActivityForResult(intent, 1);
                 break;
             case R.id.tv_update_commonDevice:
                 if (!isDeleteSelect)
@@ -364,6 +387,16 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_deleteDevice:
                 showDeleteDialog();
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1){
+            loadData();
+            if (adapter != null)
+                adapter.notifyDataSetChanged();
         }
     }
 }

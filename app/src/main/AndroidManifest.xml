@@ -15,6 +15,9 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".RemoteControlActivity"
+            android:exported="false" />
+        <activity
             android:name=".InternetHistoryList"
             android:exported="false" />
         <activity
@@ -34,8 +37,10 @@
             android:exported="false" />
         <activity
             android:name=".WebViewActivity"
-            android:exported="false" />
-        <activity android:name=".StartActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".StartActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

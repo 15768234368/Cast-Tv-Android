@@ -102,6 +102,15 @@ public class HistoryConnectedDeviceAdapter extends RecyclerView.Adapter<HistoryC
                 holder.iv_connected_icon.setVisibility(View.VISIBLE);
                 holder.iv_connected_icon.setImageResource(R.mipmap.select_delete_device);
             }
+            //统一删除的时候样式
+            colorSpan_name = new ForegroundColorSpan(0xFF202020);
+            colorSpan_Location = new ForegroundColorSpan(0xFF999999);
+            holder.iv_device_icon.setImageResource(R.mipmap.device_icon);
+            holder.rl_back.setBackgroundResource(R.drawable.shape_common_device_unselected);
+            spannableName.setSpan(colorSpan_name, 0, spannableName.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            spannableLocation.setSpan(colorSpan_Location, 0, spannableLocation.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            holder.tv_userDeviceName.setText(spannableName);
+            holder.tv_userDeviceLocation.setText(spannableLocation);
         } else {
             if (bean.getIsOnline() == 1) {
                 holder.iv_connected_icon.setVisibility(View.VISIBLE);

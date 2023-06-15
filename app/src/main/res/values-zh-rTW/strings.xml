@@ -25,7 +25,7 @@
     <string name="Redetect">重新搜索</string>
     <string name="Settings">去設置</string>
     <string name="No_Roku_detected">未檢測到Roku</string>
-    <string name="Please_check_the_Android_device_is_on_the_same_WiFi_as_Roku">請檢查iOS設備與Roku在同一Wi-Fi上</string>
+    <string name="Please_check_the_Android_device_is_on_the_same_WiFi_as_Roku">請檢查Android設備與Roku在同一Wi-Fi上</string>
     <string name="Please_allow_network_permissions_and_connect_to_WiFi">請允許網絡權限並連接到Wi-Fi</string>
     <string name="otherwise_you_will_not_be_able_to_connect_to_Roku_devices">否則您將無法連接到Roku設備</string>
     <string name="Deselect">全不選</string>

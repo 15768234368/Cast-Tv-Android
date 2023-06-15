@@ -1,16 +1,20 @@
 package com.example.casttvandroiddemo;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcel;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
@@ -18,6 +22,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -40,7 +45,9 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,6 +63,9 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
     private WebView webView;
     private SearchView searchView;
     private ImageView iv_back, iv_forward, iv_cast, iv_history, iv_remote;
+    private RelativeLayout rl_detectCastContentTip;
+    private View view_detectCastBg;
+    private TextView tv_closeCastContentTip;
     public static List<CastVideoBean> mVideoBean = new ArrayList<>();
 
     @Override
@@ -88,6 +98,14 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                 delayPost.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        SharedPreferences sp = getSharedPreferences("setting", MODE_PRIVATE);
+                        boolean isCastTip = sp.getBoolean("castTip", false);
+                        if(!isCastTip){
+                            showDetectCastTip();
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.putBoolean("castTip", true);
+                            editor.apply();
+                        }
                         iv_cast.setImageResource(R.mipmap.cast_lighted_browser_cast);
                         iv_cast.setEnabled(true);
                     }
@@ -108,15 +126,35 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         iv_cast = (ImageView) findViewById(R.id.iv_cast_browserCast);
         iv_history = (ImageView) findViewById(R.id.iv_history_browserCast);
         iv_remote = (ImageView) findViewById(R.id.iv_remote_browserCast);
-
+        view_detectCastBg = (View) findViewById(R.id.view_detectCastBg);
+        rl_detectCastContentTip = (RelativeLayout) findViewById(R.id.rl_detectCastContentTip);
+        tv_closeCastContentTip = (TextView) findViewById(R.id.tv_closeCastContentTip);
 
         iv_back.setOnClickListener(this);
         iv_forward.setOnClickListener(this);
         iv_cast.setOnClickListener(this);
         iv_history.setOnClickListener(this);
         iv_remote.setOnClickListener(this);
+        tv_closeCastContentTip.setOnClickListener(this);
     }
 
+    public void showDetectCastTip(){
+//        1.使用视图遮盖实现
+        view_detectCastBg.setVisibility(View.VISIBLE);
+        rl_detectCastContentTip.setVisibility(View.VISIBLE);
+        iv_cast.setImageResource(R.mipmap.cast_lighted_browser_cast);
+        webView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true; // 禁止WebView处理点击事件
+            }
+        });
+    }
+    public void closeDetectCastTip(){
+        view_detectCastBg.setVisibility(View.INVISIBLE);
+        rl_detectCastContentTip.setVisibility(View.INVISIBLE);
+        webView.setOnTouchListener(null); // 移除触摸事件监听器，恢复点击事件处理
+    }
     /**
      * 对私有变量webView进行初始化设置
      */
@@ -166,6 +204,8 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                     getRealVideoUrlFromBiliBili(loadingUrl);
                 } else if (loadingUrl.startsWith("https://m.youtube.com/")) {
                     getRealVideoUrlFromYouTuBe(loadingUrl);
+                } else if (loadingUrl.startsWith("https://www.espn.com")) {
+                    getRealVideoUrlFromESPN(loadingUrl);
                 }
                 SaveHistoryToDB(loadingUrl, title);
             }
@@ -190,7 +230,7 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                 if (s.startsWith("https") || s.startsWith("http")) {
                     webView.loadUrl(s);
                 } else {
-                    String newUrl = "https://www.google.com.hk/search?q=" + s;
+                    String newUrl = "https://www.google.com/search?q=" + s;
                     Log.d(TAG, "onQueryTextSubmit: " + newUrl);
                     webView.loadUrl(newUrl);
                 }
@@ -251,6 +291,7 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                Log.d(TAG, "run: " + responseBody);
                 //获得视频的url
                 Pattern pattern_videoUrl = Pattern.compile("options = (\\{.*\\})");
                 Matcher matcher = pattern_videoUrl.matcher(responseBody);
@@ -332,6 +373,112 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         });
     }
 
+    @Override
+    protected void onResume() {
+        closeDetectCastTip();
+        Log.d(TAG, "onResume: " + "web");
+        super.onResume();
+    }
+
+    public void getRealVideoUrlFromESPN(String url) {
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .addHeader("User-Agent", "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.91 Mobile Safari/537.36")
+                .url(url)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String resHtml = response.body().string();
+
+                    String pattern = "\"href\":\"https://www\\.espn\\.com/video/clip\\?id=(\\d+)\"";
+                    Pattern idPattern = Pattern.compile(pattern);
+                    Matcher idMatcher = idPattern.matcher(resHtml);
+
+                    Set<String> uniqueIds = new HashSet<>();
+                    while (idMatcher.find()) {
+                        String idNumber = idMatcher.group(1);
+                        uniqueIds.add(idNumber);
+                    }
+
+                    if (!uniqueIds.isEmpty()) {
+                        for (String idNumber : uniqueIds) {
+                            Log.d(TAG, idNumber);
+                            String clipUrl = "https://www.espn.com/video/clip?id=" + idNumber;
+                            Request clipRequest = new Request.Builder()
+                                    .addHeader("User-Agent", "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.91 Mobile Safari/537.36")
+                                    .url(clipUrl)
+                                    .build();
+                            client.newCall(clipRequest).enqueue(new Callback() {
+                                @Override
+                                public void onFailure(Call call, IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                                @Override
+                                public void onResponse(Call call, Response response) throws IOException {
+                                    if (response.isSuccessful()) {
+                                        String resClipHtml = response.body().string();
+
+                                        String patternUrl = "\"contentUrl\"\\s*:\\s*\"([^\"]+)\"";
+                                        String patternThumbnailUrl = "\"thumbnailURL\"\\s*:\\s*\"([^\"]+)\"";
+                                        String patternTitle = "<h1[^>]*>(.*?)</h1>";
+
+                                        Pattern urlPattern = Pattern.compile(patternUrl);
+                                        Pattern thumbnailUrlPattern = Pattern.compile(patternThumbnailUrl);
+                                        Pattern titlePattern = Pattern.compile(patternTitle);
+
+                                        Matcher urlMatcher = urlPattern.matcher(resClipHtml);
+                                        Matcher thumbnailUrlMatcher = thumbnailUrlPattern.matcher(resClipHtml);
+                                        Matcher titleMatcher = titlePattern.matcher(resClipHtml);
+                                        String videoTitle = null;
+                                        String readyVideoUrl = null;
+                                        String videoImageUrl = null;
+                                        if(titleMatcher.find()){
+                                            videoTitle = titleMatcher.group(1);
+                                            Log.d(TAG, "video title: " + videoTitle);
+                                        } else{
+                                            Log.d(TAG, "video Image not found" );
+                                        }
+                                        if (urlMatcher.find()) {
+                                            readyVideoUrl = urlMatcher.group(1);
+                                            Log.d(TAG, "video URL: " + readyVideoUrl);
+                                        } else {
+                                            Log.d(TAG, "Video URL not found");
+                                        }
+
+                                        if (thumbnailUrlMatcher.find()) {
+                                            videoImageUrl = thumbnailUrlMatcher.group(1);
+                                        } else {
+                                            Log.d(TAG, "Thumbnail URL not found");
+                                        }
+
+                                        Message message = new Message();
+                                        message.obj = new CastVideoBean(videoImageUrl, videoTitle, readyVideoUrl, clipUrl);
+                                        handler.sendMessage(message);
+                                        Log.d(TAG, "1: ");
+                                    } else {
+                                        Log.d(TAG, "Failed to fetch clip HTML");
+                                    }
+                                }
+                            });
+                        }
+                    }
+                } else {
+                    Log.d(TAG, "Failed to fetch HTML");
+                }
+            }
+        });
+    }
+
     private String extractJsonData(String htmlData) {
         String patternString = "var ytInitialPlayerResponse = (.*?);var";
         Pattern pattern = Pattern.compile(patternString);
@@ -375,8 +522,11 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                 startActivity(intent_history);
                 break;
             case R.id.iv_remote_browserCast:
-                IntentUtils.goToActivity(this, MainActivity.class);
+                IntentUtils.goToActivity(this, RemoteControlActivity.class);
                 finish();
+                break;
+            case R.id.tv_closeCastContentTip:
+                closeDetectCastTip();
                 break;
         }
     }
@@ -422,6 +572,7 @@ class Format {
 class VideoDetails {
     private String title;
     private Thumbnail thumbnail;
+
     public String getTitle() {
         return title;
     }
@@ -431,7 +582,7 @@ class VideoDetails {
     }
 }
 
-class Thumbnail{
+class Thumbnail {
     private List<Thumbnails> thumbnails;
 
     public List<Thumbnails> getThumbnails() {
@@ -439,7 +590,7 @@ class Thumbnail{
     }
 }
 
-class Thumbnails{
+class Thumbnails {
     private String url;
 
     public String getUrl() {

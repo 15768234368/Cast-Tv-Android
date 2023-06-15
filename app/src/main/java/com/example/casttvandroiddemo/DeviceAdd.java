@@ -10,6 +10,7 @@ import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -42,6 +43,7 @@ import com.example.casttvandroiddemo.utils.OnlineDeviceUtils;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
@@ -79,8 +81,8 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
     private Timer timer;
     private Button btn_research, btn_goToSetting;
     private TextView tv_ipTitle1, tv_ipTitle2;
-    private List<String> mRokuLocation = OnlineDeviceUtils.mRokuLocation_onLine;
-    private List<DeviceBean> mDeviceData = OnlineDeviceUtils.mDeviceData_onLine;
+    private List<String> mRokuLocation = new ArrayList<>(OnlineDeviceUtils.mRokuLocation_onLine);
+    private List<DeviceBean> mDeviceData = new ArrayList<>(OnlineDeviceUtils.mDeviceData_onLine);
     private RecyclerView recyclerView;
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -130,6 +132,7 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
                     timer.cancel();
                 }
             } else if (message.what == 1) {
+                iv_refresh.setVisibility(View.VISIBLE);
                 //展示搜索到了的列表
                 Log.d(TAG, "handleMessage: " + "message is 1");
                 showScannedDeviceList();
@@ -244,16 +247,33 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
                 showConnectDialog();
 
                 FragmentRemoteControl.RokuLocation = mDeviceData.get(position).getUserDeviceIpAddress();
+                try {
+                    FragmentRemoteControl.ConnectingDevice = (DeviceBean) mDeviceData.get(position).clone();
+                } catch (CloneNotSupportedException e) {
+                    throw new RuntimeException(e);
+                }
                 Log.d(TAG, "OnItemClick: " + mDeviceData.get(position).getUserDeviceIpAddress());
                 Log.d(TAG, "OnItemClick: " + mRokuLocation.get(position));
                 DeviceManageHelper helper = new DeviceManageHelper(getApplicationContext());
+
                 SQLiteDatabase db = helper.getWritableDatabase();
                 ContentValues values = new ContentValues();
                 DeviceBean bean = mDeviceData.get(position);
+                values.put(DeviceManageHelper.USER_DEVICE_UDN, bean.getUserDeviceUDN());
                 values.put(DeviceManageHelper.USER_DEVICE_NAME, bean.getUserDeviceName());
                 values.put(DeviceManageHelper.USER_DEVICE_LOCATION, bean.getUserDeviceLocation());
                 values.put(DeviceManageHelper.USER_DEVICE_IPADDRESS, bean.getUserDeviceIpAddress());
-                db.insert(DeviceManageHelper.TABLE_HISTORY, null, values);
+
+                long rowId = db.insert(DeviceManageHelper.TABLE_HISTORY, null, values);
+                if (rowId == -1) {
+                    // 主键冲突异常捕获
+                    // 进行更新操作
+                    values.remove(DeviceManageHelper.USER_DEVICE_UDN); // 移除主键值
+                    String whereClause = DeviceManageHelper.USER_DEVICE_UDN + "=?";
+                    String[] whereArgs = new String[]{bean.getUserDeviceUDN()};
+                    db.update(DeviceManageHelper.TABLE_HISTORY, values, whereClause, whereArgs);
+                }
+
                 db.close();
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -272,6 +292,7 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
     }
     public void showConnectDialog(){
         dialog = new Dialog(this);
+        dialog.setCancelable(false);
         dialog.setContentView(R.layout.dialog_connecting);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
@@ -284,7 +305,9 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
         dialog.show();
     }
     public void showRefreshDialog(){
+        iv_refresh.setVisibility(View.INVISIBLE);
         dialog = new Dialog(this);
+        dialog.setCancelable(false);
         dialog.setContentView(R.layout.dialog_refresh);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
@@ -361,7 +384,7 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
         // 处理每个设备的响应
         for (String response : responses) {
             // 解析响应报文，提取设备信息
-            String rokuLocation = extractRokuLocation(response);
+            String rokuLocation = OnlineDeviceUtils.extractRokuLocation(response);
             // 处理设备信息，可以将其显示在界面上或进行其他操作
             mRokuLocation.add(rokuLocation);
         }
@@ -378,17 +401,12 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
 
     }
 
-    private String extractRokuLocation(String response) {
-        String[] lines = response.split("\n");
-        for (String line : lines) {
-            if (line.startsWith("LOCATION:")) {
-                // 提取LOCATION字段的值
-                return line.substring(line.indexOf(":") + 1).trim();
-            }
-        }
-        return null;
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        OnlineDeviceUtils.mDeviceData_onLine = mDeviceData;
+        OnlineDeviceUtils.mRokuLocation_onLine = mRokuLocation;
     }
-
     public void getDeviceInfo(List<String> LocationList) {
         for (String item : LocationList) {
             String url = item + "query/device-info";
@@ -416,7 +434,17 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
                     if (matcher.find()) {
                         ipAddress = matcher.group(0);
                     }
-                    mDeviceData.add(new DeviceBean(info[0], info[1], ipAddress));
+                    int i;
+                    for (i = 0; i < mDeviceData.size(); ++i) {
+                        if (info[0].equals(mDeviceData.get(i).getUserDeviceUDN())) {
+                            mDeviceData.get(i).setUserDeviceName(info[1]);
+                            mDeviceData.get(i).setUserDeviceLocation(info[2]);
+                            mDeviceData.get(i).setUserDeviceIpAddress(ipAddress);
+                            break;
+                        }
+                    }
+                    if (i >= mDeviceData.size())
+                        mDeviceData.add(new DeviceBean(info[0], info[1], info[2], ipAddress));
                 }
             });
         }
@@ -424,11 +452,13 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
 
     /**
      * 从XML文件中解析出deviceName和deviceLocation
+     * 0-UDN 1-Name 2-Location
      *
      * @param body XML的String形式
      * @return deviceName和deviceLocation
      */
     public String[] getInfoFromXML(String body) {
+        String deviceUDN = null;
         String deviceName = null;
         String deviceLocation = null;
         try {
@@ -438,7 +468,12 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
 
             //获取根元素
             Element root = document.getDocumentElement();
-
+            //获取<udn> 元素
+            NodeList udnNodeList = root.getElementsByTagName("udn");
+            if (udnNodeList.getLength() > 0) {
+                Element udnElement = (Element) udnNodeList.item(0);
+                deviceUDN = udnElement.getTextContent();
+            }
             //获取<user-device-name> 元素
             NodeList nameNodeList = root.getElementsByTagName("user-device-name");
             if (nameNodeList.getLength() > 0) {
@@ -457,7 +492,7 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new String[]{deviceName, deviceLocation};
+        return new String[]{deviceUDN, deviceName, deviceLocation};
     }
 
 }

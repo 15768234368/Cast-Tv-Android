@@ -148,6 +148,12 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 et_edit.setText("");
+                if(fragmentRemoteControl != null){
+                    View CoverView = fragmentRemoteControl.getView().findViewById(R.id.view_coverBlack80);
+                    if(CoverView != null)
+                        CoverView.setVisibility(View.INVISIBLE);
+                }
+
             }
         });
     }

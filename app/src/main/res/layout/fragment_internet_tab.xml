@@ -10,7 +10,7 @@
         <LinearLayout
             android:id="@+id/ll_settingTop"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:layout_marginTop="20dp">
 
             <ImageView
@@ -38,7 +38,7 @@
             android:layout_width="320dp"
             android:layout_height="56dp"
             android:layout_below="@id/ll_settingTop"
-            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="24dp"
             android:background="@drawable/search_shape"
             android:iconifiedByDefault="false"
