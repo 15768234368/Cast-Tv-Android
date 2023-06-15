@@ -67,4 +67,6 @@
     <string name="remove">Remove</string>
     <string name="install">Install</string>
     <string name="you_can_read_the_user_agreement_and_privacy_policy_for_relevant_information_if_you_agree_click_agree_to_start_using_our_app">You can read the User Agreement and Privacy Policy for relevant information. If you Agree, click Agreeto start using our app.</string>
+    <string name="found_the_screencast_content_click_to_cast_the_screen">Found the screencast content, click to cast the screen</string>
+    <string name="got_it">Got it!</string>
 </resources>

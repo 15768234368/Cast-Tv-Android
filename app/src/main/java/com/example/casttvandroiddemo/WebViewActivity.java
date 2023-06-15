@@ -42,8 +42,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -100,7 +98,7 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                     public void run() {
                         SharedPreferences sp = getSharedPreferences("setting", MODE_PRIVATE);
                         boolean isCastTip = sp.getBoolean("castTip", false);
-                        if(!isCastTip){
+                        if (!isCastTip) {
                             showDetectCastTip();
                             SharedPreferences.Editor editor = sp.edit();
                             editor.putBoolean("castTip", true);
@@ -138,7 +136,8 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         tv_closeCastContentTip.setOnClickListener(this);
     }
 
-    public void showDetectCastTip(){
+    @SuppressLint("ClickableViewAccessibility")
+    public void showDetectCastTip() {
 //        1.使用视图遮盖实现
         view_detectCastBg.setVisibility(View.VISIBLE);
         rl_detectCastContentTip.setVisibility(View.VISIBLE);
@@ -150,11 +149,14 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
     }
-    public void closeDetectCastTip(){
+
+    @SuppressLint("ClickableViewAccessibility")
+    public void closeDetectCastTip() {
         view_detectCastBg.setVisibility(View.INVISIBLE);
         rl_detectCastContentTip.setVisibility(View.INVISIBLE);
         webView.setOnTouchListener(null); // 移除触摸事件监听器，恢复点击事件处理
     }
+
     /**
      * 对私有变量webView进行初始化设置
      */
@@ -292,6 +294,7 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                     e.printStackTrace();
                 }
                 Log.d(TAG, "run: " + responseBody);
+
                 //获得视频的url
                 Pattern pattern_videoUrl = Pattern.compile("options = (\\{.*\\})");
                 Matcher matcher = pattern_videoUrl.matcher(responseBody);
@@ -442,11 +445,11 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                                         String videoTitle = null;
                                         String readyVideoUrl = null;
                                         String videoImageUrl = null;
-                                        if(titleMatcher.find()){
+                                        if (titleMatcher.find()) {
                                             videoTitle = titleMatcher.group(1);
                                             Log.d(TAG, "video title: " + videoTitle);
-                                        } else{
-                                            Log.d(TAG, "video Image not found" );
+                                        } else {
+                                            Log.d(TAG, "video Image not found");
                                         }
                                         if (urlMatcher.find()) {
                                             readyVideoUrl = urlMatcher.group(1);

@@ -1,5 +1,6 @@
 package com.example.casttvandroiddemo;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -11,11 +12,13 @@ import android.os.Message;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -42,18 +45,23 @@ import okhttp3.Response;
 public class FragmentRemoteControl extends Fragment implements View.OnClickListener {
     private static final String TAG = "FragmentRemoteControl";
     private View view;
-    private ImageView iv_up, iv_down, iv_left, iv_right, iv_enter;
-    private ImageView iv_setting, iv_disconnect, iv_isConnect;
-    private ImageView iv_back, iv_home;
+    private ImageButton iv_up, iv_down, iv_left, iv_right, iv_enter, iv_disconnect;
+    private ImageView iv_setting, iv_isConnect;
+    private ImageButton iv_back, iv_home;
     private LinearLayout ll_keyboard, ll_channel;
-    private ImageView iv_rewind, iv_pause, iv_forward, iv_refresh;
-    private ImageView iv_menu, iv_volumeDown, iv_volumeUp, iv_volumeMute;
+    private ImageButton iv_rewind, iv_pause, iv_forward, iv_refresh;
+    private ImageButton iv_menu, iv_volumeDown, iv_volumeUp, iv_volumeMute;
     private TextView tv_selectDevice;
     public static DeviceBean ConnectingDevice;
     public static String RokuLocation = null;
     public static String RokuLocationUrl = RemoteUtils.getRokuLocationUrl(RokuLocation);
     private Vibrator vibrator;
     private View coverView;
+    private View view_disconnect_coverBlack10, view_keyboard_coverBlack10, view_channel_coverBlack10;
+    private View view_back_coverBlack10, view_home_coverBlack10, view_rewind_coverBlack10, view_play_pause_coverBlack10;
+    private View view_forward_coverBlack10, view_backspace_coverBlack10, view_menu_coverBlack10, view_volume_down_coverBlack10;
+    private View view_volume_mute_coverBlack10, view_volume_up_coverBlack10;
+    private View view_ok_coverBlack10;
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -77,30 +85,282 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
         return view = inflater.inflate(R.layout.fragment_remote_control_tab, container, false);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initView() {
+        view_disconnect_coverBlack10 = view.findViewById(R.id.view_disconnect_coverBlack10);
+        view_keyboard_coverBlack10 = view.findViewById(R.id.view_keyboard_coverBlack10);
+        view_channel_coverBlack10 = view.findViewById(R.id.view_channel_coverBlack10);
+        view_back_coverBlack10 = view.findViewById(R.id.view_back_coverBlack10);
+        view_home_coverBlack10 = view.findViewById(R.id.view_home_coverBlack10);
+        view_rewind_coverBlack10 = view.findViewById(R.id.view_rewind_coverBlack10);
+        view_play_pause_coverBlack10 = view.findViewById(R.id.view_play_pause_coverBlack10);
+        view_forward_coverBlack10 = view.findViewById(R.id.view_forward_coverBlack10);
+        view_backspace_coverBlack10 = view.findViewById(R.id.view_backspace_coverBlack10);
+        view_menu_coverBlack10 = view.findViewById(R.id.view_menu_coverBlack10);
+        view_volume_down_coverBlack10 = view.findViewById(R.id.view_volume_down_coverBlack10);
+        view_volume_mute_coverBlack10 = view.findViewById(R.id.view_volume_mute_coverBlack10);
+        view_volume_up_coverBlack10 = view.findViewById(R.id.view_volume_up_coverBlack10);
+        view_ok_coverBlack10 = view.findViewById(R.id.view_ok_coverBlack10);
+
         coverView = view.findViewById(R.id.view_coverBlack80);
         iv_setting = view.findViewById(R.id.iv_setting_homepage);
         iv_isConnect = view.findViewById(R.id.iv_isConnected);
         iv_disconnect = view.findViewById(R.id.iv_disconnect_homepage);
+        iv_disconnect.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // 按下时的操作
+                view_disconnect_coverBlack10.setVisibility(View.VISIBLE);
+                return true;
+            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                // 松开或取消时的操作
+                view_disconnect_coverBlack10.setVisibility(View.INVISIBLE);
+                onClick(iv_disconnect);
+                return true;
+            }
+            return false;
+        });
         tv_selectDevice = view.findViewById(R.id.tv_select_device_homepage);
         ll_keyboard = view.findViewById(R.id.ll_keyboard_homepage);
+        ll_keyboard.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // 按下时的操作
+                view_keyboard_coverBlack10.setVisibility(View.VISIBLE);
+                return true;
+            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                // 松开或取消时的操作
+                view_keyboard_coverBlack10.setVisibility(View.INVISIBLE);
+                onClick(ll_keyboard);
+                return true;
+            }
+            return false;
+        });
         ll_channel = view.findViewById(R.id.ll_channel_homepage);
-        iv_up = view.findViewById(R.id.iv_up_homepage);
-        iv_down = view.findViewById(R.id.iv_down_homepage);
-        iv_left = view.findViewById(R.id.iv_left_homepage);
-        iv_right = view.findViewById(R.id.iv_right_homepage);
-        iv_enter = view.findViewById(R.id.iv_ok_homepage);
-        iv_back = view.findViewById(R.id.iv_back_homepage);
-        iv_home = view.findViewById(R.id.iv_home_homepage);
-        iv_rewind = view.findViewById(R.id.iv_rewind_homepage);
-        iv_pause = view.findViewById(R.id.iv_play_pause_homepage);
-        iv_forward = view.findViewById(R.id.iv_forward_homepage);
-        iv_refresh = view.findViewById(R.id.iv_backspace_homepage);
-        iv_menu = view.findViewById(R.id.iv_menu_homepage);
-        iv_volumeDown = view.findViewById(R.id.iv_volume_down_homepage);
-        iv_volumeMute = view.findViewById(R.id.iv_volume_mute_homepage);
-        iv_volumeUp = view.findViewById(R.id.iv_volume_up_homepage);
+        ll_channel.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // 按下时的操作
+                view_channel_coverBlack10.setVisibility(View.VISIBLE);
+                return true;
+            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                // 松开或取消时的操作
+                view_channel_coverBlack10.setVisibility(View.INVISIBLE);
+                onClick(ll_channel);
+                return true;
+            }
+            return false;
+        });
 
+        iv_up = view.findViewById(R.id.iv_up_homepage);
+        iv_up.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // 按下时的操作
+                iv_up.setBackgroundResource(R.mipmap.up_press);
+                return true;
+            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                // 松开或取消时的操作
+                iv_up.setBackgroundResource(R.mipmap.up);
+                onClick(iv_up);
+                return true;
+            }
+            return false;
+        });
+        iv_down = view.findViewById(R.id.iv_down_homepage);
+        iv_down.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // 按下时的操作
+                iv_down.setBackgroundResource(R.mipmap.down_press);
+                return true;
+            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                // 松开或取消时的操作
+                iv_down.setBackgroundResource(R.mipmap.down);
+                onClick(iv_down);
+                return true;
+            }
+            return false;
+        });
+        iv_left = view.findViewById(R.id.iv_left_homepage);
+        iv_left.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // 按下时的操作
+                iv_left.setBackgroundResource(R.mipmap.left_press);
+                return true;
+            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                // 松开或取消时的操作
+                iv_left.setBackgroundResource(R.mipmap.left);
+                onClick(iv_left);
+                return true;
+            }
+            return false;
+        });
+        iv_right = view.findViewById(R.id.iv_right_homepage);
+        iv_right.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // 按下时的操作
+                iv_right.setBackgroundResource(R.mipmap.right_press);
+                return true;
+            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                // 松开或取消时的操作
+                iv_right.setBackgroundResource(R.mipmap.right);
+                onClick(iv_right);
+                return true;
+            }
+            return false;
+        });
+        iv_enter = view.findViewById(R.id.iv_ok_homepage);
+
+        iv_enter.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // 按下时的操作
+                view_ok_coverBlack10.setVisibility(View.VISIBLE);
+                return true;
+            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                // 松开或取消时的操作
+                view_ok_coverBlack10.setVisibility(View.INVISIBLE);
+                onClick(iv_enter);
+                return true;
+            }
+            return false;
+        });
+
+        iv_back = view.findViewById(R.id.iv_back_homepage);
+        iv_back.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // 按下时的操作
+                view_back_coverBlack10.setVisibility(View.VISIBLE);
+                return true;
+            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                // 松开或取消时的操作
+                view_back_coverBlack10.setVisibility(View.INVISIBLE);
+                onClick(iv_back);
+                return true;
+            }
+            return false;
+        });
+        iv_home = view.findViewById(R.id.iv_home_homepage);
+        iv_home.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // 按下时的操作
+                view_home_coverBlack10.setVisibility(View.VISIBLE);
+                return true;
+            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                // 松开或取消时的操作
+                view_home_coverBlack10.setVisibility(View.INVISIBLE);
+                onClick(iv_home);
+                return true;
+            }
+            return false;
+        });
+        iv_rewind = view.findViewById(R.id.iv_rewind_homepage);
+        iv_rewind.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // 按下时的操作
+                view_rewind_coverBlack10.setVisibility(View.VISIBLE);
+                return true;
+            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                // 松开或取消时的操作
+                view_rewind_coverBlack10.setVisibility(View.INVISIBLE);
+                onClick(iv_rewind);
+                return true;
+            }
+            return false;
+        });
+        iv_pause = view.findViewById(R.id.iv_play_pause_homepage);
+        iv_pause.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // 按下时的操作
+                view_play_pause_coverBlack10.setVisibility(View.VISIBLE);
+                return true;
+            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                // 松开或取消时的操作
+                view_play_pause_coverBlack10.setVisibility(View.INVISIBLE);
+                onClick(iv_pause);
+                return true;
+            }
+            return false;
+        });
+        iv_forward = view.findViewById(R.id.iv_forward_homepage);
+        iv_forward.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // 按下时的操作
+                view_forward_coverBlack10.setVisibility(View.VISIBLE);
+                return true;
+            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                // 松开或取消时的操作
+                view_forward_coverBlack10.setVisibility(View.INVISIBLE);
+                onClick(iv_forward);
+                return true;
+            }
+            return false;
+        });
+        iv_refresh = view.findViewById(R.id.iv_backspace_homepage);
+        iv_refresh.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // 按下时的操作
+                view_backspace_coverBlack10.setVisibility(View.VISIBLE);
+                return true;
+            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                // 松开或取消时的操作
+                view_backspace_coverBlack10.setVisibility(View.INVISIBLE);
+                onClick(iv_refresh);
+                return true;
+            }
+            return false;
+        });
+        iv_menu = view.findViewById(R.id.iv_menu_homepage);
+        iv_menu.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // 按下时的操作
+                view_menu_coverBlack10.setVisibility(View.VISIBLE);
+                return true;
+            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                // 松开或取消时的操作
+                view_menu_coverBlack10.setVisibility(View.INVISIBLE);
+                onClick(iv_menu);
+                return true;
+            }
+            return false;
+        });
+        iv_volumeDown = view.findViewById(R.id.iv_volume_down_homepage);
+        iv_volumeDown.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // 按下时的操作
+                view_volume_down_coverBlack10.setVisibility(View.VISIBLE);
+                return true;
+            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                // 松开或取消时的操作
+                view_volume_down_coverBlack10.setVisibility(View.INVISIBLE);
+                onClick(iv_volumeDown);
+                return true;
+            }
+            return false;
+        });
+        iv_volumeMute = view.findViewById(R.id.iv_volume_mute_homepage);
+        iv_volumeMute.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // 按下时的操作
+                view_volume_mute_coverBlack10.setVisibility(View.VISIBLE);
+                return true;
+            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                // 松开或取消时的操作
+                view_volume_mute_coverBlack10.setVisibility(View.INVISIBLE);
+                onClick(iv_volumeMute);
+                return true;
+            }
+            return false;
+        });
+        iv_volumeUp = view.findViewById(R.id.iv_volume_up_homepage);
+        iv_volumeUp.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // 按下时的操作
+                view_volume_up_coverBlack10.setVisibility(View.VISIBLE);
+                return true;
+            } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                // 松开或取消时的操作
+                view_volume_up_coverBlack10.setVisibility(View.INVISIBLE);
+                onClick(iv_volumeUp);
+                return true;
+            }
+            return false;
+        });
         iv_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

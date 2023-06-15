@@ -4,11 +4,11 @@
     android:layout_height="150dp"
     android:background="@drawable/shape_loading_bg"
     android:layout_gravity="center">
-    <ImageView
+    <ProgressBar
         android:id="@+id/iv_loadingIcon"
         android:layout_width="49dp"
         android:layout_height="50dp"
-        android:src="@mipmap/loading_icon"
+        style="@style/MyProgressBar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
         />

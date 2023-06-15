@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.casttvandroiddemo.R;
 import com.example.casttvandroiddemo.WebViewActivity;
 import com.example.casttvandroiddemo.bean.CastVideoBean;
+import com.example.casttvandroiddemo.utils.ViewUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -114,7 +115,7 @@ public class CastVideoListAdapter extends RecyclerView.Adapter<CastVideoListAdap
                         mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                holder.iv_videoImage.setImageBitmap(bitmap);
+                                holder.iv_videoImage.setImageBitmap(ViewUtils.getRoundedCornerBitmap(bitmap, 100));
                             }
                         });
                     }

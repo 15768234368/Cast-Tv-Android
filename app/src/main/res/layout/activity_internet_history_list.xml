@@ -37,7 +37,7 @@
 
         <SearchView
             android:id="@+id/sv_search_historyList"
-            style="@style/CustomSearchViewStyle"
+            style="@style/CustomSearchStyle"
             android:layout_width="320dp"
             android:layout_height="50dp"
             android:layout_centerVertical="true"

@@ -34,7 +34,7 @@
 
         <SearchView
             android:id="@+id/searchView"
-            style="@style/CustomSearchViewStyle"
+            style="@style/CustomSearchStyle"
             android:layout_width="320dp"
             android:layout_height="56dp"
             android:layout_below="@id/ll_settingTop"

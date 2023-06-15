@@ -106,7 +106,7 @@ public class InternetHistoryList extends AppCompatActivity implements View.OnCli
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
                     //光标获取焦点
-                    layoutParams.width = dpToPx(280); // 初始宽度（单位为像素
+                    layoutParams.width = dpToPx(270); // 初始宽度（单位为像素
                     Log.d(TAG, "onFocusChange: " + "hasFocus");
                 } else {
                     //光标失去焦点

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -290,6 +291,7 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
     }
+    @SuppressLint("UseCompatLoadingForDrawables")
     public void showConnectDialog(){
         dialog = new Dialog(this);
         dialog.setCancelable(false);

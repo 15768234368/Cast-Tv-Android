@@ -242,5 +242,10 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
     public ViewTreeObserver.OnGlobalLayoutListener getKeyboardLayoutListener() {
         return keyboardLayoutListener;
     }
-
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        String FRAGMENTS_TAG = "android:support:fragments";
+        outState.remove(FRAGMENTS_TAG);
+    }
 }

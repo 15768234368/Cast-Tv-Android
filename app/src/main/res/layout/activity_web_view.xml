@@ -9,7 +9,7 @@
 
     <SearchView
         android:id="@+id/searchView"
-        style="@style/CustomSearchViewStyle"
+        style="@style/CustomSearchStyle"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginStart="10dp"
@@ -54,7 +54,7 @@
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:layout_height="wrap_content"
-                android:text="检测到投屏内容，点击后进行投屏"
+                android:text="@string/found_the_screencast_content_click_to_cast_the_screen"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="16dp"
                 android:textColor="#FF202020"
@@ -64,7 +64,7 @@
                 android:id="@+id/tv_closeCastContentTip"
                 android:layout_width="72dp"
                 android:layout_height="24dp"
-                android:text="知道了"
+                android:text="@string/got_it"
                 android:textSize="10sp"
                 android:textColor="#FF0BBD6A"
                 android:layout_below="@id/tv_castTip"
