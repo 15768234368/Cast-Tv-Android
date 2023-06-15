@@ -7,11 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,6 +23,7 @@ import com.example.casttvandroiddemo.bean.DeviceBean;
 import com.example.casttvandroiddemo.helper.DeviceManageHelper;
 import com.example.casttvandroiddemo.utils.OnlineDeviceUtils;
 import com.example.casttvandroiddemo.utils.RemoteUtils;
+import com.example.casttvandroiddemo.utils.ViewUtils;
 
 import java.io.IOException;
 
@@ -41,6 +45,14 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
     public String RokuLocation = FragmentRemoteControl.RokuLocation;
     public String RokuLocationUrl = FragmentRemoteControl.RokuLocationUrl;
     private Vibrator vibrator;
+    private View coverView;
+    private ViewTreeObserver.OnGlobalLayoutListener keyboardLayoutListener;
+
+    //键盘弹出的变量
+    private LinearLayout ll_edit;
+    private EditText et_edit;
+    private ImageView iv_edit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +61,12 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
     }
 
     private void initView() {
+
+        ll_edit = (LinearLayout) findViewById(R.id.ll_keyboard_edit_homepage);
+        et_edit = (EditText) findViewById(R.id.et_keyboard_edit_homepage);
+        iv_edit = (ImageView) findViewById(R.id.iv_keyboard_edit_homepage);
+        coverView = findViewById(R.id.view_coverBlack80);
+
         iv_close = findViewById(R.id.iv_close_homepage);
         iv_isConnect = findViewById(R.id.iv_isConnected);
         iv_disconnect = findViewById(R.id.iv_disconnect_homepage);
@@ -94,6 +112,79 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
 
         vibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
 
+
+        //设置全局监听
+        keyboardLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                getWindow().getDecorView().getWindowVisibleDisplayFrame(r);
+                int screenHeight = getWindow().getDecorView().getRootView().getHeight();
+
+                int keyboardHeight = screenHeight - r.bottom;
+                boolean isKeyboardOpen = keyboardHeight > screenHeight * 0.15;
+
+                // 根据键盘的显示/隐藏状态进行相应的处理
+                if (isKeyboardOpen) {
+                    // 键盘显示时的处理逻辑
+                    ll_edit.setVisibility(View.VISIBLE);
+                    coverView.setVisibility(View.VISIBLE);
+                    setEnabled(false);
+                } else {
+                    // 键盘隐藏时的处理逻辑
+                    ll_edit.setVisibility(View.INVISIBLE);
+                    coverView.setVisibility(View.INVISIBLE);
+                    setEnabled(true);
+                }
+            }
+        };
+        getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener(keyboardLayoutListener);
+
+        //设置收起键盘的监听器
+        iv_edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                et_edit.setText("");
+                if (coverView != null)
+                    coverView.setVisibility(View.INVISIBLE);
+            }
+
+
+        });
+
+        //设置EditText的监听器
+        ViewUtils.setEditViewLimit(et_edit);
+    }
+
+    private void setEnabled(boolean flag) {
+        findViewById(R.id.iv_disconnect_homepage).setEnabled(flag);
+        findViewById(R.id.tv_select_device_homepage).setEnabled(flag);
+        findViewById(R.id.ll_keyboard_homepage).setEnabled(flag);
+        findViewById(R.id.ll_channel_homepage).setEnabled(flag);
+        findViewById(R.id.iv_up_homepage).setEnabled(flag);
+        findViewById(R.id.iv_down_homepage).setEnabled(flag);
+        findViewById(R.id.iv_left_homepage).setEnabled(flag);
+        findViewById(R.id.iv_right_homepage).setEnabled(flag);
+        findViewById(R.id.iv_ok_homepage).setEnabled(flag);
+        findViewById(R.id.iv_back_homepage).setEnabled(flag);
+        findViewById(R.id.iv_home_homepage).setEnabled(flag);
+        findViewById(R.id.iv_rewind_homepage).setEnabled(flag);
+        findViewById(R.id.iv_play_pause_homepage).setEnabled(flag);
+        findViewById(R.id.iv_forward_homepage).setEnabled(flag);
+        findViewById(R.id.iv_backspace_homepage).setEnabled(flag);
+        findViewById(R.id.iv_menu_homepage).setEnabled(flag);
+        findViewById(R.id.iv_volume_down_homepage).setEnabled(flag);
+        findViewById(R.id.iv_volume_mute_homepage).setEnabled(flag);
+        findViewById(R.id.iv_volume_up_homepage).setEnabled(flag);
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        getWindow().getDecorView().getViewTreeObserver().removeOnGlobalLayoutListener(keyboardLayoutListener);
+        super.onDestroy();
     }
 
     @Override
@@ -101,18 +192,20 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
         if (SettingActivity.isVibrator && vibrator != null && vibrator.hasVibrator()) {
             vibrator.vibrate(20L);
         }
-        if(RokuLocation == null){
+        if (RokuLocation == null) {
             DeviceManageHelper helper = new DeviceManageHelper(this);
             SQLiteDatabase db = helper.getReadableDatabase();
             Cursor cursor = db.query(DeviceManageHelper.TABLE_HISTORY, null, null, null, null, null, null);
-            if(cursor.getCount() <= 0){
+            if (cursor.getCount() <= 0) {
                 Intent intent = new Intent(this, DeviceAdd.class);
                 startActivity(intent);
-            }else{
+            } else {
                 Intent intent = new Intent(this, DeviceManage.class);
                 startActivity(intent);
             }
-            return ;
+            cursor.close();
+            db.close();
+            return;
         }
         switch (v.getId()) {
             case R.id.iv_close_homepage:
@@ -128,6 +221,7 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
             case R.id.ll_keyboard_homepage:
                 InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                coverView.setVisibility(View.VISIBLE);
                 break;
             case R.id.ll_channel_homepage:
                 launchChannel();
@@ -179,6 +273,13 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
                 break;
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+    }
+
     private void launchChannel() {
         OkHttpClient client = new OkHttpClient();
         String url = RokuLocationUrl + "query/apps";
@@ -209,6 +310,7 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
             }
         });
     }
+
     @Override
     public void onResume() {
         RokuLocation = FragmentRemoteControl.RokuLocation;
@@ -221,7 +323,6 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
         Log.d(TAG, "onResume: " + RokuLocationUrl);
         super.onResume();
     }
-
 
 
     private void setConnectionStatus(boolean flag) {

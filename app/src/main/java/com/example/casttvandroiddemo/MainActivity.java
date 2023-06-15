@@ -16,6 +16,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -133,11 +134,12 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
                     // 键盘显示时的处理逻辑
                     ll_navigate.setVisibility(View.INVISIBLE);
                     ll_edit.setVisibility(View.VISIBLE);
-                    et_edit.requestFocus();
+                    setEnabled(false);
                 } else {
                     // 键盘隐藏时的处理逻辑
                     ll_navigate.setVisibility(View.VISIBLE);
                     ll_edit.setVisibility(View.INVISIBLE);
+                    setEnabled(true);
                 }
             }
         };
@@ -149,28 +151,16 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 et_edit.setText("");
-                if(fragmentRemoteControl != null){
+                if (fragmentRemoteControl != null) {
                     View CoverView = fragmentRemoteControl.getView().findViewById(R.id.view_coverBlack80);
-                    if(CoverView != null)
+                    if (CoverView != null)
                         CoverView.setVisibility(View.INVISIBLE);
                 }
 
             }
         });
     }
-    private void hideKeyboard() {
-        if (getCurrentFocus() != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        }
-        // 如果当前显示的是 FragmentRemoteControl，隐藏黑色遮罩层
-        if (fragmentRemoteControl != null && fragmentRemoteControl.isVisible()) {
-            View coverView = fragmentRemoteControl.getView().findViewById(R.id.view_coverBlack80);
-            if (coverView != null) {
-                coverView.setVisibility(View.INVISIBLE);
-            }
-        }
-    }
+
 
 
     private void selectTab(int containerNum) {
@@ -257,6 +247,7 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
     public ViewTreeObserver.OnGlobalLayoutListener getKeyboardLayoutListener() {
         return keyboardLayoutListener;
     }
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -264,5 +255,59 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
         outState.remove(FRAGMENTS_TAG);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: ");
+        closeKeyBoard();
+    }
 
+    public void closeKeyBoard(){
+        Rect r = new Rect();
+        getWindow().getDecorView().getWindowVisibleDisplayFrame(r);
+        int screenHeight = getWindow().getDecorView().getRootView().getHeight();
+
+        int keyboardHeight = screenHeight - r.bottom;
+        boolean isKeyboardOpen = keyboardHeight > screenHeight * 0.15;
+
+        // 根据键盘的显示/隐藏状态进行相应的处理
+        if (isKeyboardOpen) {
+            ll_navigate.setVisibility(View.VISIBLE);
+            ll_edit.setVisibility(View.INVISIBLE);
+            et_edit.clearFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(ll_edit.getWindowToken(), 0);
+
+            if (fragmentRemoteControl != null) {
+                View CoverView = fragmentRemoteControl.getView().findViewById(R.id.view_coverBlack80);
+                if (CoverView != null)
+                    CoverView.setVisibility(View.INVISIBLE);
+            }
+        }
+    }
+
+    private void setEnabled(boolean flag) {
+        if(fragmentRemoteControl != null) {
+            fragmentRemoteControl.getView().findViewById(R.id.iv_disconnect_homepage).setEnabled(flag);
+            fragmentRemoteControl.getView().findViewById(R.id.tv_select_device_homepage).setEnabled(flag);
+            fragmentRemoteControl.getView().findViewById(R.id.ll_keyboard_homepage).setEnabled(flag);
+            fragmentRemoteControl.getView().findViewById(R.id.ll_channel_homepage).setEnabled(flag);
+            fragmentRemoteControl.getView().findViewById(R.id.iv_up_homepage).setEnabled(flag);
+            fragmentRemoteControl.getView().findViewById(R.id.iv_down_homepage).setEnabled(flag);
+            fragmentRemoteControl.getView().findViewById(R.id.iv_left_homepage).setEnabled(flag);
+            fragmentRemoteControl.getView().findViewById(R.id.iv_right_homepage).setEnabled(flag);
+            fragmentRemoteControl.getView().findViewById(R.id.iv_ok_homepage).setEnabled(flag);
+            fragmentRemoteControl.getView().findViewById(R.id.iv_back_homepage).setEnabled(flag);
+            fragmentRemoteControl.getView().findViewById(R.id.iv_home_homepage).setEnabled(flag);
+            fragmentRemoteControl.getView().findViewById(R.id.iv_rewind_homepage).setEnabled(flag);
+            fragmentRemoteControl.getView().findViewById(R.id.iv_play_pause_homepage).setEnabled(flag);
+            fragmentRemoteControl.getView().findViewById(R.id.iv_forward_homepage).setEnabled(flag);
+            fragmentRemoteControl.getView().findViewById(R.id.iv_backspace_homepage).setEnabled(flag);
+            fragmentRemoteControl.getView().findViewById(R.id.iv_menu_homepage).setEnabled(flag);
+            fragmentRemoteControl.getView().findViewById(R.id.iv_volume_down_homepage).setEnabled(flag);
+            fragmentRemoteControl.getView().findViewById(R.id.iv_volume_mute_homepage).setEnabled(flag);
+            fragmentRemoteControl.getView().findViewById(R.id.iv_volume_up_homepage).setEnabled(flag);
+        }
+
+    }
 }

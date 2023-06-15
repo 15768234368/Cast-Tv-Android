@@ -29,8 +29,8 @@
             android:textStyle="bold" />
     </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/iv_video_closed_captioning_setting"
+    <VideoView
+        android:id="@+id/video_closed_captioning_setting"
         android:layout_width="328dp"
         android:layout_height="176dp"
         android:layout_below="@id/rl_topTitle"
@@ -42,9 +42,9 @@
         android:id="@+id/tv_title1"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
-        android:layout_below="@id/iv_video_closed_captioning_setting"
-        android:layout_alignStart="@id/iv_video_closed_captioning_setting"
-        android:layout_alignEnd="@id/iv_video_closed_captioning_setting"
+        android:layout_below="@id/video_closed_captioning_setting"
+        android:layout_alignStart="@id/video_closed_captioning_setting"
+        android:layout_alignEnd="@id/video_closed_captioning_setting"
         android:layout_marginTop="32dp"
         android:text="@string/_1_turn_on_your_roku_device_and_go_to_settings"
         android:textColor="#FF202020"

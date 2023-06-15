@@ -111,4 +111,10 @@ public class FragmentInternet extends Fragment {
         super.onResume();
         Log.d(TAG, "onResume: " + RokuLocationUrl);
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        searchView.clearFocus();
+    }
 }

@@ -86,6 +86,12 @@ public class OnlineDeviceUtils {
                     socket.close();
                     if (responseList.size() > 0) {
                         processDeviceResponses(responseList);
+                    }else{
+                        //测试
+                        mRokuLocation_onLine.add("123");
+                        mDeviceData_onLine.add(new DeviceBean("123","123","123","123"));
+                        if(onConnectedListener != null)
+                            onConnectedListener.autoConnect();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

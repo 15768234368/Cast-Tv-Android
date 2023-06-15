@@ -55,6 +55,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
     public static DeviceBean ConnectingDevice;
     public static String RokuLocation = null;
     public static String RokuLocationUrl = RemoteUtils.getRokuLocationUrl(RokuLocation);
+    private EditText et_keyboard;
     private Vibrator vibrator;
     private View coverView;
     private View view_disconnect_coverBlack10, view_keyboard_coverBlack10, view_channel_coverBlack10;
@@ -88,6 +89,8 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
 
     @SuppressLint("ClickableViewAccessibility")
     private void initView() {
+        et_keyboard = view.findViewById(R.id.et_keyboard_edit_homepage);
+
         view_disconnect_coverBlack10 = view.findViewById(R.id.view_disconnect_coverBlack10);
         view_keyboard_coverBlack10 = view.findViewById(R.id.view_keyboard_coverBlack10);
         view_channel_coverBlack10 = view.findViewById(R.id.view_channel_coverBlack10);
@@ -487,6 +490,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
         }
     }
 
+
     private void launchChannel() {
         OkHttpClient client = new OkHttpClient();
         String url = RokuLocationUrl + "query/apps";
@@ -521,6 +525,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
 
     @Override
     public void onResume() {
+
         setConnectionStatus(RokuLocation != null);
         Log.d(TAG, "onResume: " + RokuLocationUrl);
         super.onResume();
@@ -544,5 +549,8 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
         }
     }
 
-
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
 }
