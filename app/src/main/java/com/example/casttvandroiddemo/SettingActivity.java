@@ -13,6 +13,8 @@ import android.widget.Switch;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import me.jessyan.autosize.AutoSizeConfig;
+
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "SettingActivity";
     private Switch aSwitch;
@@ -47,6 +49,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         rl_userPolicy.setOnClickListener(this);
         iv_back.setOnClickListener(this);
         aSwitch.setChecked(isVibrator);
+
     }
 
     @Override

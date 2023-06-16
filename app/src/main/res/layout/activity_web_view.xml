@@ -18,13 +18,20 @@
         android:background="@drawable/search_shape"
         android:iconifiedByDefault="false"
         android:queryHint="@string/Search_or_enter_a_URL" />
-
-
-    <RelativeLayout
+    <ProgressBar
+        android:id="@+id/progress_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="2dp"
+        android:progressDrawable="@drawable/progress_bar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_below="@id/searchView"
         android:layout_marginTop="8dp"
+        />
+    <RelativeLayout
+        android:id="@+id/rl_webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/progress_bar"
         android:orientation="vertical">
 
         <WebView
@@ -32,7 +39,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
-            android:layout_above="@id/ll_bottomLine" />
+            android:layout_above="@id/ll_bottomLine"
+/>
         <View
             android:id="@+id/view_detectCastBg"
             android:layout_width="match_parent"

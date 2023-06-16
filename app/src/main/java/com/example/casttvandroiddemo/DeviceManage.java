@@ -29,6 +29,7 @@ import com.example.casttvandroiddemo.adapter.HistoryConnectedDeviceAdapter;
 import com.example.casttvandroiddemo.bean.DeviceBean;
 import com.example.casttvandroiddemo.helper.DeviceManageHelper;
 import com.example.casttvandroiddemo.utils.OnlineDeviceUtils;
+import com.example.casttvandroiddemo.utils.RemoteUtils;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -55,6 +56,7 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message message) {
+            iv_refresh.setVisibility(View.VISIBLE);
             if (adapter != null)
                 adapter.notifyDataSetChanged();
             dialog.cancel();
@@ -102,6 +104,7 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         setContentViewBaseToData();
     }
 
@@ -174,6 +177,7 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
                         if (position == i && mData.get(i).getIsOnline() != 0) {
                             mData.get(i).setIsOnline(1);
                             FragmentRemoteControl.RokuLocation = mData.get(i).getUserDeviceIpAddress();
+                            FragmentRemoteControl.RokuLocationUrl = RemoteUtils.getRokuLocationUrl(FragmentRemoteControl.RokuLocation);
                             try {
                                 FragmentRemoteControl.ConnectingDevice = (DeviceBean) mData.get(i).clone();
                             } catch (CloneNotSupportedException e) {
@@ -224,11 +228,12 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
 
     public void refresh() {
         mData.clear();
+        loadData();
+        iv_refresh.setVisibility(View.INVISIBLE);
         showRefreshDialog();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                loadData();
                 handler.sendMessageDelayed(new Message(), 1000);
             }
         }).start();

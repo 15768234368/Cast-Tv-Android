@@ -1,5 +1,6 @@
 package com.example.casttvandroiddemo;
 
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -33,6 +34,8 @@ import com.example.casttvandroiddemo.utils.OnlineDeviceUtils;
 import com.example.casttvandroiddemo.utils.RemoteUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -72,10 +75,23 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
 
     public void setBackEvent() {
         if (OnlineDeviceUtils.mDeviceData_onLine.size() > 0) {
-            DeviceBean bean = OnlineDeviceUtils.mDeviceData_onLine.get(0);
-            RokuLocation = bean.getUserDeviceIpAddress();
-            RokuLocationUrl = RemoteUtils.getRokuLocationUrl(RokuLocation);
-            ConnectingDevice = bean;
+            DeviceManageHelper helper = new DeviceManageHelper(getContext());
+            SQLiteDatabase db = helper.getReadableDatabase();
+            Cursor cursor = null;
+            for (DeviceBean bean : OnlineDeviceUtils.mDeviceData_onLine) {
+                cursor = db.query(DeviceManageHelper.TABLE_HISTORY, null, DeviceManageHelper.USER_DEVICE_UDN + "=?", new String[]{bean.getUserDeviceUDN()}, null, null, null, null);
+                if (cursor.getCount() > 0) {
+                    RokuLocation = bean.getUserDeviceIpAddress();
+                    RokuLocationUrl = RemoteUtils.getRokuLocationUrl(RokuLocation);
+                    ConnectingDevice = bean;
+                    break;
+                }
+            }
+            if (cursor != null)
+                cursor.close();
+            if (db != null)
+                db.close();
+
         }
     }
 
@@ -405,6 +421,16 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
                 });
             }
         });
+//
+//        coverView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                Log.d(TAG, "onTouch: ");
+//                return false;
+//
+//            }
+//        });
+
     }
 
     @Override
@@ -553,4 +579,6 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
     public void onPause() {
         super.onPause();
     }
+
+
 }

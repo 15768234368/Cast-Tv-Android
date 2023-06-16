@@ -1,12 +1,7 @@
 package com.example.casttvandroiddemo.utils;
 
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
-import com.example.casttvandroiddemo.FragmentRemoteControl;
 import com.example.casttvandroiddemo.bean.DeviceBean;
 
 import org.w3c.dom.Document;
@@ -86,13 +81,14 @@ public class OnlineDeviceUtils {
                     socket.close();
                     if (responseList.size() > 0) {
                         processDeviceResponses(responseList);
-                    }else{
-                        //测试
-                        mRokuLocation_onLine.add("123");
-                        mDeviceData_onLine.add(new DeviceBean("123","123","123","123"));
-                        if(onConnectedListener != null)
-                            onConnectedListener.autoConnect();
                     }
+//                    else{
+//                        //测试
+//                        mRokuLocation_onLine.add("123");
+//                        mDeviceData_onLine.add(new DeviceBean("123","123","123","123"));
+//                        if(onConnectedListener != null)
+//                            onConnectedListener.autoConnect();
+//                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

@@ -41,6 +41,7 @@ import com.example.casttvandroiddemo.adapter.AddDeviceListAdapter;
 import com.example.casttvandroiddemo.bean.DeviceBean;
 import com.example.casttvandroiddemo.helper.DeviceManageHelper;
 import com.example.casttvandroiddemo.utils.OnlineDeviceUtils;
+import com.example.casttvandroiddemo.utils.RemoteUtils;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -85,6 +86,7 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
     private List<String> mRokuLocation = new ArrayList<>(OnlineDeviceUtils.mRokuLocation_onLine);
     private List<DeviceBean> mDeviceData = new ArrayList<>(OnlineDeviceUtils.mDeviceData_onLine);
     private RecyclerView recyclerView;
+    private AddDeviceListAdapter adapter;
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message message) {
@@ -129,26 +131,33 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
 
                 } else {
                     Log.d(TAG, "handleMessage: " + "time is overed");
-                    setUndetected();
                     timer.cancel();
+                    setUndetected();
                 }
             } else if (message.what == 1) {
+                if (btn_research.getVisibility() == View.VISIBLE)
+                    btn_research.setVisibility(View.INVISIBLE);
                 iv_refresh.setVisibility(View.VISIBLE);
                 //展示搜索到了的列表
                 Log.d(TAG, "handleMessage: " + "message is 1");
                 showScannedDeviceList();
-                if(dialog != null)
+                if (dialog != null)
                     dialog.cancel();
             }
             return false;
         }
     });
     private Dialog dialog = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_add);
+        mDeviceData.clear();
+        mRokuLocation.clear();
         initView();
+        searchDevice();
+
     }
 
     private void initView() {
@@ -164,7 +173,7 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
         iv_refresh.setOnClickListener(this);
         btn_research.setOnClickListener(this);
         btn_goToSetting.setOnClickListener(this);
-
+        adapter = new AddDeviceListAdapter(this, mDeviceData);
     }
 
     private void searchDevice() {
@@ -230,6 +239,7 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
     }
 
     public void showScannedDeviceList() {
+        Log.d(TAG, "showScannedDeviceList: " + mDeviceData.size());
         timer.cancel();
         //将其他控件销毁
         iv_searchImage.setVisibility(View.INVISIBLE);
@@ -240,7 +250,6 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
         //展示已搜索到设备列表
         recyclerView.setVisibility(View.VISIBLE);
         iv_refresh.setVisibility(View.VISIBLE);
-        AddDeviceListAdapter adapter = new AddDeviceListAdapter(this, mDeviceData);
         adapter.setOnItemClickListener(new AddDeviceListAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(View view, int position) {
@@ -248,6 +257,7 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
                 showConnectDialog();
 
                 FragmentRemoteControl.RokuLocation = mDeviceData.get(position).getUserDeviceIpAddress();
+                FragmentRemoteControl.RokuLocationUrl = RemoteUtils.getRokuLocationUrl(FragmentRemoteControl.RokuLocation);
                 try {
                     FragmentRemoteControl.ConnectingDevice = (DeviceBean) mDeviceData.get(position).clone();
                 } catch (CloneNotSupportedException e) {
@@ -280,19 +290,21 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if(dialog.isShowing()){
+                        if (dialog.isShowing()) {
                             dialog.cancel();
                             finish();
                         }
                     }
-                },2000);
+                }, 2000);
             }
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
+
     @SuppressLint("UseCompatLoadingForDrawables")
-    public void showConnectDialog(){
+    public void showConnectDialog() {
         dialog = new Dialog(this);
         dialog.setCancelable(false);
         dialog.setContentView(R.layout.dialog_connecting);
@@ -306,7 +318,8 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
         });
         dialog.show();
     }
-    public void showRefreshDialog(){
+
+    public void showRefreshDialog() {
         iv_refresh.setVisibility(View.INVISIBLE);
         dialog = new Dialog(this);
         dialog.setCancelable(false);
@@ -321,12 +334,18 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
         });
         dialog.show();
     }
+
     @Override
     protected void onResume() {
+        Log.d(TAG, "onResume: ");
         super.onResume();
-        mDeviceData.clear();
-        mRokuLocation.clear();
-        searchDevice();
+        adapter.notifyDataSetChanged();
+        if(recyclerView != null && mDeviceData.size() > 0){
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+        }
+
     }
 
     public void findDevice() {
@@ -397,9 +416,9 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
 //            mDeviceData.add(new DeviceBean(id, id, id));
 //            mRokuLocation.add(id);
 //        }
-        Message message = new Message();
-        message.what = 1;
-        handler.sendMessageDelayed(message, 3000);
+//        Message message = new Message();
+//        message.what = 1;
+//        handler.sendMessageDelayed(message, 3000);
 
     }
 
@@ -409,6 +428,7 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
         OnlineDeviceUtils.mDeviceData_onLine = mDeviceData;
         OnlineDeviceUtils.mRokuLocation_onLine = mRokuLocation;
     }
+
     public void getDeviceInfo(List<String> LocationList) {
         for (String item : LocationList) {
             String url = item + "query/device-info";
@@ -427,7 +447,6 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     String responseBody = response.body().string();
-                    Log.d(TAG, "onResponse: " + responseBody);
                     String[] info = getInfoFromXML(responseBody);
                     String ipAddress = null;
                     //使用正则表达式提取出ip地址
@@ -445,8 +464,12 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
                             break;
                         }
                     }
-                    if (i >= mDeviceData.size())
+                    if (i >= mDeviceData.size()){
                         mDeviceData.add(new DeviceBean(info[0], info[1], info[2], ipAddress));
+                        Message message = new Message();
+                        message.what = 1;
+                        handler.sendMessageDelayed(message, 3000);
+                    }
                 }
             });
         }

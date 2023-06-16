@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.casttvandroiddemo.utils.IntentUtils;
 import com.example.casttvandroiddemo.utils.OnlineDeviceUtils;
 
+import me.jessyan.autosize.AutoSizeConfig;
+
 public class StartActivity extends AppCompatActivity {
     Handler handler = new Handler();
     Context context = (Context) this;
@@ -24,17 +26,19 @@ public class StartActivity extends AppCompatActivity {
     private final Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            if(isAccept()){
+            if (isAccept()) {
                 IntentUtils.goToActivity(context, MainActivity.class);
 
-            }else{
+            } else {
                 showCustomDialog();
             }
         }
     };
     private Dialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
@@ -58,7 +62,7 @@ public class StartActivity extends AppCompatActivity {
         tv_accept = (TextView) findViewById(R.id.tv_accept);
     }
 
-    public void showCustomDialog(){
+    public void showCustomDialog() {
         //创建自定义弹窗
         dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_privacy_agreement);
@@ -86,10 +90,12 @@ public class StartActivity extends AppCompatActivity {
             }
         });
     }
-    public void closeDialog(){
+
+    public void closeDialog() {
         dialog.dismiss();
     }
-    public boolean isAccept(){
+
+    public boolean isAccept() {
         SharedPreferences sp = getSharedPreferences("agreement", MODE_PRIVATE);
         String flag = sp.getString(key, "");
         return !flag.equals("");

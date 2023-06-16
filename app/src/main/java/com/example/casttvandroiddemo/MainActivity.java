@@ -1,29 +1,25 @@
 package com.example.casttvandroiddemo;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.content.Context;
-import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.InputFilter;
-import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.casttvandroiddemo.utils.StringUtils;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.example.casttvandroiddemo.utils.ViewUtils;
 
 import java.io.IOException;
@@ -50,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
     private LinearLayout ll_edit, ll_navigate;
     private EditText et_edit;
     private ImageView iv_edit;
+    private int isResume = 0;
     private ViewTreeObserver.OnGlobalLayoutListener keyboardLayoutListener;
 
     @Override
@@ -58,7 +55,10 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
         setContentView(R.layout.activity_main);
         initView();
         selectTab(0);
+
+
     }
+
 
     private void initView() {
         iv_remoteControl = findViewById(R.id.iv_remote_homepage);
@@ -131,10 +131,25 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
 
                 // 根据键盘的显示/隐藏状态进行相应的处理
                 if (isKeyboardOpen) {
+                    if(isResume != 1){
+                        et_edit.requestFocus();
+                    }
+                    isResume = 0;
                     // 键盘显示时的处理逻辑
                     ll_navigate.setVisibility(View.INVISIBLE);
                     ll_edit.setVisibility(View.VISIBLE);
                     setEnabled(false);
+
+                    if (fragmentRemoteControl != null) {
+                        fragmentRemoteControl.getView().findViewById(R.id.view_coverBlack80).setOnTouchListener(new View.OnTouchListener() {
+                            @Override
+                            public boolean onTouch(View v, MotionEvent event) {
+                                Log.d(TAG, "onTouch: ");
+                                et_edit.clearFocus();
+                                return false;
+                            }
+                        });
+                    }
                 } else {
                     // 键盘隐藏时的处理逻辑
                     ll_navigate.setVisibility(View.VISIBLE);
@@ -159,9 +174,17 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
 
             }
         });
+        et_edit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                Log.d(TAG, "onFocusChange: " + hasFocus);
+                if (!hasFocus) {
+                    closeKeyBoard();
+                }
+            }
+        });
+
     }
-
-
 
     private void selectTab(int containerNum) {
         FragmentManager manager = getSupportFragmentManager();
@@ -257,12 +280,14 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
 
     @Override
     protected void onPause() {
+        isResume = 1;
+        et_edit.clearFocus();
         super.onPause();
-        Log.d(TAG, "onPause: ");
-        closeKeyBoard();
+
     }
 
-    public void closeKeyBoard(){
+
+    public void closeKeyBoard() {
         Rect r = new Rect();
         getWindow().getDecorView().getWindowVisibleDisplayFrame(r);
         int screenHeight = getWindow().getDecorView().getRootView().getHeight();
@@ -287,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
     }
 
     private void setEnabled(boolean flag) {
-        if(fragmentRemoteControl != null) {
+        if (fragmentRemoteControl != null) {
             fragmentRemoteControl.getView().findViewById(R.id.iv_disconnect_homepage).setEnabled(flag);
             fragmentRemoteControl.getView().findViewById(R.id.tv_select_device_homepage).setEnabled(flag);
             fragmentRemoteControl.getView().findViewById(R.id.ll_keyboard_homepage).setEnabled(flag);
@@ -310,4 +335,5 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
         }
 
     }
+
 }

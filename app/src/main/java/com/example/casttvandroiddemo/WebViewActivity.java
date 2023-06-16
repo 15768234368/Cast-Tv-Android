@@ -22,6 +22,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -65,6 +66,7 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
     private View view_detectCastBg;
     private TextView tv_closeCastContentTip;
     public static List<CastVideoBean> mVideoBean = new ArrayList<>();
+    public ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +116,7 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
     });
 
     private void initView() {
-
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         webView = (WebView) findViewById(R.id.webView);
         setWebViewSetting();
         searchView = (SearchView) findViewById(R.id.searchView);
@@ -166,16 +168,15 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         webView.getSettings().setBuiltInZoomControls(true);
 
         webView.setWebViewClient(new WebViewClient() {
-
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                //页面开始加载时的操作
             }
 
 
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 //加载页面出错的操作
+
                 Log.d(TAG, "onReceivedError: " + error.toString());
             }
 
@@ -193,8 +194,22 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                 return true;
             }
 
+
         });
         webView.setWebChromeClient(new WebChromeClient() {
+            private ProgressBar progressBar = WebViewActivity.this.progressBar;
+
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                Log.d(TAG, "onProgressChanged: "+ newProgress);
+                progressBar.setProgress(newProgress);
+                if(progressBar.getProgress() >= 0 && progressBar.getProgress() < 100)
+                    progressBar.setVisibility(View.VISIBLE);
+                if(progressBar.getProgress() >= 100)
+                    progressBar.setVisibility(View.INVISIBLE);
+            }
+
             @Override
             public void onReceivedTitle(WebView view, String title) {
                 super.onReceivedTitle(view, title);
@@ -231,9 +246,9 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
             public boolean onQueryTextSubmit(String s) {
                 if (s.startsWith("https://") || s.startsWith("http://")) {
                     webView.loadUrl(s);
-                } else if(s.startsWith("www")) {
+                } else if (s.startsWith("www")) {
                     webView.loadUrl("https://" + s);
-                }else{
+                } else {
                     String newUrl = "https://www.google.com/search?q=" + s;
                     Log.d(TAG, "onQueryTextSubmit: " + newUrl);
                     webView.loadUrl(newUrl);
@@ -528,7 +543,6 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.iv_remote_browserCast:
                 IntentUtils.goToActivity(this, RemoteControlActivity.class);
-                finish();
                 break;
             case R.id.tv_closeCastContentTip:
                 closeDetectCastTip();
@@ -541,6 +555,7 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
     protected void onDestroy() {
         super.onDestroy();
         mVideoBean.clear();
+        Log.d(TAG, "onDestroy: ");
     }
 }
 

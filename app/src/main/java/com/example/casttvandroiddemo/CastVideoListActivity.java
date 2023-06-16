@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ public class CastVideoListActivity extends AppCompatActivity {
     private ImageView iv_back;
     private TextView tv_castVideoCnt;
     private CastVideoListAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +62,15 @@ public class CastVideoListActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new CastVideoListAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(View view, int position) {
+                //判断是否有网络连接，有则判断是否存在投屏频道，无则跳转连接
+                if (FragmentRemoteControl.RokuLocation == null) {
+                    Intent intent = new Intent(getApplicationContext(), DeviceManage.class);
+                    startActivity(intent);
+                    return ;
+                }
+
+
+                //判读是否存在该频道，有则投屏，无则跳转安装
                 RemoteUtils.isExistsChannelToCast(FragmentRemoteControl.RokuLocationUrl, new RemoteUtils.ChannelLaunchCallback() {
                     @Override
                     public void onChannelLaunchResult(boolean isInstall) {
@@ -75,6 +86,8 @@ public class CastVideoListActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+
             }
         });
         rv_castVideoList.setLayoutManager(new LinearLayoutManager(this));
@@ -96,7 +109,7 @@ public class CastVideoListActivity extends AppCompatActivity {
                     public void run() {
                         dialog.cancel();
                     }
-                },1000);
+                }, 1000);
             }
         });
     }
