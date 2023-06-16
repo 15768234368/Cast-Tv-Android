@@ -118,7 +118,7 @@
         android:layout_width="120dp"
         android:layout_height="50dp"
         android:background="@drawable/shape_btn_research"
-        android:text="@string/Settings"
+        android:text="@string/add_device"
         android:textColor="#FFFFFFFF"
         android:textSize="14sp"
         android:layout_below="@id/tv_common_device_title2"

@@ -137,7 +137,7 @@ public class CastVideoListActivity extends AppCompatActivity {
         dialog.findViewById(R.id.tv_determineInstall_channelDialog).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "install/698776");//未存在该频道，需要安装
+                RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "install/706370");//未存在该频道，需要安装
                 dialog.cancel();
             }
         });

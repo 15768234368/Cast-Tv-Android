@@ -22,7 +22,7 @@ public class RemoteUtils {
     private static final String TAG = "RemoteUtils";
 
     public static void castToTv(String RokuLocationUrl, String realVideoUrl) throws UnsupportedEncodingException {
-        String getUrl = RokuLocationUrl + "input/698776?url=" + URLEncoder.encode(realVideoUrl, "UTF-8") + "&t=v&name=video&format=Default";
+        String getUrl = RokuLocationUrl + "input/706370?url=" + URLEncoder.encode(realVideoUrl, "UTF-8") + "&t=v&name=video&format=Default";
         Request request = new Request.Builder()
                 .url(getUrl)
                 .post(RequestBody.create(MediaType.parse("application/json"), ""))
@@ -64,7 +64,7 @@ public class RemoteUtils {
                 String[] lines = channelXml.split("\n");
                 boolean isInstall = false;
                 for (String line : lines) {
-                    if (line.startsWith("\t<app id=\"698776\"")) {
+                    if (line.startsWith("\t<app id=\"706370\"")) {
                         isInstall = true;
                         break;
                     }
