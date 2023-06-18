@@ -1,10 +1,14 @@
 package com.example.casttvandroiddemo;
 
 import android.app.Application;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.Log;
 import android.webkit.WebView;
+
+import com.example.casttvandroiddemo.Service.VolumeService;
 
 import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.unit.UnitsManager;
@@ -25,6 +29,9 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         initAutoSize();
+
+        //启动服务
+        startService(new Intent(this, VolumeService.class));
     }
 
     private void initAutoSize() {

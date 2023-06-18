@@ -31,6 +31,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 public class CastVideoListAdapter extends RecyclerView.Adapter<CastVideoListAdapter.MyHolder> {
+    private static final String TAG = "CastVideoListAdapter";
     public interface OnItemClickListener {
         void OnItemClick(View view, int position);
     }
@@ -59,7 +60,8 @@ public class CastVideoListAdapter extends RecyclerView.Adapter<CastVideoListAdap
 
     @Override
     public void onBindViewHolder(@NonNull MyHolder holder, int position) {
-        CastVideoBean bean = mData.get(position);
+        Log.d(TAG, "onBindViewHolder: " + position);
+        CastVideoBean bean = mData.get(mData.size() - position - 1);
         holder.tv_videoTitle.setText(bean.getVideoTitle());
         getBitmapFromUrl(holder, bean.getVideoImageUrl());
         holder.itemView.setOnClickListener(new View.OnClickListener() {

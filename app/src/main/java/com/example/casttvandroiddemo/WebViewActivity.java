@@ -33,6 +33,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.casttvandroiddemo.bean.CastVideoBean;
 import com.example.casttvandroiddemo.helper.InternetHistoryHelper;
 import com.example.casttvandroiddemo.utils.IntentUtils;
+import com.example.casttvandroiddemo.utils.StringUtils;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -136,11 +137,23 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         iv_history.setOnClickListener(this);
         iv_remote.setOnClickListener(this);
         tv_closeCastContentTip.setOnClickListener(this);
+
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                //失去焦点，恢复网址内容
+                if (!hasFocus) {
+                    searchView.setQuery(loadingUrl, false);
+                }
+            }
+        });
     }
 
     @SuppressLint("ClickableViewAccessibility")
     public void showDetectCastTip() {
 //        1.使用视图遮盖实现
+        iv_forward.setImageResource(R.mipmap.forward_lighted_browser_cast);
+
         view_detectCastBg.setVisibility(View.VISIBLE);
         rl_detectCastContentTip.setVisibility(View.VISIBLE);
         iv_cast.setImageResource(R.mipmap.cast_lighted_browser_cast);
@@ -154,6 +167,7 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
 
     @SuppressLint("ClickableViewAccessibility")
     public void closeDetectCastTip() {
+        updateIsForwardStatus(webView.canGoForward());
         view_detectCastBg.setVisibility(View.INVISIBLE);
         rl_detectCastContentTip.setVisibility(View.INVISIBLE);
         webView.setOnTouchListener(null); // 移除触摸事件监听器，恢复点击事件处理
@@ -202,11 +216,11 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
-                Log.d(TAG, "onProgressChanged: "+ newProgress);
+                Log.d(TAG, "onProgressChanged: " + newProgress);
                 progressBar.setProgress(newProgress);
-                if(progressBar.getProgress() >= 0 && progressBar.getProgress() < 100)
+                if (progressBar.getProgress() >= 0 && progressBar.getProgress() < 100)
                     progressBar.setVisibility(View.VISIBLE);
-                if(progressBar.getProgress() >= 100)
+                if (progressBar.getProgress() >= 100)
                     progressBar.setVisibility(View.INVISIBLE);
             }
 
@@ -217,12 +231,15 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                 updateSearchViewUrl(loadingUrl);
                 Log.d(TAG, "onReceivedTitle: " + loadingUrl);
                 updateIsForwardStatus(webView.canGoForward());
-                if (loadingUrl.startsWith("https://m.bilibili.com/video")) {
-                    getRealVideoUrlFromBiliBili(loadingUrl);
-                } else if (loadingUrl.startsWith("https://m.youtube.com/")) {
-                    getRealVideoUrlFromYouTuBe(loadingUrl);
-                } else if (loadingUrl.startsWith("https://www.espn.com")) {
-                    getRealVideoUrlFromESPN(loadingUrl);
+                Log.d(TAG, "onReceivedTitle: " + title);
+                if (!title.isEmpty()) {
+                    if (loadingUrl.startsWith("https://m.bilibili.com/video")) {
+                        getRealVideoUrlFromBiliBili(loadingUrl);
+                    } else if (loadingUrl.startsWith("https://m.youtube.com/")) {
+                        getRealVideoUrlFromYouTuBe(loadingUrl);
+                    } else if (loadingUrl.startsWith("https://www.espn.com")) {
+                        getRealVideoUrlFromESPN(loadingUrl);
+                    }
                 }
                 SaveHistoryToDB(loadingUrl, title);
             }
@@ -244,6 +261,12 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+                if (StringUtils.containsChinese(s)) {
+                    String newUrl = "https://www.google.com/search?q=" + s;
+                    Log.d(TAG, "onQueryTextSubmit: " + newUrl);
+                    webView.loadUrl(newUrl);
+                    return false;
+                }
                 if (s.startsWith("https://") || s.startsWith("http://")) {
                     webView.loadUrl(s);
                 } else if (s.startsWith("www")) {
@@ -326,17 +349,26 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                     }
                     readyVideoUrl = jsonObject.optString("readyVideoUrl");
                 }
-
                 //获得视频的标题
                 Document doc = Jsoup.parse(responseBody);
                 Elements elements = doc.select("[itemprop=name]");
                 Element element = elements.first();
-                String videoTitle = element.attr("content");
+                String videoTitle = null;
+                if (element != null) {
+                    videoTitle = element.attr("content");
+                } else {
+                    return;
+                }
 
                 //获取视频的图片Url
                 elements = doc.select("[itemprop=image]");
                 element = elements.first();
-                String videoImageUrl = element.attr("content");
+                String videoImageUrl = null;
+                if (element != null) {
+                    videoImageUrl = element.attr("content");
+                } else {
+                    return;
+                }
                 Log.d(TAG, "run: " + videoTitle);
                 Log.d(TAG, "run: " + videoImageUrl);
 

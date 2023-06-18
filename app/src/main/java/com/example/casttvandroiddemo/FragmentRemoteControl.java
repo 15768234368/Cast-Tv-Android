@@ -66,9 +66,20 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
     private View view_forward_coverBlack10, view_backspace_coverBlack10, view_menu_coverBlack10, view_volume_down_coverBlack10;
     private View view_volume_mute_coverBlack10, view_volume_up_coverBlack10;
     private View view_ok_coverBlack10;
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(@NonNull Message msg) {
+            if(msg.what == 1){
+                //更新主线程
+                setConnectionStatus(RokuLocation != null);
+            }
+            return false;
 
+        }
+    });
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "FragmentRemote Control onViewCreated: ");
         super.onViewCreated(view, savedInstanceState);
         initView();
     }
@@ -420,6 +431,20 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
                     }
                 });
             }
+
+            @Override
+            public void disConnect() {
+                if(OnlineDeviceUtils.mDeviceData_onLine.size() <= 0){
+                    Log.d(TAG, "deviceData_online is zero");
+                    RokuLocation = null;
+                    RokuLocationUrl = null;
+                    ConnectingDevice = null;
+                }
+                Message message = new Message();
+                message.what = 1;
+                handler.sendMessage(message);
+            }
+
         });
 //
 //        coverView.setOnTouchListener(new View.OnTouchListener() {
@@ -551,7 +576,32 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
 
     @Override
     public void onResume() {
+        OnlineDeviceUtils.setOnConnectedListener(new OnlineDeviceUtils.OnConnectedListener() {
+            @Override
+            public void autoConnect() {
+                setBackEvent();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setConnectionStatus(RokuLocation != null);
+                    }
+                });
+            }
 
+            @Override
+            public void disConnect() {
+                if(OnlineDeviceUtils.mDeviceData_onLine.size() <= 0){
+                    Log.d(TAG, "deviceData_online is zero");
+                    FragmentRemoteControl.RokuLocation = null;
+                    FragmentRemoteControl.RokuLocationUrl = null;
+                    FragmentRemoteControl.ConnectingDevice = null;
+                }
+                Message message = new Message();
+                message.what = 1;
+                handler.sendMessage(message);
+            }
+
+        });
         setConnectionStatus(RokuLocation != null);
         Log.d(TAG, "onResume: " + RokuLocationUrl);
         super.onResume();

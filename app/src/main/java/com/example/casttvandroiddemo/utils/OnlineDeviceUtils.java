@@ -41,6 +41,8 @@ public class OnlineDeviceUtils {
     private static OnConnectedListener onConnectedListener;
     public interface OnConnectedListener{
         public void autoConnect();
+        
+        public void disConnect();
     }
 
     public static void setOnConnectedListener(OnConnectedListener onConnectedListener) {
@@ -63,8 +65,13 @@ public class OnlineDeviceUtils {
                     byte[] requestData = SSDP_MSEARCH.getBytes();
                     InetAddress address = InetAddress.getByName("239.255.255.250");
                     DatagramPacket requestPacket = new DatagramPacket(requestData, requestData.length, address, 1900);
-
-                    socket.send(requestPacket);
+                    try{
+                        socket.send(requestPacket);   
+                    }catch (IOException e){
+                        Log.e(TAG, "Failed to send data: " + e.getMessage());
+                        if(onConnectedListener != null)
+                            onConnectedListener.disConnect();
+                    }
 
                     while (true) {
                         byte[] buffer = new byte[BUFFER_SIZE];

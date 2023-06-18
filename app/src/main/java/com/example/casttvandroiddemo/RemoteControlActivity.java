@@ -10,6 +10,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -44,8 +46,6 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
     private ImageView iv_rewind, iv_pause, iv_forward, iv_refresh;
     private ImageView iv_menu, iv_volumeDown, iv_volumeUp, iv_volumeMute;
     private TextView tv_selectDevice;
-    public String RokuLocation = FragmentRemoteControl.RokuLocation;
-    public String RokuLocationUrl = FragmentRemoteControl.RokuLocationUrl;
     private Vibrator vibrator;
     private View coverView;
     private ViewTreeObserver.OnGlobalLayoutListener keyboardLayoutListener;
@@ -62,9 +62,20 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
     private EditText et_edit;
     private ImageView iv_edit;
     private int isResume = 0;
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(@NonNull Message msg) {
+            if(msg.what == 1){
+                //更新主线程
+                setConnectionStatus(FragmentRemoteControl.RokuLocation != null);
+            }
+            return false;
 
+        }
+    });
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "Remote Control Activity onCreate: ");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remote_control);
         initView();
@@ -442,7 +453,27 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
         //设置EditText的监听器
         ViewUtils.setEditViewLimit(et_edit);
     }
+    public void setBackEvent() {
+        if (OnlineDeviceUtils.mDeviceData_onLine.size() > 0) {
+            DeviceManageHelper helper = new DeviceManageHelper(this);
+            SQLiteDatabase db = helper.getReadableDatabase();
+            Cursor cursor = null;
+            for (DeviceBean bean : OnlineDeviceUtils.mDeviceData_onLine) {
+                cursor = db.query(DeviceManageHelper.TABLE_HISTORY, null, DeviceManageHelper.USER_DEVICE_UDN + "=?", new String[]{bean.getUserDeviceUDN()}, null, null, null, null);
+                if (cursor.getCount() > 0) {
+                    FragmentRemoteControl.RokuLocation = bean.getUserDeviceIpAddress();
+                    FragmentRemoteControl.RokuLocationUrl = RemoteUtils.getRokuLocationUrl(FragmentRemoteControl.RokuLocation);
+                    FragmentRemoteControl.ConnectingDevice = bean;
+                    break;
+                }
+            }
+            if (cursor != null)
+                cursor.close();
+            if (db != null)
+                db.close();
 
+        }
+    }
     private void setEnabled(boolean flag) {
         findViewById(R.id.iv_disconnect_homepage).setEnabled(flag);
         findViewById(R.id.tv_select_device_homepage).setEnabled(flag);
@@ -477,7 +508,7 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
         if (SettingActivity.isVibrator && vibrator != null && vibrator.hasVibrator()) {
             vibrator.vibrate(20L);
         }
-        if (RokuLocation == null) {
+        if (FragmentRemoteControl.RokuLocation == null) {
             DeviceManageHelper helper = new DeviceManageHelper(this);
             SQLiteDatabase db = helper.getReadableDatabase();
             Cursor cursor = db.query(DeviceManageHelper.TABLE_HISTORY, null, null, null, null, null, null);
@@ -497,7 +528,7 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
                 finish();
                 break;
             case R.id.iv_disconnect_homepage:
-                RemoteUtils.httpPost(RokuLocationUrl, "keypress/PowerOff");
+                RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "keypress/PowerOff");
                 break;
             case R.id.tv_select_device_homepage:
                 Intent intent = new Intent(this, DeviceManage.class);
@@ -512,49 +543,49 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
                 launchChannel();
                 break;
             case R.id.iv_up_homepage:
-                RemoteUtils.httpPost(RokuLocationUrl, "keypress/Up");
+                RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "keypress/Up");
                 break;
             case R.id.iv_down_homepage:
-                RemoteUtils.httpPost(RokuLocationUrl, "keypress/Down");
+                RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "keypress/Down");
                 break;
             case R.id.iv_left_homepage:
-                RemoteUtils.httpPost(RokuLocationUrl, "keypress/Left");
+                RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "keypress/Left");
                 break;
             case R.id.iv_right_homepage:
-                RemoteUtils.httpPost(RokuLocationUrl, "keypress/Right");
+                RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "keypress/Right");
                 break;
             case R.id.iv_ok_homepage:
-                RemoteUtils.httpPost(RokuLocationUrl, "keypress/Select");
+                RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "keypress/Select");
                 break;
             case R.id.iv_back_homepage:
-                RemoteUtils.httpPost(RokuLocationUrl, "keypress/Back");
+                RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "keypress/Back");
                 break;
             case R.id.iv_home_homepage:
-                RemoteUtils.httpPost(RokuLocationUrl, "keypress/Home");
+                RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "keypress/Home");
                 break;
             case R.id.iv_rewind_homepage:
-                RemoteUtils.httpPost(RokuLocationUrl, "keypress/Rev");
+                RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "keypress/Rev");
                 break;
             case R.id.iv_play_pause_homepage:
-                RemoteUtils.httpPost(RokuLocationUrl, "keypress/Play");
+                RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "keypress/Play");
                 break;
             case R.id.iv_forward_homepage:
-                RemoteUtils.httpPost(RokuLocationUrl, "keypress/Fwd");
+                RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "keypress/Fwd");
                 break;
             case R.id.iv_backspace_homepage:
-                RemoteUtils.httpPost(RokuLocationUrl, "keypress/Backspace");
+                RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "keypress/Backspace");
                 break;
             case R.id.iv_menu_homepage:
-                RemoteUtils.httpPost(RokuLocationUrl, "keypress/Info");
+                RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "keypress/Info");
                 break;
             case R.id.iv_volume_down_homepage:
-                RemoteUtils.httpPost(RokuLocationUrl, "keypress/VolumeDown");
+                RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "keypress/VolumeDown");
                 break;
             case R.id.iv_volume_mute_homepage:
-                RemoteUtils.httpPost(RokuLocationUrl, "keypress/VolumeMute");
+                RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "keypress/VolumeMute");
                 break;
             case R.id.iv_volume_up_homepage:
-                RemoteUtils.httpPost(RokuLocationUrl, "keypress/VolumeUp");
+                RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "keypress/VolumeUp");
                 break;
         }
     }
@@ -567,7 +598,7 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
 
     private void launchChannel() {
         OkHttpClient client = new OkHttpClient();
-        String url = RokuLocationUrl + "query/apps";
+        String url = FragmentRemoteControl.RokuLocationUrl + "query/apps";
         Request request = new Request.Builder()
                 .url(url)
                 .get()
@@ -586,29 +617,48 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
                 boolean isInstall = false;
                 for (String line : lines) {
                     if (line.startsWith("\t<app id=\"706370\"")) {
-                        RemoteUtils.httpPost(RokuLocationUrl, "launch/706370"); //已经存在该频道，无需安装，直接启动
+                        RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "launch/706370"); //已经存在该频道，无需安装，直接启动
                         isInstall = true;
                     }
                 }
                 if (!isInstall)
-                    RemoteUtils.httpPost(RokuLocationUrl, "install/706370");//未存在该频道，需要安装
+                    RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "install/706370");//未存在该频道，需要安装
             }
         });
     }
 
     @Override
     public void onResume() {
-        RokuLocation = FragmentRemoteControl.RokuLocation;
-        RokuLocationUrl = FragmentRemoteControl.RokuLocationUrl;
-        setConnectionStatus(RokuLocation != null);
-        if (RokuLocation != null)
-            RokuLocationUrl = RemoteUtils.getRokuLocationUrl(RokuLocation);
-        else
-            RokuLocationUrl = null;
-        Log.d(TAG, "onResume: " + RokuLocationUrl);
+        OnlineDeviceUtils.setOnConnectedListener(new OnlineDeviceUtils.OnConnectedListener() {
+            @Override
+            public void autoConnect() {
+                setBackEvent();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setConnectionStatus(FragmentRemoteControl.RokuLocation != null);
+                    }
+                });
+            }
+
+            @Override
+            public void disConnect() {
+                if(OnlineDeviceUtils.mDeviceData_onLine.size() <= 0){
+                    Log.d(TAG, "deviceData_online is zero");
+                    FragmentRemoteControl.RokuLocation = null;
+                    FragmentRemoteControl.RokuLocationUrl = null;
+                    FragmentRemoteControl.ConnectingDevice = null;
+                }
+                Message message = new Message();
+                message.what = 1;
+                handler.sendMessage(message);
+            }
+
+        });
+        setConnectionStatus(FragmentRemoteControl.RokuLocation != null);
+        Log.d(TAG, "onResume: " + FragmentRemoteControl.RokuLocationUrl);
         super.onResume();
     }
-
 
     private void setConnectionStatus(boolean flag) {
         Log.d(TAG, "setConnectionStatus: ");

@@ -11,6 +11,7 @@ import android.widget.VideoView;
 public class EnableClosedCaptioningActivity extends AppCompatActivity {
     private ImageView iv_back;
     private VideoView videoView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +31,11 @@ public class EnableClosedCaptioningActivity extends AppCompatActivity {
         int resId = getResources().getIdentifier("subtitular", "raw", getPackageName());
         Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + resId);
         videoView.setVideoURI(videoUri);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         videoView.start();
     }
 }

@@ -225,17 +225,29 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
     }
 
     public void setUndetected() {
+        iv_searchImage.setVisibility(View.VISIBLE);
         iv_searchImage.setImageResource(R.mipmap.no_device_detected);
+        recyclerView.setVisibility(View.INVISIBLE);
+        tv_ipTitle1.setVisibility(View.VISIBLE);
+        tv_ipTitle2.setVisibility(View.VISIBLE);
         tv_ipTitle1.setText(R.string.No_Roku_detected);
         tv_ipTitle2.setText(R.string.Please_check_the_Android_device_is_on_the_same_WiFi_as_Roku);
         btn_research.setVisibility(View.VISIBLE);
+        if(dialog != null && dialog.isShowing())
+            dialog.cancel();
     }
 
     public void setNoNetWorkConnecting() {
+        iv_searchImage.setVisibility(View.VISIBLE);
         iv_searchImage.setImageResource(R.mipmap.no_network_device_manage);
+        recyclerView.setVisibility(View.INVISIBLE);
+        tv_ipTitle1.setVisibility(View.VISIBLE);
+        tv_ipTitle2.setVisibility(View.VISIBLE);
         tv_ipTitle1.setText(R.string.Please_allow_network_permissions_and_connect_to_WiFi);
         tv_ipTitle2.setText(R.string.otherwise_you_will_not_be_able_to_connect_to_Roku_devices);
         btn_goToSetting.setVisibility(View.VISIBLE);
+        if(dialog != null && dialog.isShowing())
+            dialog.cancel();
     }
 
     public void showScannedDeviceList() {

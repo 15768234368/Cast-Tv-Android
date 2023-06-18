@@ -91,12 +91,14 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
                 int isOnline = 0;//默认不在线
                 for (String item : OnlineDeviceUtils.mRokuLocation_onLine) {
                     if (item.contains(deviceIpAddress)) {
-                        isOnline = 2;//在线
+                        isOnline = 2;//在线但未连接
                         if (deviceIpAddress.equals(FragmentRemoteControl.RokuLocation))
                             isOnline = 1;//在线且已连接
                         break;
                     }
                 }
+                if(deviceUDN.equals(FragmentRemoteControl.ConnectingDevice.getUserDeviceUDN()))
+                    isOnline = 1;
                 mData.add(new DeviceBean(deviceUDN, deviceName, deviceLocation, deviceIpAddress, isOnline));
             }
             cursor.close();

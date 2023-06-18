@@ -21,6 +21,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.casttvandroiddemo.utils.StringUtils;
+
 public class FragmentInternet extends Fragment {
     private static final String TAG = "FragmentInternet";
     private View view;
@@ -74,12 +76,17 @@ public class FragmentInternet extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String url) {
                 String newUrl;
-                if (url.startsWith("https://") || url.startsWith("http://")) {
-                    newUrl = url;
-                } else if (url.startsWith("www")) {
-                    newUrl = "https://" + url;
-                } else {
+                if (StringUtils.containsChinese(url)) {
                     newUrl = "https://www.google.com/search?q=" + url;
+                    Log.d(TAG, "onQueryTextSubmit: " + newUrl);
+                }else{
+                    if (url.startsWith("https://") || url.startsWith("http://")) {
+                        newUrl = url;
+                    } else if (url.startsWith("www")) {
+                        newUrl = "https://" + url;
+                    } else {
+                        newUrl = "https://www.google.com/search?q=" + url;
+                    }
                 }
                 Intent intent = new Intent(getContext(), WebViewActivity.class);
                 intent.putExtra("url", newUrl);

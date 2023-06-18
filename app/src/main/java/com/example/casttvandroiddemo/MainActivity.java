@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "mainActivity onCreate: ");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
@@ -131,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
 
                 // 根据键盘的显示/隐藏状态进行相应的处理
                 if (isKeyboardOpen) {
-                    if(isResume != 1){
+                    if (isResume != 1) {
                         et_edit.requestFocus();
                     }
                     isResume = 0;

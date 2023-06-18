@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.casttvandroiddemo.adapter.CastVideoListAdapter;
+import com.example.casttvandroiddemo.helper.DeviceManageHelper;
 import com.example.casttvandroiddemo.utils.RemoteUtils;
 
 import java.io.IOException;
@@ -64,20 +66,28 @@ public class CastVideoListActivity extends AppCompatActivity {
             public void OnItemClick(View view, int position) {
                 //判断是否有网络连接，有则判断是否存在投屏频道，无则跳转连接
                 if (FragmentRemoteControl.RokuLocation == null) {
-                    Intent intent = new Intent(getApplicationContext(), DeviceManage.class);
-                    startActivity(intent);
+                    //若有历史连接设备，则跳转到设备管理页，否则跳转到设备添加页
+                    DeviceManageHelper helper = new DeviceManageHelper(getApplicationContext());
+                    SQLiteDatabase db = helper.getReadableDatabase();
+                    if(db.query(DeviceManageHelper.TABLE_HISTORY, null, null, null, null, null, null).getCount() <= 0){
+                        startActivity(new Intent(getApplicationContext(), DeviceAdd.class));
+                    }else{
+                        startActivity(new Intent(getApplicationContext(), DeviceManage.class));
+                    }
+                    db.close();
+                    helper.close();
                     return ;
                 }
 
 
-                //判读是否存在该频道，有则投屏，无则跳转安装
+                //判断是否存在该频道，有则投屏，无则跳转安装
                 RemoteUtils.isExistsChannelToCast(FragmentRemoteControl.RokuLocationUrl, new RemoteUtils.ChannelLaunchCallback() {
                     @Override
                     public void onChannelLaunchResult(boolean isInstall) {
                         if (isInstall) {
                             try {
                                 showDialogCastSuccess();
-                                RemoteUtils.castToTv(FragmentRemoteControl.RokuLocationUrl, WebViewActivity.mVideoBean.get(position).getVideoRealUrl());
+                                RemoteUtils.castToTv(FragmentRemoteControl.RokuLocationUrl, WebViewActivity.mVideoBean.get(WebViewActivity.mVideoBean.size() - position - 1).getVideoRealUrl());
                             } catch (UnsupportedEncodingException e) {
                                 throw new RuntimeException(e);
                             }
