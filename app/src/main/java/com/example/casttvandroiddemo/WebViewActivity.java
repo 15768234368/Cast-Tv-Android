@@ -22,6 +22,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
@@ -71,6 +72,7 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
     private TextView tv_closeCastContentTip;
     public static List<CastVideoBean> mVideoBean = new ArrayList<>();
     public ProgressBar progressBar;
+    private LinearLayout ll_line;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +102,7 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                     mVideoBean.add(bean);
                 Handler delayPost = new Handler();
                 delayPost.postDelayed(new Runnable() {
+                    @SuppressLint("ClickableViewAccessibility")
                     @Override
                     public void run() {
                         SharedPreferences sp = getSharedPreferences("setting", MODE_PRIVATE);
@@ -120,6 +123,7 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
     });
 
     private void initView() {
+        ll_line = (LinearLayout) findViewById(R.id.ll_bottomLine);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         webView = (WebView) findViewById(R.id.webView);
         setWebViewSetting();
@@ -156,24 +160,25 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
     public void showDetectCastTip() {
 //        1.使用视图遮盖实现
         iv_forward.setImageResource(R.mipmap.forward_lighted_browser_cast);
-
+        ll_line.setBackgroundColor(0x80000000);
         view_detectCastBg.setVisibility(View.VISIBLE);
-        rl_detectCastContentTip.setVisibility(View.VISIBLE);
-        iv_cast.setImageResource(R.mipmap.cast_lighted_browser_cast);
-        webView.setOnTouchListener(new View.OnTouchListener() {
+        view_detectCastBg.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                return true; // 禁止WebView处理点击事件
+                return true;
             }
         });
+        rl_detectCastContentTip.setVisibility(View.VISIBLE);
+        iv_cast.setImageResource(R.mipmap.cast_lighted_browser_cast);
+
     }
 
     @SuppressLint("ClickableViewAccessibility")
     public void closeDetectCastTip() {
+        ll_line.setBackgroundColor(0xFFDEDEDE);
         updateIsForwardStatus(webView.canGoForward());
         view_detectCastBg.setVisibility(View.INVISIBLE);
         rl_detectCastContentTip.setVisibility(View.INVISIBLE);
-        webView.setOnTouchListener(null); // 移除触摸事件监听器，恢复点击事件处理
     }
 
     /**
@@ -422,7 +427,7 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                                 Message message = new Message();
                                 message.obj = new CastVideoBean(videoImageUrl, videoTitle, readyVideoUrl, url);
                                 handler.sendMessage(message);
-                            }catch (NullPointerException e){
+                            } catch (NullPointerException e) {
                             }
                         }
                     }

@@ -58,7 +58,7 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
     private View view_forward_coverBlack10, view_backspace_coverBlack10, view_menu_coverBlack10, view_volume_down_coverBlack10;
     private View view_volume_mute_coverBlack10, view_volume_up_coverBlack10;
     private View view_ok_coverBlack10;
-
+    private boolean keypress_board = false;
     //键盘弹出的变量
     private LinearLayout ll_edit;
     private EditText et_edit;
@@ -409,10 +409,10 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
 
                 // 根据键盘的显示/隐藏状态进行相应的处理
                 if (isKeyboardOpen) {
-                    if (isResume != 1) {
+                    if (keypress_board) {
                         et_edit.requestFocus();
+                        keypress_board = false;
                     }
-                    isResume = 0;
                     // 键盘显示时的处理逻辑
                     ll_edit.setVisibility(View.VISIBLE);
                     coverView.setVisibility(View.VISIBLE);
@@ -438,7 +438,8 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
             public void onFocusChange(View v, boolean hasFocus) {
                 Log.d(TAG, "onFocusChange: " + hasFocus);
                 if (!hasFocus) {
-                    closeKeyBoard();
+                    if (iv_edit != null)
+                        onClick(iv_edit);
                 }
             }
         });
@@ -542,6 +543,7 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
 
     @Override
     protected void onDestroy() {
+        Log.d(TAG, "onDestroy: ");
         getWindow().getDecorView().getViewTreeObserver().removeOnGlobalLayoutListener(keyboardLayoutListener);
         super.onDestroy();
     }
@@ -575,6 +577,7 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
                 startActivity(intent);
                 break;
             case R.id.ll_keyboard_homepage:
+                keypress_board = true;
                 InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                 coverView.setVisibility(View.VISIBLE);
@@ -633,7 +636,6 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
     @Override
     protected void onPause() {
         super.onPause();
-
     }
 
     private void launchChannel() {
@@ -698,6 +700,23 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
         setConnectionStatus(FragmentRemoteControl.RokuLocation != null);
         Log.d(TAG, "onResume: " + FragmentRemoteControl.RokuLocationUrl);
         super.onResume();
+
+        Rect r = new Rect();
+        getWindow().getDecorView().getWindowVisibleDisplayFrame(r);
+        int screenHeight = getWindow().getDecorView().getRootView().getHeight();
+
+        int keyboardHeight = screenHeight - r.bottom;
+        boolean isKeyboardOpen = keyboardHeight > screenHeight * 0.15;
+
+        // 根据键盘的显示/隐藏状态进行相应的处理
+        if (isKeyboardOpen) {
+            Log.d(TAG, "onResume: 键盘正在打开");
+            closeKeyBoard();
+        } else {
+            Log.d(TAG, "onResume: 键盘正在关闭");
+        }
+
+
     }
 
     private void setConnectionStatus(boolean flag) {
@@ -715,6 +734,7 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
     }
 
     public void closeKeyBoard() {
+        Log.d(TAG, "closeKeyBoard: 123");
         Rect r = new Rect();
         getWindow().getDecorView().getWindowVisibleDisplayFrame(r);
         int screenHeight = getWindow().getDecorView().getRootView().getHeight();

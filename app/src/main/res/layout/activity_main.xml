@@ -81,6 +81,7 @@
         android:visibility="gone">
 
         <EditText
+            android:maxLines="1"
             android:id="@+id/et_keyboard_edit_homepage"
             android:layout_width="272dp"
             android:layout_height="40dp"

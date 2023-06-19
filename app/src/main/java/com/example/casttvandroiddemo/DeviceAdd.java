@@ -40,6 +40,7 @@ import android.widget.TextView;
 import com.example.casttvandroiddemo.adapter.AddDeviceListAdapter;
 import com.example.casttvandroiddemo.bean.DeviceBean;
 import com.example.casttvandroiddemo.helper.DeviceManageHelper;
+import com.example.casttvandroiddemo.utils.AppManage;
 import com.example.casttvandroiddemo.utils.OnlineDeviceUtils;
 import com.example.casttvandroiddemo.utils.RemoteUtils;
 
@@ -157,7 +158,7 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
         mRokuLocation.clear();
         initView();
         searchDevice();
-
+        AppManage.Admob_bannerInit(this, findViewById(R.id.AdView));
     }
 
     private void initView() {
@@ -294,6 +295,7 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
                     String whereClause = DeviceManageHelper.USER_DEVICE_UDN + "=?";
                     String[] whereArgs = new String[]{bean.getUserDeviceUDN()};
                     db.update(DeviceManageHelper.TABLE_HISTORY, values, whereClause, whereArgs);
+                    Log.d(TAG, "OnItemClick: " + bean.getUserDeviceUDN());
                 }
 
                 db.close();

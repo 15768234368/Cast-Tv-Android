@@ -1,12 +1,16 @@
 package com.example.casttvandroiddemo;
 
+import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,18 +22,15 @@ import com.example.casttvandroiddemo.utils.OnlineDeviceUtils;
 import me.jessyan.autosize.AutoSizeConfig;
 
 public class StartActivity extends AppCompatActivity {
+    private static final String TAG = "StartActivity";
     Handler handler = new Handler();
     Context context = (Context) this;
     private static final String key = "isAccept";
     private TextView tv_cancelUse;
     private TextView tv_accept;
-    private final Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            IntentUtils.goToActivity(context, MainActivity.class);
-        }
-    };
+    private static final long COUNTER_TIME = 3;
 
+    private long secondsRemaining;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -41,10 +42,55 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
         initView();
-        handler.postDelayed(runnable, 1000);
         setBackEvent();
+        // Create a timer so the SplashActivity will be displayed for a fixed amount of time.
+        createTimer(COUNTER_TIME);
+    }
+    private void createTimer(long seconds) {
+
+        CountDownTimer countDownTimer =
+                new CountDownTimer(seconds * 1000, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        Log.d(TAG, "onTick: " + millisUntilFinished);
+                        secondsRemaining = ((millisUntilFinished / 1000) + 1);
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        secondsRemaining = 0;
+
+                        Application application = getApplication();
+
+//                        // If the application is not an instance of MyApplication, log an error message and
+//                        // start the MainActivity without showing the app open ad.
+//                        if (!(application instanceof MyApplication)) {
+//                            Log.e(TAG, "Failed to cast application to MyApplication.");
+//                            startMainActivity();
+//                            return;
+//                        }
+
+                        // Show the app open ad.
+                        ((MyApplication) application)
+                                .showAdIfAvailable(
+                                        StartActivity.this,
+                                        new MyApplication.OnShowAdCompleteListener() {
+                                            @Override
+                                            public void onShowAdComplete() {
+                                                startMainActivity();
+                                                finish();
+                                            }
+                                        });
+                    }
+                };
+        countDownTimer.start();
     }
 
+    /** Start the MainActivity. */
+    public void startMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        this.startActivity(intent);
+    }
     private void setBackEvent() {
         OnlineDeviceUtils.findDevice();
         SharedPreferences sp = getSharedPreferences("setting", Context.MODE_PRIVATE);
@@ -98,6 +144,5 @@ public class StartActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        finish();
     }
 }

@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DeviceAdd"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    tools:context=".DeviceAdd">
 
     <RelativeLayout
         android:id="@+id/rl_topTab"
@@ -28,82 +28,95 @@
             android:textColor="#FF202020"
             android:textSize="18sp"
             android:textStyle="bold" />
+
         <ImageView
             android:id="@+id/iv_refresh_deviceManage"
             android:layout_width="wrap_content"
             android:layout_height="28dp"
-            android:src="@mipmap/refresh_device_manage"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="16dp"
-            android:visibility="invisible"/>
+            android:src="@mipmap/refresh_device_manage"
+            android:visibility="invisible" />
     </RelativeLayout>
+
+    <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/AdView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_topTab"
+        android:layout_centerHorizontal="true"
+        ads:adSize="FULL_BANNER"
+        ads:adUnitId="ca-app-pub-3940256099942544/6300978111" />
 
     <ImageView
         android:id="@+id/iv_searchImage"
         android:layout_width="307dp"
         android:layout_height="164dp"
-        android:layout_below="@id/rl_topTab"
-        android:layout_marginTop="103dp"
+        android:layout_below="@id/AdView"
         android:layout_centerHorizontal="true"
-        android:src="@mipmap/search1"/>
+        android:layout_marginTop="103dp"
+        android:src="@mipmap/search1" />
+
     <TextView
         android:id="@+id/tv_ipTitle1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/Automatically_search_the_device..."
-        android:textColor="#FF202020"
-        android:textSize="16sp"
         android:layout_below="@id/iv_searchImage"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="48dp"
         android:gravity="center"
-        />
+        android:text="@string/Automatically_search_the_device..."
+        android:textColor="#FF202020"
+        android:textSize="16sp" />
+
     <TextView
         android:id="@+id/tv_ipTitle2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/make_sure_the_android_device_is_on_the_same_wi_fi_as_roku"
-        android:textColor="#FF999999"
-        android:textSize="14sp"
         android:layout_below="@id/tv_ipTitle1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="6dp"
-        android:gravity="center"
         android:layout_marginStart="20dp"
+        android:layout_marginTop="6dp"
         android:layout_marginEnd="20dp"
-        />
+        android:gravity="center"
+        android:text="@string/make_sure_the_android_device_is_on_the_same_wi_fi_as_roku"
+        android:textColor="#FF999999"
+        android:textSize="14sp" />
+
     <Button
         android:id="@+id/btn_research_deviceManage"
         android:layout_width="120dp"
         android:layout_height="50dp"
+        android:layout_below="@id/tv_ipTitle2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
         android:background="@drawable/shape_btn_research"
         android:text="@string/Redetect"
         android:textColor="#FFFFFFFF"
         android:textSize="14sp"
-        android:layout_below="@id/tv_ipTitle2"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
+
     <Button
         android:id="@+id/btn_goToSetting_deviceManage"
         android:layout_width="120dp"
         android:layout_height="50dp"
+        android:layout_below="@id/tv_ipTitle2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
         android:background="@drawable/shape_btn_research"
         android:text="@string/Settings"
         android:textColor="#FFFFFFFF"
         android:textSize="14sp"
-        android:layout_below="@id/tv_ipTitle2"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_addItemList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/rl_topTab"
-        android:layout_marginTop="36dp"
+        android:layout_below="@id/AdView"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="36dp"
         android:layout_marginEnd="16dp"
         android:visibility="invisible" />
 </RelativeLayout>

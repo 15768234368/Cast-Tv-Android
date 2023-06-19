@@ -28,6 +28,7 @@ import android.widget.TextView;
 import com.example.casttvandroiddemo.adapter.HistoryConnectedDeviceAdapter;
 import com.example.casttvandroiddemo.bean.DeviceBean;
 import com.example.casttvandroiddemo.helper.DeviceManageHelper;
+import com.example.casttvandroiddemo.utils.AppManage;
 import com.example.casttvandroiddemo.utils.OnlineDeviceUtils;
 import com.example.casttvandroiddemo.utils.RemoteUtils;
 import com.umeng.analytics.MobclickAgent;
@@ -76,6 +77,8 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
         loadData();
         if (adapter != null)
             adapter.notifyDataSetChanged();
+        AppManage.Admob_bannerInit(this, findViewById(R.id.AdView));
+
     }
 
     private void loadData() {
@@ -93,7 +96,7 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
                 for (String item : OnlineDeviceUtils.mRokuLocation_onLine) {
                     if (item.contains(deviceIpAddress)) {
                         isOnline = 2;//在线但未连接
-                        if (deviceIpAddress.equals(FragmentRemoteControl.RokuLocation))
+                        if (deviceIpAddress.contains(FragmentRemoteControl.RokuLocation))
                             isOnline = 1;//在线且已连接
                         break;
                     }

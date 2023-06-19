@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.example.casttvandroiddemo.adapter.CastVideoListAdapter;
 import com.example.casttvandroiddemo.helper.DeviceManageHelper;
+import com.example.casttvandroiddemo.utils.AppManage;
 import com.example.casttvandroiddemo.utils.RemoteUtils;
 import com.umeng.analytics.MobclickAgent;
 
@@ -47,6 +48,7 @@ public class CastVideoListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cast_video_list);
         initView();
+        AppManage.Admob_bannerInit(this, findViewById(R.id.AdView));
     }
 
     private void initView() {

@@ -71,7 +71,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message msg) {
-            if(msg.what == 1){
+            if (msg.what == 1) {
                 //更新主线程
                 setConnectionStatus(RokuLocation != null);
             }
@@ -79,6 +79,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
 
         }
     });
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         Log.d(TAG, "FragmentRemote Control onViewCreated: ");
@@ -437,7 +438,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
 
             @Override
             public void disConnect() {
-                if(OnlineDeviceUtils.mDeviceData_onLine.size() <= 0){
+                if (OnlineDeviceUtils.mDeviceData_onLine.size() <= 0) {
                     Log.d(TAG, "deviceData_online is zero");
                     RokuLocation = null;
                     RokuLocationUrl = null;
@@ -491,6 +492,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
                 MobclickAgent.onEvent(getContext(), "切换设备");
                 break;
             case R.id.ll_keyboard_homepage:
+                MainActivity.keypress_board = true;
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                 coverView.setVisibility(View.VISIBLE);
@@ -611,7 +613,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
 
             @Override
             public void disConnect() {
-                if(OnlineDeviceUtils.mDeviceData_onLine.size() <= 0){
+                if (OnlineDeviceUtils.mDeviceData_onLine.size() <= 0) {
                     Log.d(TAG, "deviceData_online is zero");
                     FragmentRemoteControl.RokuLocation = null;
                     FragmentRemoteControl.RokuLocationUrl = null;
@@ -624,8 +626,9 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
 
         });
         setConnectionStatus(RokuLocation != null);
-        Log.d(TAG, "onResume: " + RokuLocationUrl);
         super.onResume();
+        if (et_keyboard != null)
+            et_keyboard.clearFocus();
     }
 
 
@@ -649,6 +652,8 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
     @Override
     public void onPause() {
         super.onPause();
+        if (et_keyboard != null)
+            et_keyboard.clearFocus();
     }
 
 

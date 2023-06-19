@@ -53,11 +53,21 @@
             android:textColor="#FF202020"
             android:textSize="15sp" />
     </RelativeLayout>
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/AdView"
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        ads:adSize="FULL_BANNER"
+        ads:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        android:layout_below="@id/rl_top_tab_device_management"
+        />
     <TextView
         android:id="@+id/tv_common_device_title"
         android:layout_width="wrap_content"
         android:layout_height="29dp"
-        android:layout_below="@id/rl_top_tab_device_management"
+        android:layout_below="@id/AdView"
         android:layout_alignParentStart="true"
         android:layout_marginStart="16dp"
         android:layout_marginTop="14dp"
@@ -71,7 +81,7 @@
         android:layout_height="28dp"
         android:src="@mipmap/refresh_device_manage"
         android:layout_alignParentEnd="true"
-        android:layout_below="@id/rl_top_tab_device_management"
+        android:layout_below="@id/AdView"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp" />
     <androidx.recyclerview.widget.RecyclerView

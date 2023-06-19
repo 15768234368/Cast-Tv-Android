@@ -27,6 +27,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.casttvandroiddemo.utils.IntentUtils;
 import com.example.casttvandroiddemo.utils.ViewUtils;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.IOException;
@@ -53,14 +56,20 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
     private LinearLayout ll_edit, ll_navigate;
     private EditText et_edit;
     private ImageView iv_edit;
-    private int isResume = 0;
     private ViewTreeObserver.OnGlobalLayoutListener keyboardLayoutListener;
+    public static boolean keypress_board = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "mainActivity onCreate: ");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(@NonNull InitializationStatus initializationStatus) {
+
+            }
+        });
         initView();
         selectTab(0);
         if (!isAccept()) {
@@ -144,31 +153,24 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
 
                 // 根据键盘的显示/隐藏状态进行相应的处理
                 if (isKeyboardOpen) {
-                    if (isResume != 1) {
+                    if(keypress_board){
                         et_edit.requestFocus();
+                        keypress_board = false;
                     }
-                    isResume = 0;
                     // 键盘显示时的处理逻辑
                     ll_navigate.setVisibility(View.INVISIBLE);
                     ll_edit.setVisibility(View.VISIBLE);
                     setEnabled(false);
 
-                    if (fragmentRemoteControl != null) {
-                        fragmentRemoteControl.getView().findViewById(R.id.view_coverBlack80).setOnTouchListener(new View.OnTouchListener() {
-                            @Override
-                            public boolean onTouch(View v, MotionEvent event) {
-                                Log.d(TAG, "onTouch: ");
-                                et_edit.clearFocus();
-                                return false;
-                            }
-                        });
-                    }
                 } else {
                     et_edit.clearFocus();
                     Log.d(TAG, "onGlobalLayout: is keyboard close");
                     // 键盘隐藏时的处理逻辑
                     ll_navigate.setVisibility(View.VISIBLE);
                     ll_edit.setVisibility(View.INVISIBLE);
+                    if(fragmentRemoteControl != null){
+                        fragmentRemoteControl.getView().findViewById(R.id.view_coverBlack80).setVisibility(View.INVISIBLE);
+                    }
                     setEnabled(true);
                 }
             }
@@ -295,17 +297,14 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
 
     @Override
     protected void onPause() {
-        isResume = 1;
-        et_edit.clearFocus();
-        closeKeyBoard();
-        et_edit.clearFocus();
+        Log.d(TAG, "test onPause: ");
         super.onPause();
-
+        if (et_edit != null)
+            et_edit.clearFocus();
     }
 
 
     public void closeKeyBoard() {
-        getWindow().getDecorView().getViewTreeObserver().removeOnGlobalLayoutListener(keyboardLayoutListener);
         Rect r = new Rect();
         getWindow().getDecorView().getWindowVisibleDisplayFrame(r);
         int screenHeight = getWindow().getDecorView().getRootView().getHeight();
@@ -327,7 +326,6 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
                     CoverView.setVisibility(View.INVISIBLE);
             }
         }
-        getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener(keyboardLayoutListener);
     }
 
     private void setEnabled(boolean flag) {
@@ -406,10 +404,23 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
     @Override
     protected void onResume() {
         super.onResume();
-        et_edit.clearFocus();
-        closeKeyBoard();
-        et_edit.clearFocus();
+        if (et_edit != null)
+            et_edit.clearFocus();
+        hideKeyboard(et_edit);
     }
 
+    private void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    /** Override the default implementation when the user presses the back key. */
+    @Override
+    @SuppressWarnings("MissingSuperCall")
+    public void onBackPressed() {
+        // Move the task containing the MainActivity to the back of the activity stack, instead of
+        // destroying it. Therefore, MainActivity will be shown when the user switches back to the app.
+        moveTaskToBack(true);
+    }
 }
 

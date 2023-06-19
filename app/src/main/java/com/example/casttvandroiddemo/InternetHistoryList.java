@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.example.casttvandroiddemo.adapter.InternetHistoryAdapter;
 import com.example.casttvandroiddemo.bean.InternetHistoryBean;
 import com.example.casttvandroiddemo.helper.InternetHistoryHelper;
+import com.example.casttvandroiddemo.utils.AppManage;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class InternetHistoryList extends AppCompatActivity implements View.OnCli
         mData = new ArrayList<>();
         initView();
         loadData();
+        AppManage.Admob_bannerInit(this, findViewById(R.id.AdView));
     }
 
     private void loadData() {
