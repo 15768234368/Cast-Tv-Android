@@ -20,9 +20,12 @@ import android.widget.TextView;
 import com.example.casttvandroiddemo.adapter.InternetHistoryAdapter;
 import com.example.casttvandroiddemo.bean.InternetHistoryBean;
 import com.example.casttvandroiddemo.helper.InternetHistoryHelper;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,7 +65,7 @@ public class InternetHistoryList extends AppCompatActivity implements View.OnCli
         helper.close();
         if (mData.size() <= 0) {
             showEmptyListBg();
-        }else{
+        } else {
             closeEmptyListBg();
         }
         adapter.notifyDataSetChanged();
@@ -89,6 +92,9 @@ public class InternetHistoryList extends AppCompatActivity implements View.OnCli
             public boolean onQueryTextSubmit(String s) {
                 tv_cancel.bringToFront();
                 searchKey(s);
+                Map<String, Object> internetContent = new HashMap<String, Object>();
+                internetContent.put("internetContent", s);
+                MobclickAgent.onEventObject(getApplicationContext(), "搜索内容", internetContent);
                 return false;
             }
 
@@ -132,8 +138,8 @@ public class InternetHistoryList extends AppCompatActivity implements View.OnCli
 
     private String transferToCapitalization(String s) {
         StringBuilder result = new StringBuilder();
-        for(int i = 0; i < s.length(); ++i){
-            if(s.charAt(i) >= 'A' && s.charAt(i) <= 'Z'){
+        for (int i = 0; i < s.length(); ++i) {
+            if (s.charAt(i) >= 'A' && s.charAt(i) <= 'Z') {
                 result.append((char) (s.charAt(i) + 32));
             } else {
                 result.append(s.charAt(i));
@@ -143,7 +149,7 @@ public class InternetHistoryList extends AppCompatActivity implements View.OnCli
     }
 
 
-    private void searchKey(String s) {
+    private boolean searchKey(String s) {
         Log.d(TAG, "searchKey: " + s);
         if (s.equals("")) {
             loadData();
@@ -159,7 +165,7 @@ public class InternetHistoryList extends AppCompatActivity implements View.OnCli
                 String itemTitle = cursor.getString(cursor.getColumnIndexOrThrow("title"));
                 String itemUrl = cursor.getString(cursor.getColumnIndexOrThrow("url"));
                 String itemTimestamp = cursor.getString(cursor.getColumnIndexOrThrow("timestamp"));
-                Matcher matcher = pattern.matcher(itemTitle);
+                Matcher matcher = pattern.matcher(transferToCapitalization(itemTitle));
                 if (matcher.find())
                     mData.add(new InternetHistoryBean(itemId, itemTitle, itemUrl, itemTimestamp));
             }
@@ -168,10 +174,12 @@ public class InternetHistoryList extends AppCompatActivity implements View.OnCli
             helper.close();
         }
         adapter.notifyDataSetChanged();
-        if(mData.size() <= 0){
+        if (mData.size() <= 0) {
             showEmptyListBg();
-        }else{
+            return false;
+        } else {
             closeEmptyListBg();
+            return true;
         }
     }
 
@@ -184,6 +192,7 @@ public class InternetHistoryList extends AppCompatActivity implements View.OnCli
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_back_internetHistory:
+                MobclickAgent.onEvent(getApplicationContext(), "返回");
                 finish();
                 break;
             case R.id.tv_cancel_historyList:

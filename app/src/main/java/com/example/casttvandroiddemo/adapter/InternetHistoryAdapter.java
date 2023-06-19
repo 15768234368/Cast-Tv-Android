@@ -14,8 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.casttvandroiddemo.R;
 import com.example.casttvandroiddemo.WebViewActivity;
 import com.example.casttvandroiddemo.bean.InternetHistoryBean;
+import com.umeng.analytics.MobclickAgent;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InternetHistoryAdapter extends RecyclerView.Adapter<InternetHistoryAdapter.MyHolder> {
     private List<InternetHistoryBean> mData;
@@ -40,6 +43,10 @@ public class InternetHistoryAdapter extends RecyclerView.Adapter<InternetHistory
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Map<String, Object> navigatePage = new HashMap<String, Object>();
+                navigatePage.put("navigatePage", bean.getUrl());
+                MobclickAgent.onEventObject(mContext, "跳转页面", navigatePage);
+
                 Intent intent = new Intent(mContext, WebViewActivity.class);
                 intent.putExtra("url", bean.getUrl());
                 mContext.startActivity(intent);

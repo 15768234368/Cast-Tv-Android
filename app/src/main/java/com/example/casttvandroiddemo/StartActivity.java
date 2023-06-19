@@ -26,15 +26,9 @@ public class StartActivity extends AppCompatActivity {
     private final Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            if (isAccept()) {
-                IntentUtils.goToActivity(context, MainActivity.class);
-
-            } else {
-                showCustomDialog();
-            }
+            IntentUtils.goToActivity(context, MainActivity.class);
         }
     };
-    private Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,44 +56,44 @@ public class StartActivity extends AppCompatActivity {
         tv_accept = (TextView) findViewById(R.id.tv_accept);
     }
 
-    public void showCustomDialog() {
-        //创建自定义弹窗
-        dialog = new Dialog(this);
-        dialog.setContentView(R.layout.dialog_privacy_agreement);
-        dialog.setCancelable(false);
-        dialog.show();
-        tv_cancelUse = (TextView) dialog.findViewById(R.id.tv_cancelUse);
-        tv_accept = (TextView) dialog.findViewById(R.id.tv_accept);
-
-        tv_cancelUse.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeDialog();
-                finish();
-            }
-        });
-
-        tv_accept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences sp = getSharedPreferences("agreement", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putString(key, "accepted");
-                editor.apply();
-                IntentUtils.goToActivity(context, MainActivity.class);
-            }
-        });
-    }
-
-    public void closeDialog() {
-        dialog.dismiss();
-    }
-
-    public boolean isAccept() {
-        SharedPreferences sp = getSharedPreferences("agreement", MODE_PRIVATE);
-        String flag = sp.getString(key, "");
-        return !flag.equals("");
-    }
+//    public void showCustomDialog() {
+//        //创建自定义弹窗
+//        dialog = new Dialog(this);
+//        dialog.setContentView(R.layout.dialog_privacy_agreement);
+//        dialog.setCancelable(false);
+//        dialog.show();
+//        tv_cancelUse = (TextView) dialog.findViewById(R.id.tv_cancelUse);
+//        tv_accept = (TextView) dialog.findViewById(R.id.tv_accept);
+//
+//        tv_cancelUse.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                closeDialog();
+//                finish();
+//            }
+//        });
+//
+//        tv_accept.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                SharedPreferences sp = getSharedPreferences("agreement", MODE_PRIVATE);
+//                SharedPreferences.Editor editor = sp.edit();
+//                editor.putString(key, "accepted");
+//                editor.apply();
+//                IntentUtils.goToActivity(context, MainActivity.class);
+//            }
+//        });
+//    }
+//
+//    public void closeDialog() {
+//        dialog.dismiss();
+//    }
+//
+//    public boolean isAccept() {
+//        SharedPreferences sp = getSharedPreferences("agreement", MODE_PRIVATE);
+//        String flag = sp.getString(key, "");
+//        return !flag.equals("");
+//    }
 
     @Override
     protected void onPause() {

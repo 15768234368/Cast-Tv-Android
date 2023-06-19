@@ -32,6 +32,8 @@ import com.example.casttvandroiddemo.bean.DeviceBean;
 import com.example.casttvandroiddemo.helper.DeviceManageHelper;
 import com.example.casttvandroiddemo.utils.OnlineDeviceUtils;
 import com.example.casttvandroiddemo.utils.RemoteUtils;
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.commonsdk.UMConfigure;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -395,6 +397,7 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
         iv_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MobclickAgent.onEvent(getContext(), "设置");
                 Intent intent_setting = new Intent(getContext(), SettingActivity.class);
                 startActivity(intent_setting);
             }
@@ -479,64 +482,82 @@ public class FragmentRemoteControl extends Fragment implements View.OnClickListe
         switch (v.getId()) {
             case R.id.iv_disconnect_homepage:
                 RemoteUtils.httpPost(RokuLocationUrl, "keypress/PowerOff");
+                MobclickAgent.onEvent(getContext(), "关机");
                 break;
             case R.id.tv_select_device_homepage:
 //                findDevice();
                 Intent intent = new Intent(getContext(), DeviceManage.class);
                 startActivity(intent);
+                MobclickAgent.onEvent(getContext(), "切换设备");
                 break;
             case R.id.ll_keyboard_homepage:
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                 coverView.setVisibility(View.VISIBLE);
+                MobclickAgent.onEvent(getContext(), "键盘");
                 break;
             case R.id.ll_channel_homepage:
                 launchChannel();
                 break;
             case R.id.iv_up_homepage:
                 RemoteUtils.httpPost(RokuLocationUrl, "keypress/Up");
+                MobclickAgent.onEvent(getContext(), "上");
                 break;
             case R.id.iv_down_homepage:
                 RemoteUtils.httpPost(RokuLocationUrl, "keypress/Down");
+                MobclickAgent.onEvent(getContext(), "下");
                 break;
             case R.id.iv_left_homepage:
                 RemoteUtils.httpPost(RokuLocationUrl, "keypress/Left");
+                MobclickAgent.onEvent(getContext(), "左");
                 break;
             case R.id.iv_right_homepage:
                 RemoteUtils.httpPost(RokuLocationUrl, "keypress/Right");
+                MobclickAgent.onEvent(getContext(), "右");
                 break;
             case R.id.iv_ok_homepage:
                 RemoteUtils.httpPost(RokuLocationUrl, "keypress/Select");
+                MobclickAgent.onEvent(getContext(), "确定");
                 break;
             case R.id.iv_back_homepage:
                 RemoteUtils.httpPost(RokuLocationUrl, "keypress/Back");
+                MobclickAgent.onEvent(getContext(), "返回");
                 break;
             case R.id.iv_home_homepage:
                 RemoteUtils.httpPost(RokuLocationUrl, "keypress/Home");
+                MobclickAgent.onEvent(getContext(), "首页");
                 break;
             case R.id.iv_rewind_homepage:
                 RemoteUtils.httpPost(RokuLocationUrl, "keypress/Rev");
+                MobclickAgent.onEvent(getContext(), "倒退");
                 break;
             case R.id.iv_play_pause_homepage:
                 RemoteUtils.httpPost(RokuLocationUrl, "keypress/Play");
+                MobclickAgent.onEvent(getContext(), "播放/暂停");
                 break;
             case R.id.iv_forward_homepage:
                 RemoteUtils.httpPost(RokuLocationUrl, "keypress/Fwd");
+                MobclickAgent.onEvent(getContext(), "前进");
                 break;
             case R.id.iv_backspace_homepage:
                 RemoteUtils.httpPost(RokuLocationUrl, "keypress/Backspace");
+                MobclickAgent.onEvent(getContext(), "刷新");
                 break;
             case R.id.iv_menu_homepage:
                 RemoteUtils.httpPost(RokuLocationUrl, "keypress/Info");
+                MobclickAgent.onEvent(getContext(), "菜单");
                 break;
             case R.id.iv_volume_down_homepage:
                 RemoteUtils.httpPost(RokuLocationUrl, "keypress/VolumeDown");
+                MobclickAgent.onEvent(getContext(), "音量减");
                 break;
             case R.id.iv_volume_mute_homepage:
                 RemoteUtils.httpPost(RokuLocationUrl, "keypress/VolumeMute");
+                MobclickAgent.onEvent(getContext(), "静音");
                 break;
             case R.id.iv_volume_up_homepage:
                 RemoteUtils.httpPost(RokuLocationUrl, "keypress/VolumeUp");
+                MobclickAgent.onEvent(getContext(), "音量加");
                 break;
         }
     }

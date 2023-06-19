@@ -9,6 +9,9 @@ import android.util.Log;
 import android.webkit.WebView;
 
 import com.example.casttvandroiddemo.Service.VolumeService;
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.analytics.b;
+import com.umeng.commonsdk.UMConfigure;
 
 import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.unit.UnitsManager;
@@ -28,10 +31,19 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        //头条自适应
         initAutoSize();
-
-        //启动服务
+        //启动网络监听服务
         startService(new Intent(this, VolumeService.class));
+        //umeng初始化模块
+        //1.打开调试log
+        UMConfigure.setLogEnabled(true);
+        //2.预初始化SDK
+        UMConfigure.preInit(this, "6486bccca1a164591b30aec1", "Google Play");
+        //3.初始化SDK
+        UMConfigure.init(this, "6486bccca1a164591b30aec1", "Google Play", UMConfigure.DEVICE_TYPE_PHONE, "");
+        //4.设置页面采集模式
+        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.AUTO);
     }
 
     private void initAutoSize() {

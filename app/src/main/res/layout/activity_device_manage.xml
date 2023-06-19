@@ -44,7 +44,7 @@
 
         <TextView
             android:id="@+id/tv_update_commonDevice"
-            android:layout_width="30dp"
+            android:layout_width="wrap_content"
             android:layout_height="21dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"

@@ -35,6 +35,7 @@ import com.example.casttvandroiddemo.helper.InternetHistoryHelper;
 import com.example.casttvandroiddemo.utils.IntentUtils;
 import com.example.casttvandroiddemo.utils.StringUtils;
 import com.google.gson.Gson;
+import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,8 +46,10 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -261,6 +264,9 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+                Map<String, Object> internetContent = new HashMap<String, Object>();
+                internetContent.put("internetContent", s);
+                MobclickAgent.onEventObject(getApplicationContext(), "搜索内容", internetContent);
                 if (StringUtils.containsChinese(s)) {
                     String newUrl = "https://www.google.com/search?q=" + s;
                     Log.d(TAG, "onQueryTextSubmit: " + newUrl);
@@ -405,16 +411,19 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                     if (jsonStr != null) {
                         VideoData videoData = parseJsonData(jsonStr);
                         if (videoData != null) {
-                            String readyVideoUrl = videoData.getStreamingData().getFormats().get(0).getUrl();
-                            String videoTitle = videoData.getVideoDetails().getTitle();
-                            String videoImageUrl = videoData.getVideoDetails().getThumbnail().getThumbnails().get(0).getUrl();
-                            Log.d(TAG, "Video URL: " + readyVideoUrl);
-                            Log.d(TAG, "Video Title: " + videoTitle);
-                            Log.d(TAG, "Video Photo URL" + videoImageUrl);
-                            //将视频的url，图片url，标题发送
-                            Message message = new Message();
-                            message.obj = new CastVideoBean(videoImageUrl, videoTitle, readyVideoUrl, url);
-                            handler.sendMessage(message);
+                            try {
+                                String readyVideoUrl = videoData.getStreamingData().getFormats().get(0).getUrl();
+                                String videoTitle = videoData.getVideoDetails().getTitle();
+                                String videoImageUrl = videoData.getVideoDetails().getThumbnail().getThumbnails().get(0).getUrl();
+                                Log.d(TAG, "Video URL: " + readyVideoUrl);
+                                Log.d(TAG, "Video Title: " + videoTitle);
+                                Log.d(TAG, "Video Photo URL" + videoImageUrl);
+                                //将视频的url，图片url，标题发送
+                                Message message = new Message();
+                                message.obj = new CastVideoBean(videoImageUrl, videoTitle, readyVideoUrl, url);
+                                handler.sendMessage(message);
+                            }catch (NullPointerException e){
+                            }
                         }
                     }
                 } else {
@@ -557,23 +566,28 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_back_browserCast:
+                MobclickAgent.onEvent(getApplicationContext(), "上一步");
                 if (webView.canGoBack())
                     webView.goBack();
                 else
                     finish();
                 break;
             case R.id.iv_forward_browserCast:
+                MobclickAgent.onEvent(getApplicationContext(), "下一步");
                 webView.goForward();
                 break;
             case R.id.iv_cast_browserCast:
+                MobclickAgent.onEvent(getApplicationContext(), "投屏");
                 Intent intent_cast = new Intent(this, CastVideoListActivity.class);
                 startActivity(intent_cast);
                 break;
             case R.id.iv_history_browserCast:
+                MobclickAgent.onEvent(getApplicationContext(), "历史记录");
                 Intent intent_history = new Intent(this, InternetHistoryList.class);
                 startActivity(intent_history);
                 break;
             case R.id.iv_remote_browserCast:
+                MobclickAgent.onEvent(getApplicationContext(), "遥控器");
                 IntentUtils.goToActivity(this, RemoteControlActivity.class);
                 break;
             case R.id.tv_closeCastContentTip:

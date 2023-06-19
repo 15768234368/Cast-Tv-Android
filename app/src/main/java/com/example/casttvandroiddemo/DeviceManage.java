@@ -30,6 +30,7 @@ import com.example.casttvandroiddemo.bean.DeviceBean;
 import com.example.casttvandroiddemo.helper.DeviceManageHelper;
 import com.example.casttvandroiddemo.utils.OnlineDeviceUtils;
 import com.example.casttvandroiddemo.utils.RemoteUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -171,6 +172,7 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
         adapter.setOnItemClickListener(new HistoryConnectedDeviceAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(View view, int position) {
+                MobclickAgent.onEvent(getApplicationContext(), "选择设备");
                 //连接操作
                 if (!adapter.isDelete()) {
                     //如果设备不在线，不产生任何操作
@@ -369,9 +371,11 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_addDevice_device_manage:
+                MobclickAgent.onEvent(this, "重新搜索");
             case R.id.btn_goToAdd_device_manage:
                 Intent intent = new Intent(DeviceManage.this, DeviceAdd.class);
                 startActivityForResult(intent, 1);
+                MobclickAgent.onEvent(this, "去设置");
                 break;
             case R.id.tv_update_commonDevice:
                 if (!isDeleteSelect)
@@ -380,9 +384,11 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
                     cancelDelete();
                 break;
             case R.id.iv_back_deviceManage:
+                MobclickAgent.onEvent(this, "返回");
                 finish();
                 break;
             case R.id.iv_refresh_deviceManage:
+                MobclickAgent.onEvent(this, "刷新");
                 refresh();
                 break;
             case R.id.tv_allSelect_delete:

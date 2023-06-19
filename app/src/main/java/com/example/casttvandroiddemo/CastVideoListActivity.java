@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.example.casttvandroiddemo.adapter.CastVideoListAdapter;
 import com.example.casttvandroiddemo.helper.DeviceManageHelper;
 import com.example.casttvandroiddemo.utils.RemoteUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -56,6 +57,7 @@ public class CastVideoListActivity extends AppCompatActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                MobclickAgent.onEvent(getApplicationContext(), "返回");
                 finish();
             }
         });
@@ -64,6 +66,7 @@ public class CastVideoListActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new CastVideoListAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(View view, int position) {
+                MobclickAgent.onEvent(getApplicationContext(), "投屏");
                 //判断是否有网络连接，有则判断是否存在投屏频道，无则跳转连接
                 if (FragmentRemoteControl.RokuLocation == null) {
                     //若有历史连接设备，则跳转到设备管理页，否则跳转到设备添加页
@@ -141,12 +144,14 @@ public class CastVideoListActivity extends AppCompatActivity {
         dialog.findViewById(R.id.tv_cancelInstall_channelDialog).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                MobclickAgent.onEvent(getApplicationContext(), "取消安装");
                 dialog.cancel();
             }
         });
         dialog.findViewById(R.id.tv_determineInstall_channelDialog).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                MobclickAgent.onEvent(getApplicationContext(), "安装");
                 RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "install/706370");//未存在该频道，需要安装
                 dialog.cancel();
             }

@@ -45,7 +45,6 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/ll_keyTo_youtube"
         android:layout_marginStart="20dp"
-        android:layout_toEndOf="@id/ll_keyTo_youtube"
         android:gravity="center"
         android:orientation="vertical">
 

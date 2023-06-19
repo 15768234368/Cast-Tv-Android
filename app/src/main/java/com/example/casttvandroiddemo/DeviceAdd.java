@@ -233,7 +233,7 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
         tv_ipTitle1.setText(R.string.No_Roku_detected);
         tv_ipTitle2.setText(R.string.Please_check_the_Android_device_is_on_the_same_WiFi_as_Roku);
         btn_research.setVisibility(View.VISIBLE);
-        if(dialog != null && dialog.isShowing())
+        if (dialog != null && dialog.isShowing())
             dialog.cancel();
     }
 
@@ -246,7 +246,7 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
         tv_ipTitle1.setText(R.string.Please_allow_network_permissions_and_connect_to_WiFi);
         tv_ipTitle2.setText(R.string.otherwise_you_will_not_be_able_to_connect_to_Roku_devices);
         btn_goToSetting.setVisibility(View.VISIBLE);
-        if(dialog != null && dialog.isShowing())
+        if (dialog != null && dialog.isShowing())
             dialog.cancel();
     }
 
@@ -266,7 +266,6 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
             @Override
             public void OnItemClick(View view, int position) {
                 //选中某个设备，并存入历史连接数据库
-                showConnectDialog();
 
                 FragmentRemoteControl.RokuLocation = mDeviceData.get(position).getUserDeviceIpAddress();
                 FragmentRemoteControl.RokuLocationUrl = RemoteUtils.getRokuLocationUrl(FragmentRemoteControl.RokuLocation);
@@ -298,16 +297,7 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
                 }
 
                 db.close();
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (dialog.isShowing()) {
-                            dialog.cancel();
-                            finish();
-                        }
-                    }
-                }, 2000);
+                finish();
             }
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -352,7 +342,7 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
         Log.d(TAG, "onResume: ");
         super.onResume();
         adapter.notifyDataSetChanged();
-        if(recyclerView != null && mDeviceData.size() > 0){
+        if (recyclerView != null && mDeviceData.size() > 0) {
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
@@ -476,7 +466,7 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
                             break;
                         }
                     }
-                    if (i >= mDeviceData.size()){
+                    if (i >= mDeviceData.size()) {
                         mDeviceData.add(new DeviceBean(info[0], info[1], info[2], ipAddress));
                         Message message = new Message();
                         message.what = 1;

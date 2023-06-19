@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Web Caster</string>
-    <string name="agreement_content">Web Caster 是提供遥控、投屏功能的应用。为提供上述功能，本应用需联网，开启/关闭WLAN,开启/关闭本地网络权限进行投屏操作。友盟SDK 用于采集设备Mac地址、唯一设备识别码（IMEI/Android ID/OPENUDID/GUID）、安卓广告标识符、SIM卡 IMSI信息 AdMob SDK 用于获取唯一标识符、设备类型 和设置、操作系统、移动网络信息（包括运营商名称和电话号码）以及应用版本号、IP地址、崩溃报告</string>
+    <string name="agreement_content">Web Caster 是提供遥控、投屏功能的应用。为提供上述功能，本应用需联网，开启/关闭WLAN,开启/关闭本地网络权限进行投屏操作。友盟SDK 用于采集设备Mac地址、唯一设备识别码（IMEI/Android ID/OPENUDID/GUID）、安卓广告标识符、SIM卡 IMSI信息 AdMob SDK 用于获取唯一标识符、设备类型 和设置、操作系统、移动网络信息（包括运营商名称和电话号码）以及应用版本号、IP地址、崩溃报告。</string>
     <string name="Remote">遥控器</string>
     <string name="Browser">浏览器</string>
     <string name="Please_enter_content">请输入内容</string>
@@ -66,7 +66,7 @@
     <string name="are_you_sure_you_want_to_remove_device">您确定要移除设备吗？</string>
     <string name="remove">确认移除</string>
     <string name="install">确认安装</string>
-    <string name="you_can_read_the_user_agreement_and_privacy_policy_for_relevant_information_if_you_agree_click_agree_to_start_using_our_app">您可以阅读用户协议和隐私政策了解相关信息。如果您“同意”，请点击「同意」开始使用我们的应用。</string>
+    <string name="you_can_read_the_user_agreement_and_privacy_policy_for_relevant_information_if_you_agree_click_agree_to_start_using_our_app"><![CDATA[您可以阅读<a href="%1$s"><font color="#FF0BBD6A">用户协议</font></a>和<a href="%2$s"><font color="#FF0BBD6A">隐私政策</font></a>了解相关信息。如果您“同意”，请点击「同意」开始使用我们的应用。]]></string>
     <string name="found_the_screencast_content_click_to_cast_the_screen">检测到投屏内容，点击后进行投屏</string>
     <string name="got_it">知道了</string>
     <string name="add_device">添加设备</string>

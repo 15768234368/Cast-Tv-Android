@@ -1,10 +1,15 @@
 package com.example.casttvandroiddemo;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
+import android.text.InputType;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,7 +25,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.casttvandroiddemo.utils.IntentUtils;
 import com.example.casttvandroiddemo.utils.ViewUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.IOException;
 
@@ -36,7 +43,7 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity implements CustomAdapt {
     private static final String TAG = "MainActivity";
-
+    private static final String key = "isAccept";
     private FragmentRemoteControl fragmentRemoteControl;
     private FragmentInternet fragmentInternet;
     private ImageView iv_remoteControl, iv_browserView;
@@ -56,7 +63,9 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
         setContentView(R.layout.activity_main);
         initView();
         selectTab(0);
-
+        if (!isAccept()) {
+            showCustomDialog();
+        }
 
     }
 
@@ -67,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
             @Override
             public void onClick(View view) {
                 selectTab(0);
+                MobclickAgent.onEvent(getApplicationContext(), "遥控器");
             }
         });
 
@@ -75,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
             @Override
             public void onClick(View view) {
                 selectTab(1);
+                MobclickAgent.onEvent(getApplicationContext(), "浏览器");
             }
         });
 
@@ -86,7 +97,6 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
         et_edit = (EditText) findViewById(R.id.et_keyboard_edit_homepage);
         iv_edit = (ImageView) findViewById(R.id.iv_keyboard_edit_homepage);
         //设置EditText的监听器
-        ViewUtils.setEditViewLimit(et_edit);
         et_edit.addTextChangedListener(new TextWatcher() {
             int index = 0;
 
@@ -106,7 +116,9 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
                 if (!newText.equals("") && newText.length() > index) {
                     if (FragmentRemoteControl.RokuLocation != null) {
                         String RokuLocationUrl = getRokuLocationUrl(FragmentRemoteControl.RokuLocation);
-                        httpPost(RokuLocationUrl + "keypress/Lit_" + newText.charAt(newText.length() - 1));
+                        char c = newText.charAt(newText.length() - 1);
+                        if (c >= '0' && c <= '9' || c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z')
+                            httpPost(RokuLocationUrl + "keypress/Lit_" + c);
                     }
 
                 }
@@ -152,6 +164,8 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
                         });
                     }
                 } else {
+                    et_edit.clearFocus();
+                    Log.d(TAG, "onGlobalLayout: is keyboard close");
                     // 键盘隐藏时的处理逻辑
                     ll_navigate.setVisibility(View.VISIBLE);
                     ll_edit.setVisibility(View.INVISIBLE);
@@ -283,12 +297,15 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
     protected void onPause() {
         isResume = 1;
         et_edit.clearFocus();
+        closeKeyBoard();
+        et_edit.clearFocus();
         super.onPause();
 
     }
 
 
     public void closeKeyBoard() {
+        getWindow().getDecorView().getViewTreeObserver().removeOnGlobalLayoutListener(keyboardLayoutListener);
         Rect r = new Rect();
         getWindow().getDecorView().getWindowVisibleDisplayFrame(r);
         int screenHeight = getWindow().getDecorView().getRootView().getHeight();
@@ -310,6 +327,7 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
                     CoverView.setVisibility(View.INVISIBLE);
             }
         }
+        getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener(keyboardLayoutListener);
     }
 
     private void setEnabled(boolean flag) {
@@ -337,4 +355,61 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
 
     }
 
+    public void showCustomDialog() {
+        String agreementUrl = "https://webcastertv.github.io/AndWebCaster/UserAgreement/index.html";
+        String privacyUrl = "https://webcastertv.github.io/AndWebCaster/PrivacyPolicy/index.html";
+        //创建自定义弹窗
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_privacy_agreement);
+        dialog.setCancelable(false);
+        dialog.show();
+        TextView tv_bottom1 = (TextView) dialog.findViewById(R.id.tv_bottom1);
+        TextView tv_cancelUse = (TextView) dialog.findViewById(R.id.tv_cancelUse);
+        TextView tv_accept = (TextView) dialog.findViewById(R.id.tv_accept);
+        String agreementAndPrivacyPolicy = getString(R.string.you_can_read_the_user_agreement_and_privacy_policy_for_relevant_information_if_you_agree_click_agree_to_start_using_our_app);
+        CharSequence agreementAndPrivacyPolicyWithLinks = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            agreementAndPrivacyPolicyWithLinks = Html.fromHtml(agreementAndPrivacyPolicy.replace("%1$s", agreementUrl).replace("%2$s", privacyUrl), Html.FROM_HTML_MODE_LEGACY);
+
+        }
+        tv_bottom1.setText(agreementAndPrivacyPolicyWithLinks);
+        tv_bottom1.setMovementMethod(LinkMovementMethod.getInstance());
+        tv_cancelUse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MobclickAgent.onEvent(getApplicationContext(), "暂不使用");
+                dialog.cancel();
+                finish();
+            }
+        });
+
+        tv_accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MobclickAgent.onEvent(getApplicationContext(), "同意");
+                SharedPreferences sp = getSharedPreferences("agreement", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString(key, "accepted");
+                editor.apply();
+                dialog.cancel();
+            }
+        });
+
+    }
+
+    public boolean isAccept() {
+        SharedPreferences sp = getSharedPreferences("agreement", MODE_PRIVATE);
+        String flag = sp.getString(key, "");
+        return !flag.equals("");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        et_edit.clearFocus();
+        closeKeyBoard();
+        et_edit.clearFocus();
+    }
+
 }
+

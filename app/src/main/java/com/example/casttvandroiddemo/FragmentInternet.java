@@ -22,6 +22,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.casttvandroiddemo.utils.StringUtils;
+import com.umeng.analytics.MobclickAgent;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class FragmentInternet extends Fragment {
     private static final String TAG = "FragmentInternet";
@@ -62,6 +66,13 @@ public class FragmentInternet extends Fragment {
     }
 
     private void initView() {
+
+        view.findViewById(R.id.iv_history_homepage).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), InternetHistoryList.class));
+            }
+        });
         iv_setting = (ImageView) view.findViewById(R.id.iv_setting_homepage);
         iv_setting.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,6 +99,9 @@ public class FragmentInternet extends Fragment {
                         newUrl = "https://www.google.com/search?q=" + url;
                     }
                 }
+                Map<String, Object> internetContent = new HashMap<String, Object>();
+                internetContent.put("internetContent", url);
+                MobclickAgent.onEventObject(getContext(), "搜索内容", internetContent);
                 Intent intent = new Intent(getContext(), WebViewActivity.class);
                 intent.putExtra("url", newUrl);
                 startActivity(intent);

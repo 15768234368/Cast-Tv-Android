@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Web Caster</string>
-    <string name="agreement_content">Web Caster is an application that provides functions of remote control and screen projection. In order to provide the above functions, this application needs to be connected to the Internet, turn on/off WLAN, and turn on/off the local network permission to perform screen projection operations. Umeng SDK is used to collect device Mac address, unique device identification code (IMEI/Android ID/OPENUDID/GUID), Android advertising identifier, SIM card IMSI information AdMob SDK is used to obtain unique identifier, device type and settings, operating system , mobile network information (including carrier name and phone number), and app version number, IP address, crash reports</string>
+    <string name="agreement_content">Web Caster is an application that provides functions of remote control and screen projection. In order to provide the above functions, this application needs to be connected to the Internet, turn on/off WLAN, and turn on/off the local network permission to perform screen projection operations. Umeng SDK is used to collect device Mac address, unique device identification code (IMEI/Android ID/OPENUDID/GUID), Android advertising identifier, SIM card IMSI information AdMob SDK is used to obtain unique identifier, device type and settings, operating system , mobile network information (including carrier name and phone number), and app version number, IP address, crash reports.</string>
     <string name="Remote">Remote</string>
     <string name="Browser">Browser</string>
     <string name="Please_enter_content">Please enter content</string>
@@ -66,7 +66,7 @@
     <string name="are_you_sure_you_want_to_remove_device">Are you sure you want to remove device?</string>
     <string name="remove">Remove</string>
     <string name="install">Install</string>
-    <string name="you_can_read_the_user_agreement_and_privacy_policy_for_relevant_information_if_you_agree_click_agree_to_start_using_our_app">You can read the User Agreement and Privacy Policy for relevant information. If you Agree, click Agreeto start using our app.</string>
+    <string name="you_can_read_the_user_agreement_and_privacy_policy_for_relevant_information_if_you_agree_click_agree_to_start_using_our_app"><![CDATA[You can read the <a href="%1$s"><font color="#FF0BBD6A">User Agreement</font></a> and <a href="%2$s"><font color="#FF0BBD6A">Privacy Policy</font></a> for relevant information. If you Agree, click Agreeto start using our app.]]></string>
     <string name="found_the_screencast_content_click_to_cast_the_screen">Found the screencast content, click to cast the screen</string>
     <string name="got_it">Got it!</string>
     <string name="add_device">Add Device</string>

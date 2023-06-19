@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -65,7 +67,7 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message msg) {
-            if(msg.what == 1){
+            if (msg.what == 1) {
                 //更新主线程
                 setConnectionStatus(FragmentRemoteControl.RokuLocation != null);
             }
@@ -73,6 +75,7 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
 
         }
     });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "Remote Control Activity onCreate: ");
@@ -192,7 +195,7 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
             }
             return false;
         });
-        iv_right =findViewById(R.id.iv_right_homepage);
+        iv_right = findViewById(R.id.iv_right_homepage);
         iv_right.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 // 按下时的操作
@@ -363,7 +366,12 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
             return false;
         });
 
-        iv_close.setOnClickListener(this);
+        iv_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         iv_disconnect.setOnClickListener(this);
         tv_selectDevice.setOnClickListener(this);
@@ -449,10 +457,44 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
 
 
         });
-
         //设置EditText的监听器
-        ViewUtils.setEditViewLimit(et_edit);
+        et_edit.addTextChangedListener(new TextWatcher() {
+            int index = 0;
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String newText = editable.toString();
+                if (!newText.equals("") && newText.length() > index) {
+                    if (FragmentRemoteControl.RokuLocation != null) {
+                        String RokuLocationUrl = FragmentRemoteControl.RokuLocationUrl;
+                        char c = newText.charAt(newText.length() - 1);
+                        if (c >= '0' && c <= '9' || c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z')
+                            RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "keypress/Lit_" + c);
+                    }
+
+                }
+                if (index >= newText.length()) {
+                    if (FragmentRemoteControl.RokuLocation != null) {
+                        String RokuLocationUrl = FragmentRemoteControl.RokuLocationUrl;
+                        RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "keypress/Backspace");
+                    }
+                }
+                index = newText.length();
+            }
+        });
     }
+
+
     public void setBackEvent() {
         if (OnlineDeviceUtils.mDeviceData_onLine.size() > 0) {
             DeviceManageHelper helper = new DeviceManageHelper(this);
@@ -474,6 +516,7 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
 
         }
     }
+
     private void setEnabled(boolean flag) {
         findViewById(R.id.iv_disconnect_homepage).setEnabled(flag);
         findViewById(R.id.tv_select_device_homepage).setEnabled(flag);
@@ -524,9 +567,6 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
             return;
         }
         switch (v.getId()) {
-            case R.id.iv_close_homepage:
-                finish();
-                break;
             case R.id.iv_disconnect_homepage:
                 RemoteUtils.httpPost(FragmentRemoteControl.RokuLocationUrl, "keypress/PowerOff");
                 break;
@@ -643,7 +683,7 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
 
             @Override
             public void disConnect() {
-                if(OnlineDeviceUtils.mDeviceData_onLine.size() <= 0){
+                if (OnlineDeviceUtils.mDeviceData_onLine.size() <= 0) {
                     Log.d(TAG, "deviceData_online is zero");
                     FragmentRemoteControl.RokuLocation = null;
                     FragmentRemoteControl.RokuLocationUrl = null;
