@@ -70,4 +70,8 @@
     <string name="found_the_screencast_content_click_to_cast_the_screen">檢測到投屏內容,點擊後進行投屏</string>
     <string name="got_it">知道了</string>
     <string name="add_device">添加设备</string>
+    <string name="give_us_a_good_review">給我們好評</string>
+    <string name="if_you_think_the_app_is_easy_to_use_please_give_us_a_good_review_we_will_do_better_and_better">認為軟件好用請給我們一個好評，我們將越做越好！</string>
+    <string name="give_5_star_rating">喜歡，去好評</string>
+    <string name="later">下次再說</string>
 </resources>

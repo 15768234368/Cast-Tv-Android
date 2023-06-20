@@ -47,7 +47,7 @@
         android:layout_below="@id/rl_topTab"
         android:layout_centerHorizontal="true"
         ads:adSize="FULL_BANNER"
-        ads:adUnitId="ca-app-pub-3940256099942544/6300978111" />
+        ads:adUnitId="ca-app-pub-5547879489127772/3956378413" />
 
     <ImageView
         android:id="@+id/iv_searchImage"

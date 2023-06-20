@@ -636,6 +636,7 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
     @Override
     protected void onPause() {
         super.onPause();
+        OnlineDeviceUtils.saveLatestOnLineDevice(this, FragmentRemoteControl.ConnectingDevice);
     }
 
     private void launchChannel() {
@@ -752,4 +753,5 @@ public class RemoteControlActivity extends AppCompatActivity implements View.OnC
                 coverView.setVisibility(View.INVISIBLE);
         }
     }
+
 }

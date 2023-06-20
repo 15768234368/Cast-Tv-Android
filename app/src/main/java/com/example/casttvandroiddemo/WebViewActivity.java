@@ -34,6 +34,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.casttvandroiddemo.bean.CastVideoBean;
 import com.example.casttvandroiddemo.helper.InternetHistoryHelper;
 import com.example.casttvandroiddemo.utils.IntentUtils;
+import com.example.casttvandroiddemo.utils.OnlineDeviceUtils;
 import com.example.casttvandroiddemo.utils.StringUtils;
 import com.google.gson.Gson;
 import com.umeng.analytics.MobclickAgent;
@@ -607,6 +608,12 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
         super.onDestroy();
         mVideoBean.clear();
         Log.d(TAG, "onDestroy: ");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        OnlineDeviceUtils.saveLatestOnLineDevice(this, FragmentRemoteControl.ConnectingDevice);
     }
 }
 

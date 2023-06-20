@@ -15,7 +15,10 @@ import android.widget.Switch;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.casttvandroiddemo.utils.AdInsert;
 import com.example.casttvandroiddemo.utils.AppManage;
+import com.example.casttvandroiddemo.utils.InternetUtils;
+import com.example.casttvandroiddemo.utils.OnlineDeviceUtils;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -36,78 +39,17 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     private RelativeLayout rl_enableClosedCaptioning, rl_feedback, rl_sharing, rl_userComment, rl_privacyPolicy, rl_userPolicy;
     private ImageView iv_back;
     public static boolean isVibrator;
+    public static AdInsert adInsert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         initView();
-
-        showAd();
+        adInsert = new AdInsert(this, this);
+        adInsert.initAd();
     }
 
-    private void showAd() {
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(@NonNull InitializationStatus initializationStatus) {
-
-            }
-        });
-        AdRequest adRequest = new AdRequest.Builder().build();
-
-        InterstitialAd.load(this,"ca-app-pub-3940256099942544/1033173712", adRequest,
-                new InterstitialAdLoadCallback() {
-                    @Override
-                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                        // The mInterstitialAd reference will be null until
-                        // an ad is loaded.
-                        mInterstitialAd = interstitialAd;
-                        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
-                            @Override
-                            public void onAdClicked() {
-                                // Called when a click is recorded for an ad.
-                                Log.d(TAG, "Ad was clicked.");
-                            }
-
-                            @Override
-                            public void onAdDismissedFullScreenContent() {
-                                // Called when ad is dismissed.
-                                // Set the ad reference to null so you don't show the ad a second time.
-                                Log.d(TAG, "Ad dismissed fullscreen content.");
-                                mInterstitialAd = null;
-                                finish();
-                            }
-
-                            @Override
-                            public void onAdFailedToShowFullScreenContent(AdError adError) {
-                                // Called when ad fails to show.
-                                Log.e(TAG, "Ad failed to show fullscreen content.");
-                                mInterstitialAd = null;
-                            }
-
-                            @Override
-                            public void onAdImpression() {
-                                // Called when an impression is recorded for an ad.
-                                Log.d(TAG, "Ad recorded an impression.");
-                            }
-
-                            @Override
-                            public void onAdShowedFullScreenContent() {
-                                // Called when ad is shown.
-                                Log.d(TAG, "Ad showed fullscreen content.");
-                            }
-                        });
-                        Log.i(TAG, "onAdLoaded");
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                        // Handle the error
-                        Log.d(TAG, loadAdError.toString());
-                        mInterstitialAd = null;
-                    }
-                });
-    }
 
     private void initView() {
         aSwitch = (Switch) findViewById(R.id.sw_buttonVibration_setting);
@@ -141,7 +83,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 SharedPreferences.Editor editor = sp.edit();
                 editor.putBoolean("isVibrator", isVibrator);
                 editor.apply();
-                if(isVibrator)
+                if (isVibrator)
                     MobclickAgent.onEvent(getApplicationContext(), "按钮震动开");
                 else
                     MobclickAgent.onEvent(getApplicationContext(), "按钮震动关");
@@ -153,10 +95,11 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.iv_back_setting:
                 MobclickAgent.onEvent(getApplicationContext(), "关闭");
-                if (mInterstitialAd != null) {
-                    mInterstitialAd.show(SettingActivity.this);
+                if (!adInsert.isEmpty()) {
+                    Log.d(TAG, "onClick: is not empty");
+                    adInsert.showAd();
                 } else {
-                    Log.d("TAG", "The interstitial ad wasn't ready yet.");
+                    finish();
                 }
                 break;
             case R.id.rl_feedback_setting:
@@ -169,7 +112,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.rl_sharing_setting:
                 MobclickAgent.onEvent(getApplicationContext(), "分享给好友");
                 //输入App的安装网址
-                String sharingUrl = "";
+                String sharingUrl = "https://play.google.com/store/apps/details?id=" + this.getPackageName();
                 Intent intent_sharing = new Intent();
                 intent_sharing.setAction(Intent.ACTION_SEND);
                 intent_sharing.putExtra(Intent.EXTRA_TEXT, sharingUrl);
@@ -180,8 +123,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 MobclickAgent.onEvent(getApplicationContext(), "评价我们");
                 //输入评论的网址
                 try {
-                    String commentUrl = "https://www.baidu.com";
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(commentUrl)));
+                    InternetUtils.openGooglePlay(this);
                 } catch (Exception e) {
                     e.printStackTrace();
                     finish();
@@ -212,6 +154,14 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onBackPressed() {
+        MobclickAgent.onEvent(getApplicationContext(), "关闭");
         onClick(iv_back);
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        OnlineDeviceUtils.saveLatestOnLineDevice(this, FragmentRemoteControl.ConnectingDevice);
+    }
+
 }

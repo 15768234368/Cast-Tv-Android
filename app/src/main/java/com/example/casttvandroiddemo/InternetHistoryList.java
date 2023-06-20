@@ -21,6 +21,7 @@ import com.example.casttvandroiddemo.adapter.InternetHistoryAdapter;
 import com.example.casttvandroiddemo.bean.InternetHistoryBean;
 import com.example.casttvandroiddemo.helper.InternetHistoryHelper;
 import com.example.casttvandroiddemo.utils.AppManage;
+import com.example.casttvandroiddemo.utils.OnlineDeviceUtils;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
@@ -206,5 +207,11 @@ public class InternetHistoryList extends AppCompatActivity implements View.OnCli
                 break;
 
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        OnlineDeviceUtils.saveLatestOnLineDevice(this, FragmentRemoteControl.ConnectingDevice);
     }
 }

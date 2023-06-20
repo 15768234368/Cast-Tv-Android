@@ -96,12 +96,12 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
                 for (String item : OnlineDeviceUtils.mRokuLocation_onLine) {
                     if (item.contains(deviceIpAddress)) {
                         isOnline = 2;//在线但未连接
-                        if (deviceIpAddress.contains(FragmentRemoteControl.RokuLocation))
+                        if (FragmentRemoteControl.RokuLocation != null && deviceIpAddress.contains(FragmentRemoteControl.RokuLocation))
                             isOnline = 1;//在线且已连接
                         break;
                     }
                 }
-                if(deviceUDN.equals(FragmentRemoteControl.ConnectingDevice.getUserDeviceUDN()))
+                if (FragmentRemoteControl.ConnectingDevice != null && deviceUDN.equals(FragmentRemoteControl.ConnectingDevice.getUserDeviceUDN()))
                     isOnline = 1;
                 mData.add(new DeviceBean(deviceUDN, deviceName, deviceLocation, deviceIpAddress, isOnline));
             }
@@ -133,7 +133,6 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
             iv_refresh.setVisibility(View.INVISIBLE);
         }
     }
-
 
 
     private void initView() {
@@ -323,8 +322,11 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
         for (int i = 0; i < mData.size(); ++i) {
             if (mData.get(i).getIsDelete() == 2) {
                 db.delete(DeviceManageHelper.TABLE_HISTORY, DeviceManageHelper.USER_DEVICE_IPADDRESS + "=?", new String[]{mData.get(i).getUserDeviceIpAddress()});
-                if (mData.get(i).getUserDeviceIpAddress().equals(FragmentRemoteControl.RokuLocation))
+                if (mData.get(i).getUserDeviceIpAddress().equals(FragmentRemoteControl.RokuLocation)){
                     FragmentRemoteControl.RokuLocation = null;
+                    FragmentRemoteControl.RokuLocationUrl = null;
+                    FragmentRemoteControl.ConnectingDevice = null;
+                }
             }
         }
         db.close();
@@ -409,10 +411,16 @@ public class DeviceManage extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1){
+        if (requestCode == 1) {
             loadData();
             if (adapter != null)
                 adapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        OnlineDeviceUtils.saveLatestOnLineDevice(this, FragmentRemoteControl.ConnectingDevice);
     }
 }

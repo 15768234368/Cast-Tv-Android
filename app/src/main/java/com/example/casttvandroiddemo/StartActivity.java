@@ -1,11 +1,15 @@
 package com.example.casttvandroiddemo;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -15,8 +19,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import com.example.casttvandroiddemo.utils.AppManage;
 import com.example.casttvandroiddemo.utils.IntentUtils;
+import com.example.casttvandroiddemo.utils.InternetUtils;
 import com.example.casttvandroiddemo.utils.OnlineDeviceUtils;
 
 import me.jessyan.autosize.AutoSizeConfig;
@@ -28,9 +36,12 @@ public class StartActivity extends AppCompatActivity {
     private static final String key = "isAccept";
     private TextView tv_cancelUse;
     private TextView tv_accept;
-    private static final long COUNTER_TIME = 3;
+    private static final long COUNTER_TIME = 2;
 
     private long secondsRemaining;
+    public static long appOpenCount;
+    public static boolean isFirstOpen;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -45,7 +56,23 @@ public class StartActivity extends AppCompatActivity {
         setBackEvent();
         // Create a timer so the SplashActivity will be displayed for a fixed amount of time.
         createTimer(COUNTER_TIME);
+
+        SharedPreferences sp = getSharedPreferences("AppOpenCount", MODE_PRIVATE);
+        appOpenCount = sp.getLong("openCount", 0);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putLong("openCount", appOpenCount + 1);
+        editor.apply();
+
+        sp = getSharedPreferences("isFirstOpen", MODE_PRIVATE);
+        isFirstOpen = sp.getBoolean("isFirst", true);
+        editor = sp.edit();
+        editor.putBoolean("isFirst", false);
+        editor.apply();
+        Log.d(TAG, "onCreate: " + InternetUtils.getCommentSpan(this));
+        InternetUtils.downloadCommentSpanJsonFile(this);
+        AppManage.setShowOpenAdRangeFrom(InternetUtils.getCommentSpan(this));
     }
+
     private void createTimer(long seconds) {
 
         CountDownTimer countDownTimer =
@@ -59,40 +86,23 @@ public class StartActivity extends AppCompatActivity {
                     @Override
                     public void onFinish() {
                         secondsRemaining = 0;
-
-                        Application application = getApplication();
-
-//                        // If the application is not an instance of MyApplication, log an error message and
-//                        // start the MainActivity without showing the app open ad.
-//                        if (!(application instanceof MyApplication)) {
-//                            Log.e(TAG, "Failed to cast application to MyApplication.");
-//                            startMainActivity();
-//                            return;
-//                        }
-
-                        // Show the app open ad.
-                        ((MyApplication) application)
-                                .showAdIfAvailable(
-                                        StartActivity.this,
-                                        new MyApplication.OnShowAdCompleteListener() {
-                                            @Override
-                                            public void onShowAdComplete() {
-                                                startMainActivity();
-                                                finish();
-                                            }
-                                        });
-                    }
+                            startMainActivity();
+                        }
                 };
         countDownTimer.start();
     }
 
-    /** Start the MainActivity. */
+    /**
+     * Start the MainActivity.
+     */
     public void startMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         this.startActivity(intent);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
+
     private void setBackEvent() {
-        OnlineDeviceUtils.findDevice();
         SharedPreferences sp = getSharedPreferences("setting", Context.MODE_PRIVATE);
         SettingActivity.isVibrator = sp.getBoolean("isVibrator", false);
     }

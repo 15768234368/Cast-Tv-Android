@@ -2,13 +2,16 @@ package com.example.casttvandroiddemo;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.webkit.WebView;
 import android.widget.Toast;
 
@@ -19,6 +22,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
 import com.example.casttvandroiddemo.Service.VolumeService;
+import com.example.casttvandroiddemo.utils.AppManage;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -51,16 +55,31 @@ public class MyApplication extends Application implements Application.ActivityLi
         this.webView = webView;
     }
 
+    public static final String UM_appkey = "6486bccca1a164591b30aec1";
+    public static final String Admob = "ca-app-pub-5547879489127772~7763815381";
+    public static final String Admob_banner = "ca-app-pub-5547879489127772/3956378413";
+    public static final String Admob_insert = "ca-app-pub-5547879489127772/6454587238";
+    public static final String Admob_opening = "ca-app-pub-5547879489127772/3705150877";
+
     @Override
     public void onCreate() {
         super.onCreate();
+//        if(BuildConfig.DEBUG){
+//            Admob_banner = "ca-app-pub-3940256099942544/6300978111";
+//            Admob_insert = "ca-app-pub-3940256099942544/1033173712";
+//            Admob_opening = "ca-app-pub-3940256099942544/3419835294";
+//        }else{
+//            Admob_banner = "ca-app-pub-5547879489127772/3956378413";
+//            Admob_insert = "ca-app-pub-5547879489127772/6454587238";
+//            Admob_opening = "ca-app-pub-5547879489127772/3705150877";
+//        }
         //头条自适应
         initAutoSize();
         //启动网络监听服务
         startService(new Intent(this, VolumeService.class));
         //umeng初始化模块
         //1.打开调试log
-        UMConfigure.setLogEnabled(true);
+        UMConfigure.setLogEnabled(false);
         //2.预初始化SDK
         UMConfigure.preInit(this, "6486bccca1a164591b30aec1", "Google Play");
         //3.初始化SDK
@@ -85,6 +104,7 @@ public class MyApplication extends Application implements Application.ActivityLi
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
         appOpenAdManager = new AppOpenAdManager();
     }
+
     /**
      * DefaultLifecycleObserver method that shows the app open ad when the app moves to foreground.
      */
@@ -161,7 +181,7 @@ public class MyApplication extends Application implements Application.ActivityLi
     private class AppOpenAdManager {
 
         private static final String LOG_TAG = "AppOpenAdManager";
-        private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/3419835294";
+        private final String AD_UNIT_ID = MyApplication.Admob_opening;
 
         private AppOpenAd appOpenAd = null;
         private boolean isLoadingAd = false;
@@ -282,9 +302,6 @@ public class MyApplication extends Application implements Application.ActivityLi
                 loadAd(activity);
                 return;
             }
-
-            Log.d(LOG_TAG, "Will show ad.");
-
             appOpenAd.setFullScreenContentCallback(
                     new FullScreenContentCallback() {
                         /** Called when full screen content is dismissed. */
@@ -321,14 +338,10 @@ public class MyApplication extends Application implements Application.ActivityLi
 //                            Toast.makeText(activity, "onAdShowedFullScreenContent", Toast.LENGTH_SHORT).show();
                         }
                     });
-
             isShowingAd = true;
             appOpenAd.show(activity);
         }
     }
-
-
-
 
 
     private void initAutoSize() {
@@ -341,5 +354,6 @@ public class MyApplication extends Application implements Application.ActivityLi
                 .setLog(BuildConfig.DEBUG) //是否打印日志
                 .setCustomFragment(true); //是否支持自定义适配Fragment
     }
+
 
 }

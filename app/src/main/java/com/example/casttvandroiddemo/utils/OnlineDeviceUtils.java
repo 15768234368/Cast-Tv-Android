@@ -1,7 +1,10 @@
 package com.example.casttvandroiddemo.utils;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.example.casttvandroiddemo.FragmentRemoteControl;
 import com.example.casttvandroiddemo.bean.DeviceBean;
 
 import org.w3c.dom.Document;
@@ -38,10 +41,11 @@ public class OnlineDeviceUtils {
     private static final int BUFFER_SIZE = 4096;
     public static List<String> mRokuLocation_onLine = new ArrayList<>();
     public static List<DeviceBean> mDeviceData_onLine = new ArrayList<>();
-    private static OnConnectedListener onConnectedListener;
-    public interface OnConnectedListener{
+    public static OnConnectedListener onConnectedListener;
+
+    public interface OnConnectedListener {
         public void autoConnect();
-        
+
         public void disConnect();
     }
 
@@ -49,11 +53,11 @@ public class OnlineDeviceUtils {
         OnlineDeviceUtils.onConnectedListener = onConnectedListener;
     }
 
-    public static void findDevice() {
+    public synchronized static void findDevice() {
         mRokuLocation_onLine.clear();
         mDeviceData_onLine.clear();
         final List<String> responseList = new ArrayList<>();
-
+        Log.d(TAG, "findDevice: ");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -66,11 +70,15 @@ public class OnlineDeviceUtils {
                     InetAddress address = InetAddress.getByName("239.255.255.250");
                     DatagramPacket requestPacket = new DatagramPacket(requestData, requestData.length, address, 1900);
                     try{
-                        socket.send(requestPacket);   
+                        socket.send(requestPacket);
                     }catch (IOException e){
-                        Log.e(TAG, "Failed to send data: " + e.getMessage());
-                        if(onConnectedListener != null)
-                            onConnectedListener.disConnect();
+                        Log.d(TAG, "run: net work is not connect");
+                        FragmentRemoteControl.ConnectingDevice = null;
+                        FragmentRemoteControl.RokuLocationUrl = null;
+                        FragmentRemoteControl.RokuLocation = null;
+                        if(OnlineDeviceUtils.onConnectedListener != null)
+                            OnlineDeviceUtils.onConnectedListener.disConnect();
+                        return;
                     }
 
                     while (true) {
@@ -86,8 +94,14 @@ public class OnlineDeviceUtils {
                         }
                     }
                     socket.close();
+                    Log.d(TAG, "run: responseList size" + responseList.size());
                     if (responseList.size() > 0) {
                         processDeviceResponses(responseList);
+                    }else{
+                        Log.d(TAG, "run: OnLineDeviceUtils is null");
+                        FragmentRemoteControl.ConnectingDevice = null;
+                        FragmentRemoteControl.RokuLocationUrl = null;
+                        FragmentRemoteControl.RokuLocation = null;
                     }
 //                    else{
 //                        //测试
@@ -134,6 +148,7 @@ public class OnlineDeviceUtils {
     }
 
     public static void getDeviceInfo(List<String> LocationList) {
+
         for (String item : LocationList) {
             String url = item + "query/device-info";
             OkHttpClient client = new OkHttpClient();
@@ -150,6 +165,7 @@ public class OnlineDeviceUtils {
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
+                    Log.d(TAG, "onResponse: mDeviceData_onLine size:" + mDeviceData_onLine.size());
                     String responseBody = response.body().string();
                     String[] info = getInfoFromXML(responseBody);
                     String ipAddress = null;
@@ -157,22 +173,29 @@ public class OnlineDeviceUtils {
                     Pattern pattern = Pattern.compile("(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})");
                     Matcher matcher = pattern.matcher(url);
                     if (!matcher.find()) {
-                        return ;
+                        return;
                     }
                     ipAddress = matcher.group(0);
                     int i;
                     for (i = 0; i < mDeviceData_onLine.size(); ++i) {
-                        if (info[0].equals(mDeviceData_onLine.get(i).getUserDeviceUDN())) {
+                        Log.d(TAG, "onResponse:mDeviceData_onLine :" + mDeviceData_onLine.get(i).getUserDeviceUDN());
+                        Log.d(TAG, "onResponse: info[0]:" + info[0]);
+                        Log.d(TAG, "onResponse: equals ?" + info[0].equals(mDeviceData_onLine.get(i).getUserDeviceUDN()));
+                        if (info[0].contains(mDeviceData_onLine.get(i).getUserDeviceUDN())) {
                             mDeviceData_onLine.get(i).setUserDeviceName(info[1]);
                             mDeviceData_onLine.get(i).setUserDeviceLocation(info[2]);
                             mDeviceData_onLine.get(i).setUserDeviceIpAddress(ipAddress);
                             break;
                         }
                     }
-                    if (i >= mDeviceData_onLine.size())
+                    if (i >= mDeviceData_onLine.size()) {
                         mDeviceData_onLine.add(new DeviceBean(info[0], info[1], info[2], ipAddress));
-                    if(onConnectedListener != null)
+                        Log.d(TAG, "onResponse: mDeviceData_onLine.size():" + mDeviceData_onLine.size());
+                    }
+                    if (onConnectedListener != null) {
                         onConnectedListener.autoConnect();
+                        Log.d(TAG, "onResponse: auto connect");
+                    }
                 }
             });
         }
@@ -223,4 +246,13 @@ public class OnlineDeviceUtils {
         return new String[]{deviceUDN, deviceName, deviceLocation};
     }
 
+    public static void saveLatestOnLineDevice(Context context, DeviceBean bean) {
+        SharedPreferences sp = context.getSharedPreferences("lastConnectDevice", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        if (bean == null)
+            editor.putString("UDN", null);
+        else
+            editor.putString("UDN", bean.getUserDeviceUDN());
+        editor.commit();
+    }
 }

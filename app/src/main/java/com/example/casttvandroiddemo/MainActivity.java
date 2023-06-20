@@ -1,9 +1,15 @@
 package com.example.casttvandroiddemo;
 
+import static com.example.casttvandroiddemo.StartActivity.appOpenCount;
+import static com.example.casttvandroiddemo.StartActivity.isFirstOpen;
+
+import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
@@ -25,7 +31,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.casttvandroiddemo.utils.AppManage;
 import com.example.casttvandroiddemo.utils.IntentUtils;
+import com.example.casttvandroiddemo.utils.InternetUtils;
+import com.example.casttvandroiddemo.utils.OnlineDeviceUtils;
 import com.example.casttvandroiddemo.utils.ViewUtils;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
@@ -61,7 +70,8 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "mainActivity onCreate: ");
+        Log.d(TAG, "OnlineDeviceUtils.mDeviceData_onLine.size() " + OnlineDeviceUtils.mDeviceData_onLine.size());
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
@@ -75,7 +85,30 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
         if (!isAccept()) {
             showCustomDialog();
         }
+        if (!isFirstOpen && appOpenCount % AppManage.showOpenAdRangeFrom == 0) {
+            showCommentDialog();
+        } else {
+            Application application = getApplication();
 
+//                        // If the application is not an instance of MyApplication, log an error message and
+//                        // start the MainActivity without showing the app open ad.
+//                        if (!(application instanceof MyApplication)) {
+//                            Log.e(TAG, "Failed to cast application to MyApplication.");
+//                            startMainActivity();
+//                            return;
+//                        }
+
+            // Show the app open ad.
+            ((MyApplication) application)
+                    .showAdIfAvailable(
+                            MainActivity.this,
+                            new MyApplication.OnShowAdCompleteListener() {
+                                @Override
+                                public void onShowAdComplete() {
+                                }
+                            });
+
+        }
     }
 
 
@@ -153,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
 
                 // 根据键盘的显示/隐藏状态进行相应的处理
                 if (isKeyboardOpen) {
-                    if(keypress_board){
+                    if (keypress_board) {
                         et_edit.requestFocus();
                         keypress_board = false;
                     }
@@ -168,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
                     // 键盘隐藏时的处理逻辑
                     ll_navigate.setVisibility(View.VISIBLE);
                     ll_edit.setVisibility(View.INVISIBLE);
-                    if(fragmentRemoteControl != null){
+                    if (fragmentRemoteControl != null) {
                         fragmentRemoteControl.getView().findViewById(R.id.view_coverBlack80).setVisibility(View.INVISIBLE);
                     }
                     setEnabled(true);
@@ -301,6 +334,8 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
         super.onPause();
         if (et_edit != null)
             et_edit.clearFocus();
+
+        OnlineDeviceUtils.saveLatestOnLineDevice(this, FragmentRemoteControl.ConnectingDevice);
     }
 
 
@@ -407,6 +442,9 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
         if (et_edit != null)
             et_edit.clearFocus();
         hideKeyboard(et_edit);
+        if (OnlineDeviceUtils.onConnectedListener != null) {
+            OnlineDeviceUtils.onConnectedListener.autoConnect();
+        }
     }
 
     private void hideKeyboard(View view) {
@@ -414,13 +452,47 @@ public class MainActivity extends AppCompatActivity implements CustomAdapt {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    /** Override the default implementation when the user presses the back key. */
+    /**
+     * Override the default implementation when the user presses the back key.
+     */
     @Override
     @SuppressWarnings("MissingSuperCall")
     public void onBackPressed() {
         // Move the task containing the MainActivity to the back of the activity stack, instead of
         // destroying it. Therefore, MainActivity will be shown when the user switches back to the app.
         moveTaskToBack(true);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    public void showCommentDialog() {
+        Dialog dialog = new Dialog(MainActivity.this);
+        dialog.setContentView(R.layout.dialog_send_good_comment);
+        dialog.setCancelable(false);
+        dialog.show();
+        dialog.findViewById(R.id.btn_comment_send).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MobclickAgent.onEvent(getApplicationContext(), "去好评");
+                try {
+                    InternetUtils.openGooglePlay(getApplicationContext());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    dialog.cancel();
+                }
+            }
+        });
+        dialog.findViewById(R.id.tv_did_not_comment).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MobclickAgent.onEvent(getApplicationContext(), "下次一定");
+                dialog.cancel();
+            }
+        });
     }
 }
 

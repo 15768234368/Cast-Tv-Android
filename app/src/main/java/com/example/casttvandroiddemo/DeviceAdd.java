@@ -352,7 +352,7 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
 
     }
 
-    public void findDevice() {
+    public synchronized void findDevice() {
         final List<String> responseList = new ArrayList<>();
 
         new Thread(new Runnable() {
@@ -367,7 +367,17 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
                     InetAddress address = InetAddress.getByName("239.255.255.250");
                     DatagramPacket requestPacket = new DatagramPacket(requestData, requestData.length, address, 1900);
 
-                    socket.send(requestPacket);
+                    try{
+                        socket.send(requestPacket);
+                    }catch (IOException e){
+                        Log.d(TAG, "run: net work is not connect");
+                        FragmentRemoteControl.ConnectingDevice = null;
+                        FragmentRemoteControl.RokuLocationUrl = null;
+                        FragmentRemoteControl.RokuLocation = null;
+                        if(OnlineDeviceUtils.onConnectedListener != null)
+                            OnlineDeviceUtils.onConnectedListener.disConnect();
+                        return;
+                    }
 
                     while (true) {
                         byte[] buffer = new byte[BUFFER_SIZE];
@@ -524,4 +534,9 @@ public class DeviceAdd extends AppCompatActivity implements View.OnClickListener
         return new String[]{deviceUDN, deviceName, deviceLocation};
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        OnlineDeviceUtils.saveLatestOnLineDevice(this, FragmentRemoteControl.ConnectingDevice);
+    }
 }

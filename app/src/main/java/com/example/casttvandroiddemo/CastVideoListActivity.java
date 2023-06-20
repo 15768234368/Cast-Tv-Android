@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.example.casttvandroiddemo.adapter.CastVideoListAdapter;
 import com.example.casttvandroiddemo.helper.DeviceManageHelper;
 import com.example.casttvandroiddemo.utils.AppManage;
+import com.example.casttvandroiddemo.utils.OnlineDeviceUtils;
 import com.example.casttvandroiddemo.utils.RemoteUtils;
 import com.umeng.analytics.MobclickAgent;
 
@@ -158,5 +159,11 @@ public class CastVideoListActivity extends AppCompatActivity {
                 dialog.cancel();
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        OnlineDeviceUtils.saveLatestOnLineDevice(this, FragmentRemoteControl.ConnectingDevice);
     }
 }
